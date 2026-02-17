@@ -283,8 +283,8 @@ main() {
   fi
   sway_pkg='swayfx'
   log 'using swayfx package'
-  terminal_pkg="$(resolve_pkg wezterm alacritty)" || {
-    printf '[packages] no terminal package found (expected wezterm or alacritty)\n' >&2
+  terminal_pkg="$(resolve_pkg kitty wezterm alacritty)" || {
+    printf '[packages] no terminal package found (expected kitty, wezterm, or alacritty)\n' >&2
     exit 1
   }
   swaylock_pkg="$(resolve_pkg swaylock-effects swaylock)" || {

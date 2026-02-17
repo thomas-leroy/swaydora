@@ -2,7 +2,7 @@
 
 # Global variables.
 set $mod Mod4
-set $terminal wezterm
+set $terminal kitty
 set $menu fuzzel
 # Global UI font for Sway surfaces (title bars, bars, dialogs).
 font pango:JetBrainsMono Nerd Font 10
@@ -20,8 +20,8 @@ focus_follows_mouse no
 default_border pixel 2
 # Rounded corners (SwayFX).
 corner_radius 12
-gaps inner 20
-gaps outer 4
+gaps inner 15
+gaps outer 15
 
 # Pointer/cursor defaults.
 seat seat0 xcursor_theme Adwaita 24
@@ -34,7 +34,7 @@ for_window [window_type="dialog"] floating enable, resize set width 62 ppt heigh
 for_window [window_role="pop-up"] floating enable, resize set width 62 ppt height 38 ppt, move position center
 
 # Keybindings: launch terminal.
-bindsym $mod+Return exec foot
+bindsym $mod+Return exec $terminal
 
 # Keybindings: launcher.
 bindsym $mod+space exec $menu
@@ -109,6 +109,7 @@ bindsym $mod+q kill
 bindsym $mod+Shift+space floating toggle
 
 # Autostart components.
+exec_always --no-startup-id ~/.config/scripts/swayfx_effects_apply.sh
 exec_always --no-startup-id swaync
 exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
 exec_always --no-startup-id waybar

@@ -12,6 +12,7 @@ window#waybar {
 }
 
 #workspaces button,
+#window,
 #clock,
 #tray,
 #custom-audio,
@@ -19,9 +20,10 @@ window#waybar {
 #custom-disks,
 #custom-cam,
 #custom-mic,
+#custom-layout,
 #custom-protonvpn,
 #custom-notification_center,
-#custom-slack {
+#custom-power {
   padding: 0 10px;
   margin: 4px 0;
   border-radius: 8px;
@@ -32,8 +34,10 @@ window#waybar {
 #custom-audio:hover,
 #custom-updates:hover,
 #custom-disks:hover,
+#custom-layout:hover,
 #custom-protonvpn:hover,
-#custom-notification_center:hover {
+#custom-notification_center:hover,
+#custom-power:hover {
   background: rgba(229, 233, 240, 0.14);
 }
 
@@ -43,8 +47,9 @@ window#waybar {
   color: #f6c177;
 }
 
-#custom-slack.off {
-  color: #8f96a3;
+#window {
+  color: #cdd6f4;
+  min-width: 260px;
 }
 
 #custom-protonvpn.on {
@@ -53,6 +58,18 @@ window#waybar {
 
 #custom-protonvpn.off {
   color: #8f96a3;
+}
+
+#custom-power {
+  color: #f38ba8;
+}
+
+#custom-layout.fr {
+  color: #a6e3a1;
+}
+
+#custom-layout.us {
+  color: #89b4fa;
 }
 
 @import "local.css";

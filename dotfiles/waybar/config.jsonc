@@ -4,13 +4,18 @@
   "height": 30,
   "spacing": 8,
 
-  "modules-left": ["sway/workspaces", "custom/slack"],
+  "modules-left": ["sway/workspaces", "sway/window"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "custom/protonvpn", "custom/notification_center", "tray"],
+  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "custom/layout", "custom/protonvpn", "custom/notification_center", "custom/power", "tray"],
 
   "sway/workspaces": {
     "disable-scroll": true,
     "all-outputs": true
+  },
+
+  "sway/window": {
+    "max-length": 70,
+    "separate-outputs": true
   },
 
   "clock": {
@@ -28,6 +33,13 @@
     "return-type": "json"
   },
 
+  "custom/layout": {
+    "exec": "~/.config/scripts/layout_status.sh",
+    "interval": 2,
+    "on-click": "~/.config/scripts/layout_toggle.sh",
+    "return-type": "json"
+  },
+
   "custom/notification_center": {
     "exec": "~/.config/scripts/notification_center_status.sh",
     "interval": 5,
@@ -40,6 +52,13 @@
     "interval": 6,
     "on-click": "~/.config/scripts/protonvpn_toggle_window.sh",
     "on-click-right": "~/.config/scripts/session_menu.sh",
+    "return-type": "json"
+  },
+
+  "custom/power": {
+    "exec": "printf '{\"text\":\"\",\"tooltip\":\"Power menu\"}'",
+    "interval": 3600,
+    "on-click": "~/.config/scripts/power_screen.sh",
     "return-type": "json"
   },
 
@@ -67,12 +86,6 @@
     "exec": "printf '{\"text\":\"\",\"tooltip\":\"External disks\"}'",
     "interval": 3600,
     "on-click": "~/.config/scripts/disks_menu.sh",
-    "return-type": "json"
-  },
-
-  "custom/slack": {
-    "exec": "pgrep -x slack >/dev/null && printf '{\"text\":\"\",\"class\":\"on\",\"tooltip\":\"Slack running\"}' || printf '{\"text\":\"\",\"class\":\"off\",\"tooltip\":\"Slack stopped\"}'",
-    "interval": 10,
     "return-type": "json"
   },
 
