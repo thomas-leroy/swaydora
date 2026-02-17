@@ -45,6 +45,11 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://github.com/LGFae/swww
 - Docs: https://github.com/swaywm/swaybg
 
+### dharmx/walls (optional source repository)
+- Purpose: curated wallpaper collection for picker/search.
+- Local setup: `scripts/80-wallpapers-sync.sh` clones/updates into `~/.config/sway/wallpapers/dharmx-walls`; sparse checkout by default to avoid very large downloads.
+- Docs: https://github.com/dharmx/walls
+
 ### grim + slurp
 - Purpose: region screenshots.
 - Local setup: `Print` bind saves screenshot to `~/Pictures`.

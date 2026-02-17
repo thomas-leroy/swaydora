@@ -124,6 +124,9 @@ bindsym $mod+Shift+e exec "swaymsg exit"
 # Keybindings: screenshot selected region to ~/Pictures.
 bindsym Print exec sh -c 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/Pictures/screenshot-$(date +%F-%T).png"'
 
+# Keybindings: choose wallpaper with fuzzy picker.
+bindsym $mod+Shift+w exec ~/.config/scripts/wallpaper_picker.sh
+
 # Keybindings: close focused window.
 bindsym $mod+q kill
 

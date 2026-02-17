@@ -1,6 +1,6 @@
 # dotfiles-fedora-swayfx
 
-Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, Mako, and Fuzzel.
+Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, SwayNC, Fuzzel, and Kitty.
 
 ## Goals
 - Stable and secure daily environment
@@ -14,6 +14,7 @@ Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, Mako, and Fuzzel.
 - `scripts/`: setup/install scripts executed in VM
 - `docs/`: conventions, VM workflow, troubleshooting
 - `themes/`: shared theme assets
+- `dotfiles/zsh`, `dotfiles/fastfetch`, `dotfiles/atuin`: portable shell/tool configs
 
 ## Documentation
 - `docs/STACK.md`: installed tools/services, purpose, local setup details, official docs links
@@ -49,6 +50,7 @@ scripts/30-link-dotfiles.sh
 scripts/40-themes.sh
 scripts/50-fonts.sh
 scripts/60-waybar-reload.sh
+scripts/80-wallpapers-sync.sh   # optional: pull wallpapers from dharmx/walls
 ```
 
 Then login to SwayFX and run:
@@ -64,6 +66,7 @@ Set `SWAYFX_COPR=<owner/project>` if you want to override the default COPR sourc
 - `WITH_VIRT=1 scripts/10-packages.sh`: install virtualization packages.
 - `AUTO_ADD_VIDEO_GROUP=1 scripts/10-packages.sh`: add current user to `video` group if missing.
 - `SWAYFX_COPR=<owner/project>`: override default COPR source used for `swayfx`.
+- `WALLS_FULL=1 scripts/80-wallpapers-sync.sh`: full clone of `dharmx/walls` (large).
 
 ## Developer Bootstrap
 `scripts/10-packages.sh` also installs a development baseline:
@@ -87,11 +90,14 @@ Shell aliases configured in dotfiles:
 | `Super+Space` | Open launcher (`fuzzel`) |
 | `Super+Arrow` | Focus window direction |
 | `Super+Shift+Arrow` | Move window direction |
+| `Super+1..9` | Switch to workspace 1..9 (top row via bindcode) |
+| `Super+Shift+1..9` | Move window to workspace 1..9 (top row via bindcode) |
 | `Super+KP_1..9` | Switch to workspace 1..9 |
 | `Super+Shift+KP_1..9` | Move window to workspace 1..9 |
 | `Alt+Tab` / `Alt+Shift+Tab` | Focus next / previous window |
 | `Super+L` | Lock session (`swaylock`) |
-| `Ctrl+Alt+Delete` | Open power menu (`wlogout`) |
+| `Ctrl+Alt+Delete` | Open session menu (`session_menu.sh`) |
+| `Waybar power icon` | Open/close `wlogout` power screen |
 | `XF86AudioRaiseVolume` | Volume up (`wpctl`) |
 | `XF86AudioLowerVolume` | Volume down (`wpctl`) |
 | `XF86AudioMute` | Toggle output mute (`wpctl`) |
@@ -100,10 +106,18 @@ Shell aliases configured in dotfiles:
 | `Super+Shift+R` | Reload Sway config |
 | `Super+Shift+E` | Exit Sway |
 | `Print` | Region screenshot to `~/Pictures` |
+| `Super+Shift+W` | Open wallpaper picker (fuzzy via fuzzel) |
 | `Super+Q` | Kill focused window |
 | `Super+Shift+Space` | Toggle floating |
 
 ## Notes
 - Notification daemon and center is `swaync` (Waybar module included).
+- Waybar includes modules for active app/window title, keyboard layout switch (FR/US), Proton VPN state, and power button.
 - No secrets are stored in this repository.
 - Local machine-specific overrides live outside tracked files (see `docs/CONVENTIONS.md`).
+
+## Wallpaper Source (Optional)
+Use `scripts/80-wallpapers-sync.sh` to clone/update wallpapers from `https://github.com/dharmx/walls`.
+By default it uses sparse checkout (selected folders) to avoid very large downloads.
+Set `WALLS_FULL=1` for a full clone.
+Use `Super+Shift+W` to select a wallpaper with fuzzy search (folder/name), then apply. Selection is persisted across sessions.

@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Default wallpaper path from linked sway config directory.
-WALLPAPER="${WALLPAPER:-$HOME/.config/sway/default-wallpaper.svg}"
+# Default wallpaper paths from linked sway config directory.
+STATE_FILE="$HOME/.config/sway/.current_wallpaper"
+DEFAULT_WALLPAPER="$HOME/.config/sway/default-wallpaper.svg"
+WALLPAPER="$DEFAULT_WALLPAPER"
+
+# Prefer persisted wallpaper when available.
+if [[ -f "$STATE_FILE" ]]; then
+  persisted="$(cat "$STATE_FILE" 2>/dev/null || true)"
+  if [[ -n "${persisted:-}" && -f "$persisted" ]]; then
+    WALLPAPER="$persisted"
+  fi
+fi
 
 # Start wallpaper backend depending on available package.
 if command -v swww-daemon >/dev/null 2>&1; then
