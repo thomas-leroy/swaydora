@@ -55,7 +55,7 @@ main() {
   fi
 
   # Link all managed config directories.
-  for dir in sway waybar mako fuzzel kitty wlogout environment.d scripts; do
+  for dir in sway waybar mako fuzzel kitty wlogout zsh fastfetch atuin environment.d scripts; do
     link_one "$dir"
   done
 

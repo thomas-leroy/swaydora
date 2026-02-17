@@ -1,0 +1,6 @@
+# Atuin defaults
+style = "compact"
+inline_height = 20
+show_help = false
+sync_address = "https://api.atuin.sh"
+search_mode = "fuzzy"

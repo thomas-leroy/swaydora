@@ -227,6 +227,35 @@ install_oh_my_zsh_if_needed() {
   RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 }
 
+# Ensure zsh loads dotfiles aliases/tooling from ~/.config/zsh.
+ensure_zsh_dotfiles_sourcing() {
+  local zshrc="$HOME/.zshrc"
+  local marker_start='# >>> dotfiles-zsh >>>'
+  local marker_end='# <<< dotfiles-zsh <<<'
+  local block
+  block="$(cat <<'EOT'
+# >>> dotfiles-zsh >>>
+[[ -f "$HOME/.config/zsh/aliases.zsh" ]] && source "$HOME/.config/zsh/aliases.zsh"
+[[ -f "$HOME/.config/zsh/tools.zsh" ]] && source "$HOME/.config/zsh/tools.zsh"
+# <<< dotfiles-zsh <<<
+EOT
+)"
+
+  [[ -f "$zshrc" ]] || touch "$zshrc"
+
+  if grep -Fq "$marker_start" "$zshrc"; then
+    awk -v start="$marker_start" -v end="$marker_end" '
+      $0 == start {skip=1; next}
+      $0 == end {skip=0; next}
+      skip == 0 {print}
+    ' "$zshrc" > "${zshrc}.tmp"
+    mv "${zshrc}.tmp" "$zshrc"
+  fi
+
+  printf '\n%s\n' "$block" >> "$zshrc"
+  log 'ensured ~/.zshrc sources ~/.config/zsh aliases and tools'
+}
+
 # Ensure zsh is the default login shell for the current user.
 ensure_default_shell_zsh() {
   local zsh_path
@@ -270,7 +299,7 @@ main() {
   # Resolve distro-specific package names.
   log 'resolving package variants for swayfx, terminal, swaylock, wallpaper, clipboard, updates, and dev stack'
   local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg notify_center_pkg
-  local node_pkg npm_pkg docker_pkg docker_compose_pkg sysinfo_pkg
+  local node_pkg npm_pkg docker_pkg docker_compose_pkg sysinfo_pkg fd_pkg
   enable_swayfx_copr_if_needed
   enable_vscode_repo_if_needed
   if ! pkg_is_available swayfx; then
@@ -302,7 +331,8 @@ main() {
   npm_pkg="$(resolve_pkg npm || true)"
   docker_pkg="$(resolve_pkg docker moby-engine docker-ce || true)"
   docker_compose_pkg="$(resolve_pkg docker-compose docker-compose-plugin || true)"
-  sysinfo_pkg="$(resolve_pkg neofetch fastfetch || true)"
+  sysinfo_pkg="$(resolve_pkg fastfetch neofetch || true)"
+  fd_pkg="$(resolve_pkg fd fd-find || true)"
 
   # Core Wayland desktop stack.
   log 'core WM packages'
@@ -337,6 +367,7 @@ main() {
   queue_pkg nano
   queue_pkg openssh-server
   queue_pkg btop
+  queue_pkg bat
   queue_pkg grep
   queue_pkg gawk
   queue_pkg sed
@@ -345,10 +376,20 @@ main() {
   queue_pkg python3-pip
   queue_pkg git-extras
   queue_pkg tig
+  queue_pkg ripgrep
+  queue_pkg fzf
+  queue_pkg duf
+  queue_pkg zoxide
+  queue_pkg atuin
   if [[ -n "$sysinfo_pkg" ]]; then
     queue_pkg "$sysinfo_pkg"
   else
-    log 'system info package not found (expected neofetch or fastfetch), continuing without it'
+    log 'system info package not found (expected fastfetch or neofetch), continuing without it'
+  fi
+  if [[ -n "$fd_pkg" ]]; then
+    queue_pkg "$fd_pkg"
+  else
+    log 'fd package not found (expected fd or fd-find), continuing without it'
   fi
   queue_pkg zsh
   if [[ -n "$node_pkg" ]]; then
@@ -421,6 +462,7 @@ main() {
   check_docker_group_membership
   ensure_pnpm_installed
   install_oh_my_zsh_if_needed
+  ensure_zsh_dotfiles_sourcing
   ensure_default_shell_zsh
 
   # Print skipped package summary.

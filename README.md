@@ -15,6 +15,13 @@ Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, Mako, and Fuzzel.
 - `docs/`: conventions, VM workflow, troubleshooting
 - `themes/`: shared theme assets
 
+## Documentation
+- `docs/STACK.md`: installed tools/services, purpose, local setup details, official docs links
+- `docs/SCRIPTS.md`: setup/runtime script reference
+- `docs/VM_WORKFLOW.md`: VM workflow and rollback
+- `docs/TROUBLESHOOTING.md`: common issues and fixes
+- `docs/CONVENTIONS.md`: repository conventions
+
 ## VM Setup (VirtioFS)
 Manual mount in VM:
 
@@ -60,10 +67,14 @@ Set `SWAYFX_COPR=<owner/project>` if you want to override the default COPR sourc
 
 ## Developer Bootstrap
 `scripts/10-packages.sh` also installs a development baseline:
-- CLI/tools: `nano`, `openssh-server`, `btop`, `grep`, `gawk`, `sed`, `gcc`, `python3`, `python3-pip`, `git-extras`, `tig`, `neofetch`
-- Shell/dev: `zsh`, oh-my-zsh (unattended), `nodejs`, `npm`, `pnpm`
+- CLI/tools: `nano`, `openssh-server`, `btop`, `bat`, `fd`/`fd-find`, `ripgrep`, `fzf`, `duf`, `grep`, `gawk`, `sed`, `gcc`, `python3`, `python3-pip`, `git-extras`, `tig`, `fastfetch` (or `neofetch` fallback)
+- Shell/dev: `zsh`, oh-my-zsh (unattended), `zoxide`, `atuin`, `nodejs`, `npm`, `pnpm`
 - Containers: `docker`, `docker-compose`
 - Editor: Visual Studio Code (`code`) via official Microsoft repo when needed
+
+Shell aliases configured in dotfiles:
+- `cat` -> `bat` (or `batcat` fallback)
+- `find` -> `fd` (or `fdfind` fallback)
 
 `scripts/20-services.sh` enables and starts:
 - `docker.service`
