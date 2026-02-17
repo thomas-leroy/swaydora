@@ -11,3 +11,4 @@ cache/
 dotfiles/sway/local.conf
 dotfiles/waybar/local.css
 dotfiles/mako/local.conf
+scripts/99-diagnose-ohmyzsh.sh

@@ -236,12 +236,24 @@ ensure_default_shell_zsh() {
     return 0
   fi
 
-  if [[ "${SHELL:-}" == "$zsh_path" ]]; then
+  local passwd_shell
+  passwd_shell="$(getent passwd "$USER" | cut -d: -f7 || true)"
+  if [[ "$passwd_shell" == "$zsh_path" ]]; then
     log "default shell already set to $zsh_path"
     return 0
   fi
 
-  log "setting default shell to $zsh_path for user $USER"
+  log "setting default shell to $zsh_path for user $USER (current: ${passwd_shell:-unknown})"
+
+  # Prefer chsh for user account shell change, fallback to usermod when needed.
+  if command -v chsh >/dev/null 2>&1; then
+    if chsh -s "$zsh_path" "$USER" >/dev/null 2>&1; then
+      log 'default shell changed using chsh'
+      log 'default shell updated; logout/login is required to apply it everywhere'
+      return 0
+    fi
+  fi
+
   run_as_root usermod -s "$zsh_path" "$USER"
   log 'default shell updated; logout/login is required to apply it everywhere'
 }
@@ -256,8 +268,9 @@ main() {
   SKIPPED=()
 
   # Resolve distro-specific package names.
-  log 'resolving package variants for swayfx, terminal, swaylock, wallpaper, clipboard, and auto updates'
+  log 'resolving package variants for swayfx, terminal, swaylock, wallpaper, clipboard, updates, and dev stack'
   local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg notify_center_pkg
+  local node_pkg npm_pkg docker_pkg docker_compose_pkg sysinfo_pkg
   enable_swayfx_copr_if_needed
   enable_vscode_repo_if_needed
   if ! pkg_is_available swayfx; then
@@ -285,6 +298,11 @@ main() {
   clipboard_pkg="$(resolve_pkg cliphist clipman || true)"
   automatic_pkg="$(resolve_pkg dnf5-plugin-automatic dnf-automatic || true)"
   notify_center_pkg="$(resolve_pkg swaync SwayNotificationCenter swaynotificationcenter || true)"
+  node_pkg="$(resolve_pkg nodejs || true)"
+  npm_pkg="$(resolve_pkg npm || true)"
+  docker_pkg="$(resolve_pkg docker moby-engine docker-ce || true)"
+  docker_compose_pkg="$(resolve_pkg docker-compose docker-compose-plugin || true)"
+  sysinfo_pkg="$(resolve_pkg neofetch fastfetch || true)"
 
   # Core Wayland desktop stack.
   log 'core WM packages'
@@ -327,15 +345,35 @@ main() {
   queue_pkg python3-pip
   queue_pkg git-extras
   queue_pkg tig
-  queue_pkg neofetch
+  if [[ -n "$sysinfo_pkg" ]]; then
+    queue_pkg "$sysinfo_pkg"
+  else
+    log 'system info package not found (expected neofetch or fastfetch), continuing without it'
+  fi
   queue_pkg zsh
-  queue_pkg nodejs
-  queue_pkg npm
+  if [[ -n "$node_pkg" ]]; then
+    queue_pkg "$node_pkg"
+  else
+    log 'nodejs package not found in enabled repos'
+  fi
+  if [[ -n "$npm_pkg" ]]; then
+    queue_pkg "$npm_pkg"
+  else
+    log 'npm package not found as standalone package (will rely on nodejs-provided npm if available)'
+  fi
   if pkg_is_available pnpm; then
     queue_pkg pnpm
   fi
-  queue_pkg docker
-  queue_pkg docker-compose
+  if [[ -n "$docker_pkg" ]]; then
+    queue_pkg "$docker_pkg"
+  else
+    log 'docker engine package not found (expected docker, moby-engine, or docker-ce)'
+  fi
+  if [[ -n "$docker_compose_pkg" ]]; then
+    queue_pkg "$docker_compose_pkg"
+  else
+    log 'docker compose package not found (expected docker-compose or docker-compose-plugin)'
+  fi
   queue_pkg code
 
   # Audio stack and fallback UI mixer.
