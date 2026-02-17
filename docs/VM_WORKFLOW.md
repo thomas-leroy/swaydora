@@ -24,7 +24,7 @@ scripts/60-waybar-reload.sh
 
 ## 3) Start Session
 - Login into SwayFX.
-- Run `dotfiles/scripts/reload_env.sh`.
+- Run `~/.config/scripts/reload_env.sh`.
 
 ## 4) Snapshot Strategy
 - Snapshot before package stack updates.

@@ -3,8 +3,8 @@ set -euo pipefail
 
 # Optional flag: install virtualization stack when set to 1.
 WITH_VIRT="${WITH_VIRT:-0}"
-# Optional flag: auto-add current user to video group when missing.
-AUTO_ADD_VIDEO_GROUP="${AUTO_ADD_VIDEO_GROUP:-0}"
+# Optional flag: auto-add current user to video group when missing (enabled by default).
+AUTO_ADD_VIDEO_GROUP="${AUTO_ADD_VIDEO_GROUP:-1}"
 
 # Print consistent log messages for this script.
 log() {
@@ -35,7 +35,18 @@ pkg_is_installed() {
 
 # Return success when a package exists in enabled repos or is already installed.
 pkg_is_available() {
-  dnf -q list --available "$1" >/dev/null 2>&1 || dnf -q list --installed "$1" >/dev/null 2>&1
+  local pkg="$1"
+  local out
+
+  # Check exact package match in available packages.
+  out="$(dnf -q list --available "$pkg" 2>/dev/null || true)"
+  if awk -v p="$pkg" '$1 ~ ("^" p "(\\.|$)") {found=1} END{exit(found ? 0 : 1)}' <<<"$out"; then
+    return 0
+  fi
+
+  # Check exact package match in installed packages.
+  out="$(dnf -q list --installed "$pkg" 2>/dev/null || true)"
+  awk -v p="$pkg" '$1 ~ ("^" p "(\\.|$)") {found=1} END{exit(found ? 0 : 1)}' <<<"$out"
 }
 
 # Pick the first package name variant that exists.
@@ -108,7 +119,7 @@ main() {
 
   # Resolve distro-specific package names.
   log 'resolving package variants for sway, terminal, swaylock, wallpaper, clipboard, and auto updates'
-  local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg
+  local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg notify_center_pkg
   sway_pkg="$(resolve_pkg swayfx sway)" || {
     printf '[packages] no sway package found (expected swayfx or sway)\n' >&2
     exit 1
@@ -127,6 +138,7 @@ main() {
   }
   clipboard_pkg="$(resolve_pkg cliphist clipman || true)"
   automatic_pkg="$(resolve_pkg dnf5-plugin-automatic dnf-automatic || true)"
+  notify_center_pkg="$(resolve_pkg swaync SwayNotificationCenter swaynotificationcenter || true)"
 
   # Core Wayland desktop stack.
   log 'core WM packages'
@@ -135,6 +147,11 @@ main() {
   queue_pkg waybar
   queue_pkg fuzzel
   queue_pkg mako
+  if [[ -n "$notify_center_pkg" ]]; then
+    queue_pkg "$notify_center_pkg"
+  else
+    log 'notification center package not found (expected swaync or swaynotificationcenter), continuing without it'
+  fi
   queue_pkg wlogout
   queue_pkg brightnessctl
   queue_pkg swayidle

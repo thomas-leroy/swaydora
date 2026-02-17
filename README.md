@@ -47,7 +47,7 @@ scripts/60-waybar-reload.sh
 Then login to SwayFX and run:
 
 ```bash
-dotfiles/scripts/reload_env.sh
+~/.config/scripts/reload_env.sh
 ```
 
 ## Optional Flags
@@ -74,10 +74,10 @@ dotfiles/scripts/reload_env.sh
 | `Super+Shift+R` | Reload Sway config |
 | `Super+Shift+E` | Exit Sway |
 | `Print` | Region screenshot to `~/Pictures` |
-| `Super+Shift+Q` | Kill focused window |
+| `Super+Q` | Kill focused window |
 | `Super+Shift+Space` | Toggle floating |
 
 ## Notes
-- Default notification daemon is `mako`.
+- Notification daemon and center is `swaync` (Waybar module included).
 - No secrets are stored in this repository.
 - Local machine-specific overrides live outside tracked files (see `docs/CONVENTIONS.md`).

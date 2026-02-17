@@ -4,6 +4,8 @@
 set $mod Mod4
 set $terminal wezterm
 set $menu fuzzel
+# Global UI font for Sway surfaces (title bars, bars, dialogs).
+font pango:JetBrainsMono Nerd Font 10
 
 # Keyboard layout: force French AZERTY.
 input type:keyboard {
@@ -19,17 +21,18 @@ default_border pixel 2
 gaps inner 8
 gaps outer 4
 
-# SwayFX visual effects (minimal).
-corner_radius 8
-blur enable
-blur_passes 2
-blur_radius 2
+# Pointer/cursor defaults.
+seat seat0 xcursor_theme Adwaita 24
 
 # Default fallback background.
 output * bg #1d1f21 solid_color
 
+# Golden-ratio inspired floating defaults for dialogs/popups.
+for_window [window_type="dialog"] floating enable, resize set width 62 ppt height 38 ppt, move position center
+for_window [window_role="pop-up"] floating enable, resize set width 62 ppt height 38 ppt, move position center
+
 # Keybindings: launch terminal.
-bindsym $mod+Return exec $terminal
+bindsym $mod+Return exec foot
 
 # Keybindings: launcher.
 bindsym $mod+space exec $menu
@@ -98,13 +101,13 @@ bindsym $mod+Shift+e exec "swaymsg exit"
 bindsym Print exec sh -c 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/Pictures/screenshot-$(date +%F-%T).png"'
 
 # Keybindings: close focused window.
-bindsym $mod+Shift+q kill
+bindsym $mod+q kill
 
 # Keybindings: toggle floating mode.
 bindsym $mod+Shift+space floating toggle
 
 # Autostart components.
-exec_always --no-startup-id mako
+exec_always --no-startup-id swaync
 exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
 exec_always --no-startup-id waybar
 exec_always --no-startup-id udiskie --tray

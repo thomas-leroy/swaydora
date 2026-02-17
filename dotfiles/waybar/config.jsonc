@@ -6,7 +6,7 @@
 
   "modules-left": ["sway/workspaces", "custom/slack"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "tray"],
+  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "custom/notification_center", "tray"],
 
   "sway/workspaces": {
     "disable-scroll": true,
@@ -25,6 +25,13 @@
     "on-click": "~/.config/scripts/audio_switch_sink.sh",
     "on-scroll-up": "~/.config/scripts/audio_sink_volume_up.sh",
     "on-scroll-down": "~/.config/scripts/audio_sink_volume_down.sh",
+    "return-type": "json"
+  },
+
+  "custom/notification_center": {
+    "exec": "~/.config/scripts/notification_center_status.sh",
+    "interval": 5,
+    "on-click": "~/.config/scripts/notification_center_toggle.sh",
     "return-type": "json"
   },
 

@@ -19,6 +19,7 @@ window#waybar {
 #custom-disks,
 #custom-cam,
 #custom-mic,
+#custom-notification_center,
 #custom-slack {
   padding: 0 10px;
   margin: 4px 0;
@@ -29,7 +30,8 @@ window#waybar {
 #workspaces button:hover,
 #custom-audio:hover,
 #custom-updates:hover,
-#custom-disks:hover {
+#custom-disks:hover,
+#custom-notification_center:hover {
   background: rgba(229, 233, 240, 0.14);
 }
 
