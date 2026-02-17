@@ -6,7 +6,7 @@
 
   "modules-left": ["sway/workspaces", "custom/slack"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "custom/notification_center", "tray"],
+  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "custom/protonvpn", "custom/notification_center", "tray"],
 
   "sway/workspaces": {
     "disable-scroll": true,
@@ -32,6 +32,14 @@
     "exec": "~/.config/scripts/notification_center_status.sh",
     "interval": 5,
     "on-click": "~/.config/scripts/notification_center_toggle.sh",
+    "return-type": "json"
+  },
+
+  "custom/protonvpn": {
+    "exec": "~/.config/scripts/protonvpn_status.sh",
+    "interval": 6,
+    "on-click": "~/.config/scripts/protonvpn_toggle_window.sh",
+    "on-click-right": "~/.config/scripts/session_menu.sh",
     "return-type": "json"
   },
 

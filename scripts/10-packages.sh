@@ -5,6 +5,12 @@ set -euo pipefail
 WITH_VIRT="${WITH_VIRT:-0}"
 # Optional flag: auto-add current user to video group when missing (enabled by default).
 AUTO_ADD_VIDEO_GROUP="${AUTO_ADD_VIDEO_GROUP:-1}"
+# Optional flag: fail if swayfx is unavailable (enabled by default).
+REQUIRE_SWAYFX="${REQUIRE_SWAYFX:-1}"
+# COPR repo used to install swayfx when not in default enabled repos.
+SWAYFX_COPR="${SWAYFX_COPR:-swayfx/swayfx}"
+# VS Code official repository file.
+VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 
 # Print consistent log messages for this script.
 log() {
@@ -87,6 +93,65 @@ install_queued() {
   run_as_root dnf install -y "${TO_INSTALL[@]}"
 }
 
+# Replace plain sway with swayfx when sway is already installed.
+ensure_swayfx_installed_without_conflict() {
+  if pkg_is_installed swayfx; then
+    return 0
+  fi
+
+  if pkg_is_installed sway; then
+    log 'detected installed sway package, swapping to swayfx'
+    run_as_root dnf swap -y --allowerasing sway swayfx
+  fi
+}
+
+# Enable official VS Code repository when `code` package is missing.
+enable_vscode_repo_if_needed() {
+  if pkg_is_available code || pkg_is_installed code; then
+    return 0
+  fi
+
+  log 'enabling Visual Studio Code repository'
+  run_as_root rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  run_as_root tee "$VSCODE_REPO_FILE" >/dev/null <<'EOT'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOT
+}
+
+# Ensure `dnf copr` command is available.
+ensure_copr_command() {
+  if dnf -q copr list >/dev/null 2>&1; then
+    return 0
+  fi
+
+  # Install plugin package when needed.
+  if ! pkg_is_installed dnf-plugins-core && pkg_is_available dnf-plugins-core; then
+    log 'installing dnf-plugins-core to enable COPR command support'
+    run_as_root dnf install -y dnf-plugins-core
+  fi
+
+  dnf -q copr list >/dev/null 2>&1 || {
+    printf '[packages] dnf copr command is not available on this system\n' >&2
+    exit 1
+  }
+}
+
+# Enable swayfx COPR when swayfx package is not available yet.
+enable_swayfx_copr_if_needed() {
+  if pkg_is_available swayfx; then
+    return 0
+  fi
+
+  log "swayfx not found in current repos, enabling COPR: ${SWAYFX_COPR}"
+  ensure_copr_command
+  run_as_root dnf -y copr enable "${SWAYFX_COPR}"
+}
+
 # Verify whether current user can access brightness/video related devices.
 check_video_group_membership() {
   if ! getent group video >/dev/null 2>&1; then
@@ -108,6 +173,79 @@ check_video_group_membership() {
   fi
 }
 
+# Ensure current user can use Docker without sudo.
+check_docker_group_membership() {
+  if ! getent group docker >/dev/null 2>&1; then
+    log 'group "docker" does not exist yet, skipping docker group update'
+    return 0
+  fi
+
+  if id -nG "$USER" | grep -qw docker; then
+    log "user $USER is already in group: docker"
+    return 0
+  fi
+
+  log "adding $USER to group docker"
+  run_as_root usermod -aG docker "$USER"
+  log 'docker group updated; logout/login is required to apply new group membership'
+}
+
+# Install pnpm globally when distro package is unavailable.
+ensure_pnpm_installed() {
+  if command -v pnpm >/dev/null 2>&1; then
+    log 'pnpm already installed'
+    return 0
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    log 'npm not found, skipping pnpm fallback install'
+    return 0
+  fi
+
+  log 'installing pnpm globally via npm fallback'
+  run_as_root npm install -g pnpm
+}
+
+# Install oh-my-zsh for the current user in unattended mode.
+install_oh_my_zsh_if_needed() {
+  if [[ -d "$HOME/.oh-my-zsh" ]]; then
+    log 'oh-my-zsh already installed'
+    return 0
+  fi
+
+  if ! command -v zsh >/dev/null 2>&1; then
+    log 'zsh not found, skipping oh-my-zsh install'
+    return 0
+  fi
+
+  if ! command -v curl >/dev/null 2>&1; then
+    log 'curl not found, skipping oh-my-zsh install'
+    return 0
+  fi
+
+  log 'installing oh-my-zsh in unattended mode'
+  RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+}
+
+# Ensure zsh is the default login shell for the current user.
+ensure_default_shell_zsh() {
+  local zsh_path
+  zsh_path="$(command -v zsh || true)"
+  if [[ -z "$zsh_path" ]]; then
+    log 'zsh not found, cannot set default shell'
+    return 0
+  fi
+
+  if [[ "${SHELL:-}" == "$zsh_path" ]]; then
+    log "default shell already set to $zsh_path"
+    return 0
+  fi
+
+  log "setting default shell to $zsh_path for user $USER"
+  run_as_root usermod -s "$zsh_path" "$USER"
+  log 'default shell updated; logout/login is required to apply it everywhere'
+}
+
 main() {
   # Validate package manager commands.
   require_cmd dnf
@@ -118,12 +256,20 @@ main() {
   SKIPPED=()
 
   # Resolve distro-specific package names.
-  log 'resolving package variants for sway, terminal, swaylock, wallpaper, clipboard, and auto updates'
+  log 'resolving package variants for swayfx, terminal, swaylock, wallpaper, clipboard, and auto updates'
   local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg notify_center_pkg
-  sway_pkg="$(resolve_pkg swayfx sway)" || {
-    printf '[packages] no sway package found (expected swayfx or sway)\n' >&2
+  enable_swayfx_copr_if_needed
+  enable_vscode_repo_if_needed
+  if ! pkg_is_available swayfx; then
+    if [[ "$REQUIRE_SWAYFX" == '1' ]]; then
+      printf '[packages] swayfx package is required but still unavailable after COPR enable (%s)\n' "$SWAYFX_COPR" >&2
+      exit 1
+    fi
+    printf '[packages] swayfx package unavailable and REQUIRE_SWAYFX=0 is unsupported in this profile\n' >&2
     exit 1
-  }
+  fi
+  sway_pkg='swayfx'
+  log 'using swayfx package'
   terminal_pkg="$(resolve_pkg wezterm alacritty)" || {
     printf '[packages] no terminal package found (expected wezterm or alacritty)\n' >&2
     exit 1
@@ -168,6 +314,30 @@ main() {
   queue_pkg curl
   queue_pkg unzip
 
+  # Developer baseline packages.
+  log 'developer baseline packages'
+  queue_pkg nano
+  queue_pkg openssh-server
+  queue_pkg btop
+  queue_pkg grep
+  queue_pkg gawk
+  queue_pkg sed
+  queue_pkg gcc
+  queue_pkg python3
+  queue_pkg python3-pip
+  queue_pkg git-extras
+  queue_pkg tig
+  queue_pkg neofetch
+  queue_pkg zsh
+  queue_pkg nodejs
+  queue_pkg npm
+  if pkg_is_available pnpm; then
+    queue_pkg pnpm
+  fi
+  queue_pkg docker
+  queue_pkg docker-compose
+  queue_pkg code
+
   # Audio stack and fallback UI mixer.
   log 'audio packages'
   queue_pkg pipewire
@@ -205,10 +375,15 @@ main() {
   fi
 
   # Apply installation.
+  ensure_swayfx_installed_without_conflict
   install_queued
 
   # Validate group access for brightness/video controls.
   check_video_group_membership
+  check_docker_group_membership
+  ensure_pnpm_installed
+  install_oh_my_zsh_if_needed
+  ensure_default_shell_zsh
 
   # Print skipped package summary.
   if [[ "${#SKIPPED[@]}" -gt 0 ]]; then

@@ -19,6 +19,7 @@ window#waybar {
 #custom-disks,
 #custom-cam,
 #custom-mic,
+#custom-protonvpn,
 #custom-notification_center,
 #custom-slack {
   padding: 0 10px;
@@ -31,6 +32,7 @@ window#waybar {
 #custom-audio:hover,
 #custom-updates:hover,
 #custom-disks:hover,
+#custom-protonvpn:hover,
 #custom-notification_center:hover {
   background: rgba(229, 233, 240, 0.14);
 }
@@ -42,6 +44,14 @@ window#waybar {
 }
 
 #custom-slack.off {
+  color: #8f96a3;
+}
+
+#custom-protonvpn.on {
+  color: #9ece6a;
+}
+
+#custom-protonvpn.off {
   color: #8f96a3;
 }
 

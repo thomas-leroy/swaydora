@@ -18,7 +18,9 @@ include ~/.config/sway/local.conf
 # Core appearance and behavior.
 focus_follows_mouse no
 default_border pixel 2
-gaps inner 8
+# Rounded corners (SwayFX).
+corner_radius 12
+gaps inner 20
 gaps outer 4
 
 # Pointer/cursor defaults.
@@ -80,7 +82,7 @@ bindsym Alt+Shift+Tab focus prev
 bindsym $mod+l exec swaylock -f -c 000000
 
 # Keybindings: power menu.
-bindsym Ctrl+Alt+Delete exec wlogout
+bindsym Ctrl+Alt+Delete exec ~/.config/scripts/session_menu.sh
 
 # Keybindings: multimedia volume control.
 bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+

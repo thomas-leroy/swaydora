@@ -50,9 +50,24 @@ Then login to SwayFX and run:
 ~/.config/scripts/reload_env.sh
 ```
 
+SwayFX is mandatory for this profile. When unavailable in enabled repos, setup automatically enables COPR `swayfx/swayfx`.
+Set `SWAYFX_COPR=<owner/project>` if you want to override the default COPR source.
+
 ## Optional Flags
 - `WITH_VIRT=1 scripts/10-packages.sh`: install virtualization packages.
 - `AUTO_ADD_VIDEO_GROUP=1 scripts/10-packages.sh`: add current user to `video` group if missing.
+- `SWAYFX_COPR=<owner/project>`: override default COPR source used for `swayfx`.
+
+## Developer Bootstrap
+`scripts/10-packages.sh` also installs a development baseline:
+- CLI/tools: `nano`, `openssh-server`, `btop`, `grep`, `gawk`, `sed`, `gcc`, `python3`, `python3-pip`, `git-extras`, `tig`, `neofetch`
+- Shell/dev: `zsh`, oh-my-zsh (unattended), `nodejs`, `npm`, `pnpm`
+- Containers: `docker`, `docker-compose`
+- Editor: Visual Studio Code (`code`) via official Microsoft repo when needed
+
+`scripts/20-services.sh` enables and starts:
+- `docker.service`
+- `sshd.service`
 
 ## Sway Keybindings
 | Shortcut | Action |
