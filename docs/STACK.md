@@ -47,7 +47,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 
 ### dharmx/walls (optional source repository)
 - Purpose: curated wallpaper collection for picker/search.
-- Local setup: `scripts/80-wallpapers-sync.sh` clones/updates into `~/.config/sway/wallpapers/dharmx-walls`; sparse checkout by default to avoid very large downloads.
+- Local setup: `scripts/80-wallpapers-sync.sh` clones/updates into `~/.local/share/wallpapers/dharmx-walls`; sparse checkout by default to avoid very large downloads.
 - Docs: https://github.com/dharmx/walls
 
 ### grim + slurp

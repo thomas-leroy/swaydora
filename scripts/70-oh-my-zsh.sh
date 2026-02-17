@@ -66,12 +66,14 @@ set_default_shell_if_requested() {
     return 1
   fi
 
-  if [[ "${SHELL:-}" == "$zsh_path" ]]; then
+  local current_shell
+  current_shell="$(getent passwd "$USER" | cut -d: -f7 || true)"
+  if [[ "$current_shell" == "$zsh_path" ]]; then
     log "default shell already set to $zsh_path"
     return 0
   fi
 
-  log "setting default shell to $zsh_path for user $USER"
+  log "setting default shell to $zsh_path for user $USER (current: ${current_shell:-unknown})"
   run_as_root usermod -s "$zsh_path" "$USER"
   log 'default shell updated; logout/login required'
 }

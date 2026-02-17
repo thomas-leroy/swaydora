@@ -17,7 +17,7 @@ run_as_root() {
 
 # Check whether a systemd unit file exists on this machine.
 unit_exists() {
-  systemctl list-unit-files --all --no-legend | awk '{print $1}' | grep -Fxq "$1"
+  systemctl list-unit-files "$1" --all --no-legend 2>/dev/null | awk '{print $1}' | grep -Fxq "$1"
 }
 
 # Enable and start a unit only when it is present.

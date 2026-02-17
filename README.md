@@ -112,6 +112,7 @@ Shell aliases configured in dotfiles:
 
 ## Notes
 - Notification daemon and center is `swaync` (Waybar module included).
+- `mako` is kept as a lightweight fallback package; current autostart uses `swaync`.
 - Waybar includes modules for active app/window title, keyboard layout switch (FR/US), Proton VPN state, and power button.
 - No secrets are stored in this repository.
 - Local machine-specific overrides live outside tracked files (see `docs/CONVENTIONS.md`).
@@ -120,4 +121,5 @@ Shell aliases configured in dotfiles:
 Use `scripts/80-wallpapers-sync.sh` to clone/update wallpapers from `https://github.com/dharmx/walls`.
 By default it uses sparse checkout (selected folders) to avoid very large downloads.
 Set `WALLS_FULL=1` for a full clone.
+Default sync location is `~/.local/share/wallpapers/dharmx-walls` (outside git repo).
 Use `Super+Shift+W` to select a wallpaper with fuzzy search (folder/name), then apply. Selection is persisted across sessions.

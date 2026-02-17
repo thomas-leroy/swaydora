@@ -6,12 +6,12 @@ set -euo pipefail
 #
 # Env vars:
 #   WALLS_REPO_URL   (default: https://github.com/dharmx/walls.git)
-#   WALLS_DEST       (default: ~/.config/sway/wallpapers/dharmx-walls)
+#   WALLS_DEST       (default: ~/.local/share/wallpapers/dharmx-walls)
 #   WALLS_FULL       (1=full clone, 0=sparse mode; default: 0)
 #   WALLS_CATEGORIES (space-separated dirs in sparse mode)
 
 WALLS_REPO_URL="${WALLS_REPO_URL:-https://github.com/dharmx/walls.git}"
-WALLS_DEST="${WALLS_DEST:-$HOME/.config/sway/wallpapers/dharmx-walls}"
+WALLS_DEST="${WALLS_DEST:-$HOME/.local/share/wallpapers/dharmx-walls}"
 WALLS_FULL="${WALLS_FULL:-0}"
 WALLS_CATEGORIES="${WALLS_CATEGORIES:-nature abstract minimal nord chillop mountain}"
 
