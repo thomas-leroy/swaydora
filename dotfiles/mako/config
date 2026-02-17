@@ -1,0 +1,15 @@
+# Minimal mako style
+font=JetBrainsMono Nerd Font 11
+background-color=#1e1e2ecc
+text-color=#e6e9ef
+border-color=#6c7086
+border-size=2
+border-radius=8
+padding=10
+margin=8
+default-timeout=5000
+anchor=top-right
+max-visible=5
+format=<b>%s</b>\n%b
+
+include=~/.config/mako/local.conf

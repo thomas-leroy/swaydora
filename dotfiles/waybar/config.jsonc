@@ -1,0 +1,67 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "spacing": 8,
+
+  "modules-left": ["sway/workspaces", "custom/slack"],
+  "modules-center": ["clock"],
+  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "tray"],
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true
+  },
+
+  "clock": {
+    "format": "{:%a %Y-%m-%d %H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "on-click": "~/.config/scripts/calendar_popup.sh"
+  },
+
+  "custom/audio": {
+    "exec": "~/.config/scripts/audio_status.sh",
+    "interval": 2,
+    "on-click": "~/.config/scripts/audio_switch_sink.sh",
+    "on-scroll-up": "~/.config/scripts/audio_sink_volume_up.sh",
+    "on-scroll-down": "~/.config/scripts/audio_sink_volume_down.sh",
+    "return-type": "json"
+  },
+
+  "custom/mic": {
+    "exec": "~/.config/scripts/indicator_mic.sh",
+    "interval": 2,
+    "on-click": "~/.config/scripts/audio_source_mute.sh",
+    "return-type": "json"
+  },
+
+  "custom/cam": {
+    "exec": "~/.config/scripts/indicator_cam.sh",
+    "interval": 3,
+    "return-type": "json"
+  },
+
+  "custom/updates": {
+    "exec": "~/.config/scripts/updates_check.sh",
+    "interval": 900,
+    "on-click": "~/.config/scripts/updates_apply.sh",
+    "return-type": "json"
+  },
+
+  "custom/disks": {
+    "exec": "printf '{\"text\":\"\",\"tooltip\":\"External disks\"}'",
+    "interval": 3600,
+    "on-click": "~/.config/scripts/disks_menu.sh",
+    "return-type": "json"
+  },
+
+  "custom/slack": {
+    "exec": "pgrep -x slack >/dev/null && printf '{\"text\":\"\",\"class\":\"on\",\"tooltip\":\"Slack running\"}' || printf '{\"text\":\"\",\"class\":\"off\",\"tooltip\":\"Slack stopped\"}'",
+    "interval": 10,
+    "return-type": "json"
+  },
+
+  "tray": {
+    "spacing": 8
+  }
+}

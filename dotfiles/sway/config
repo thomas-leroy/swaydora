@@ -1,0 +1,110 @@
+# SwayFX config with structured and documented keybindings.
+
+# Global variables.
+set $mod Mod4
+set $terminal wezterm
+set $menu fuzzel
+
+# Keyboard layout: force French AZERTY.
+input type:keyboard {
+    xkb_layout fr
+}
+
+# Local machine overrides (untracked).
+include ~/.config/sway/local.conf
+
+# Core appearance and behavior.
+focus_follows_mouse no
+default_border pixel 2
+gaps inner 8
+gaps outer 4
+
+# SwayFX visual effects (minimal).
+corner_radius 8
+blur enable
+blur_passes 2
+blur_radius 2
+
+# Default fallback background.
+output * bg #1d1f21 solid_color
+
+# Keybindings: launch terminal.
+bindsym $mod+Return exec $terminal
+
+# Keybindings: launcher.
+bindsym $mod+space exec $menu
+
+# Keybindings: focus windows with arrows.
+bindsym $mod+Left focus left
+bindsym $mod+Right focus right
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+
+# Keybindings: move windows with Shift + arrows.
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Down move down
+
+# Keybindings: workspace switch with numeric keypad.
+bindsym $mod+KP_1 workspace number 1
+bindsym $mod+KP_2 workspace number 2
+bindsym $mod+KP_3 workspace number 3
+bindsym $mod+KP_4 workspace number 4
+bindsym $mod+KP_5 workspace number 5
+bindsym $mod+KP_6 workspace number 6
+bindsym $mod+KP_7 workspace number 7
+bindsym $mod+KP_8 workspace number 8
+bindsym $mod+KP_9 workspace number 9
+
+# Keybindings: move focused window to keypad workspace.
+bindsym $mod+Shift+KP_1 move container to workspace number 1
+bindsym $mod+Shift+KP_2 move container to workspace number 2
+bindsym $mod+Shift+KP_3 move container to workspace number 3
+bindsym $mod+Shift+KP_4 move container to workspace number 4
+bindsym $mod+Shift+KP_5 move container to workspace number 5
+bindsym $mod+Shift+KP_6 move container to workspace number 6
+bindsym $mod+Shift+KP_7 move container to workspace number 7
+bindsym $mod+Shift+KP_8 move container to workspace number 8
+bindsym $mod+Shift+KP_9 move container to workspace number 9
+
+# Keybindings: cycle focus like simple Alt+Tab behavior.
+bindsym Alt+Tab focus next
+bindsym Alt+Shift+Tab focus prev
+
+# Keybindings: lock session.
+# If swaylock-effects is installed, adjust lock visuals in local.conf.
+bindsym $mod+l exec swaylock -f -c 000000
+
+# Keybindings: power menu.
+bindsym Ctrl+Alt+Delete exec wlogout
+
+# Keybindings: multimedia volume control.
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+# Keybindings: brightness control.
+bindsym Alt+XF86AudioRaiseVolume exec brightnessctl set +10%
+bindsym Alt+XF86AudioLowerVolume exec brightnessctl set 10%-
+
+# Keybindings: reload config.
+bindsym $mod+Shift+r reload
+
+# Keybindings: restart Sway session.
+bindsym $mod+Shift+e exec "swaymsg exit"
+
+# Keybindings: screenshot selected region to ~/Pictures.
+bindsym Print exec sh -c 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/Pictures/screenshot-$(date +%F-%T).png"'
+
+# Keybindings: close focused window.
+bindsym $mod+Shift+q kill
+
+# Keybindings: toggle floating mode.
+bindsym $mod+Shift+space floating toggle
+
+# Autostart components.
+exec_always --no-startup-id mako
+exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
+exec_always --no-startup-id waybar
+exec_always --no-startup-id udiskie --tray

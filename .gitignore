@@ -1,0 +1,13 @@
+.env
+secrets*
+*.key
+*.pem
+*.log
+.DS_Store
+tmp/
+cache/
+*.swp
+*~
+dotfiles/sway/local.conf
+dotfiles/waybar/local.css
+dotfiles/mako/local.conf
