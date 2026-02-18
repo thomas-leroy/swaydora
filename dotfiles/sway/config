@@ -4,6 +4,15 @@
 set $mod Mod4
 set $terminal kitty
 set $menu fuzzel
+# Emberstone palette (shared direction with Kitty/Fuzzel).
+set $ember_bg #242835
+set $ember_bg_deep #151722
+set $ember_fg #F8EDDC
+set $ember_muted #A7A9A1
+set $ember_ocean #00849A
+set $ember_mauve #A17AB5
+set $ember_rose #C84C53
+set $ember_gold #ECDA9C
 # Global UI font for Sway surfaces (title bars, bars, dialogs).
 font pango:JetBrainsMono Nerd Font 10
 
@@ -18,16 +27,29 @@ include ~/.config/sway/local.conf
 # Core appearance and behavior.
 focus_follows_mouse no
 default_border pixel 2
+client.focused $ember_ocean $ember_ocean $ember_fg $ember_mauve $ember_ocean
+client.focused_inactive $ember_bg $ember_bg $ember_muted $ember_mauve $ember_bg
+client.unfocused $ember_bg_deep $ember_bg_deep $ember_muted $ember_mauve $ember_bg_deep
+client.urgent $ember_rose $ember_rose $ember_fg $ember_gold $ember_rose
+client.placeholder $ember_bg_deep $ember_bg_deep $ember_muted $ember_mauve $ember_bg_deep
+client.background $ember_bg_deep
 # Rounded corners (SwayFX).
 corner_radius 12
 gaps inner 15
 gaps outer 15
+blur on
+blur_passes 3
+blur_radius 10
+blur_xray off
+for_window [app_id=".*"] opacity 0.9
+for_window [class=".*"] opacity 0.9
+for_window [app_id="kitty"] opacity 0.85
 
 # Pointer/cursor defaults.
 seat seat0 xcursor_theme Adwaita 24
 
 # Default fallback background.
-output * bg #1d1f21 solid_color
+output * bg $ember_bg_deep solid_color
 
 # Golden-ratio inspired floating defaults for dialogs/popups.
 for_window [window_type="dialog"] floating enable, resize set width 62 ppt height 38 ppt, move position center

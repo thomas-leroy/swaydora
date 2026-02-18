@@ -12,14 +12,20 @@ apply_if_supported() {
 # Retry briefly in case compositor is still initializing.
 for _ in 1 2 3 4 5; do
   # Background blur for windows.
+  apply_if_supported 'blur on'
   apply_if_supported 'blur enable'
   apply_if_supported 'blur_passes 3'
-  apply_if_supported 'blur_radius 12'
+  apply_if_supported 'blur_radius 10'
+  # Ensure transparent client surfaces (like Kitty) still show blurred background.
+  apply_if_supported 'blur_xray off'
+  apply_if_supported 'blur_xray disable'
+  apply_if_supported 'blur_xray false'
 
-  # Light opacity for windows (90%).
-  apply_if_supported 'default_opacity 0.9'
-  apply_if_supported 'default_opacity 0.9 0.9'
-  apply_if_supported 'opacity 0.9'
+  # Apply opacity broadly to existing windows (Wayland and Xwayland).
+  apply_if_supported '[app_id=".*"] opacity 0.9'
+  apply_if_supported '[class=".*"] opacity 0.9'
+  # Keep Kitty a bit more transparent so blur is perceptible.
+  apply_if_supported '[app_id="kitty"] opacity 0.85'
 
   sleep 0.2
 done
