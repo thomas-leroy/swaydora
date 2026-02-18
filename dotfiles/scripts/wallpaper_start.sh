@@ -15,17 +15,28 @@ if [[ -f "$STATE_FILE" ]]; then
 fi
 
 # Start wallpaper backend depending on available package.
-if command -v swww-daemon >/dev/null 2>&1; then
-  swww-daemon &
-  sleep 0.2
-  if [[ -f "$WALLPAPER" ]]; then
-    exec swww img "$WALLPAPER" --transition-type simple --transition-duration 0.4
+if command -v swww >/dev/null 2>&1 && command -v swww-daemon >/dev/null 2>&1; then
+  # Avoid racing multiple daemons on Sway reload.
+  if ! pgrep -x swww-daemon >/dev/null 2>&1; then
+    swww-daemon >/dev/null 2>&1 &
   fi
-  wait
+
+  # Wait briefly until daemon socket is ready.
+  for _ in 1 2 3 4 5 6 7 8 9 10; do
+    swww query >/dev/null 2>&1 && break
+    sleep 0.1
+  done
+
+  if [[ -f "$WALLPAPER" ]]; then
+    if swww img "$WALLPAPER" --transition-type simple --transition-duration 0.4 >/dev/null 2>&1; then
+      exit 0
+    fi
+  fi
 fi
 
 # Fallback: keep a solid color background with swaybg.
 if command -v swaybg >/dev/null 2>&1; then
+  pkill -x swaybg >/dev/null 2>&1 || true
   if [[ -f "$WALLPAPER" ]]; then
     exec swaybg -i "$WALLPAPER" -m fill
   fi

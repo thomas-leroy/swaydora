@@ -48,8 +48,7 @@ for_window [app_id="kitty"] opacity 0.85
 # Pointer/cursor defaults.
 seat seat0 xcursor_theme Adwaita 24
 
-# Default fallback background.
-output * bg $ember_bg_deep solid_color
+# Wallpaper is managed by ~/.config/scripts/wallpaper_start.sh.
 
 # Golden-ratio inspired floating defaults for dialogs/popups.
 for_window [window_type="dialog"] floating enable, resize set width 62 ppt height 38 ppt, move position center
