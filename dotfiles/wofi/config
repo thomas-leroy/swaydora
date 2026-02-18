@@ -7,5 +7,6 @@ image_size=20
 term=kitty
 insensitive=true
 matching=fuzzy
+sort_order=alphabetical
 prompt=Apps
 gtk_dark=true

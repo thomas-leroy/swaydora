@@ -325,7 +325,7 @@ main() {
     exit 1
   }
   clipboard_pkg="$(resolve_pkg cliphist clipman || true)"
-  launcher_pkg="$(resolve_pkg wofi fuzzel || true)"
+  launcher_pkg="$(resolve_pkg wofi || true)"
   automatic_pkg="$(resolve_pkg dnf5-plugin-automatic dnf-automatic || true)"
   notify_center_pkg="$(resolve_pkg swaync SwayNotificationCenter swaynotificationcenter || true)"
   node_pkg="$(resolve_pkg nodejs || true)"
@@ -343,7 +343,7 @@ main() {
   if [[ -n "$launcher_pkg" ]]; then
     queue_pkg "$launcher_pkg"
   else
-    log 'launcher package not found (expected wofi or fuzzel), continuing without it'
+    log 'launcher package not found (expected wofi), continuing without it'
   fi
   queue_pkg mako
   if [[ -n "$notify_center_pkg" ]]; then

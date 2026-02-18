@@ -16,7 +16,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 
 ### Wofi
 - Purpose: launcher and dmenu-style selector with richer styling options.
-- Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh` (wofi first, fuzzel fallback).
+- Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh`.
 - Docs: https://hg.sr.ht/~scoopta/wofi
 
 ## Session / Notifications
