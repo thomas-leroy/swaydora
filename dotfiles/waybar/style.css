@@ -1,20 +1,19 @@
 * {
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 12px;
+  font-family: "JetBrainsMono Nerd Font", "JetBrainsMono Nerd Font Mono", "Symbols Nerd Font", monospace;
+  font-size: 13px;
   min-height: 0;
 }
 
 window#waybar {
-  background: rgba(26, 28, 31, 0.88);
-  color: #e5e9f0;
-  border-bottom: 1px solid rgba(229, 233, 240, 0.15);
+  background: rgba(21, 23, 34, 0.90);
+  color: #f8eddc;
+  border-bottom: 1px solid rgba(161, 122, 181, 0.5);
   transition: background-color 120ms ease;
 }
 
 #workspaces button,
 #window,
 #clock,
-#tray,
 #custom-audio,
 #custom-updates,
 #custom-disks,
@@ -24,10 +23,47 @@ window#waybar {
 #custom-protonvpn,
 #custom-notification_center,
 #custom-power {
-  padding: 0 10px;
-  margin: 4px 0;
-  border-radius: 8px;
+  padding: 0 12px;
+  margin: 5px 0;
+  border-radius: 12px;
+  background: rgba(36, 40, 53, 0.9);
+  border: 1px solid rgba(161, 122, 181, 0.35);
   transition: all 120ms ease;
+}
+
+#clock {
+  background: rgba(0, 132, 154, 0.25);
+  border: 1px solid rgba(138, 217, 233, 0.45);
+}
+
+/* Workspace readability */
+#workspaces {
+  margin-left: 6px;
+}
+
+#workspaces button {
+  color: #a7a9a1;
+  min-width: 22px;
+  padding: 0 8px;
+  border-radius: 10px;
+}
+
+#workspaces button:hover {
+  color: #f8eddc;
+  background: rgba(0, 132, 154, 0.22);
+  border-color: rgba(138, 217, 233, 0.65);
+}
+
+#workspaces button.active {
+  color: #f8eddc;
+  background: rgba(0, 132, 154, 0.34);
+  border: 1px solid rgba(138, 217, 233, 0.95);
+}
+
+#workspaces button.urgent {
+  color: #f8eddc;
+  background: rgba(200, 76, 83, 0.32);
+  border: 1px solid rgba(237, 183, 191, 0.9);
 }
 
 #workspaces button:hover,
@@ -38,38 +74,39 @@ window#waybar {
 #custom-protonvpn:hover,
 #custom-notification_center:hover,
 #custom-power:hover {
-  background: rgba(229, 233, 240, 0.14);
+  background: rgba(0, 132, 154, 0.24);
+  border-color: rgba(138, 217, 233, 0.65);
 }
 
 #custom-updates.warn,
 #custom-cam.warn,
 #custom-mic.warn {
-  color: #f6c177;
+  color: #ecda9c;
 }
 
 #window {
-  color: #cdd6f4;
+  color: #e3e3e3;
   min-width: 260px;
 }
 
 #custom-protonvpn.on {
-  color: #9ece6a;
+  color: #9bba51;
 }
 
 #custom-protonvpn.off {
-  color: #8f96a3;
+  color: #a7a9a1;
 }
 
 #custom-power {
-  color: #f38ba8;
+  color: #c84c53;
 }
 
 #custom-layout.fr {
-  color: #a6e3a1;
+  color: #9bba51;
 }
 
 #custom-layout.us {
-  color: #89b4fa;
+  color: #8ad9e9;
 }
 
 @import "local.css";

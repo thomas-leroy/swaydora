@@ -1,43 +1,43 @@
 * {
   background-image: none;
   box-shadow: none;
-  font-family: "JetBrainsMono Nerd Font";
-  font-size: 14px;
+  font-family: "JetBrainsMono Nerd Font", "JetBrainsMono Nerd Font Mono", "Symbols Nerd Font";
+  font-size: 20px;
   transition: 120ms ease;
 }
 
 window {
-  background-color: rgba(16, 18, 24, 0.80);
+  background-color: rgba(21, 23, 34, 0.84);
 }
 
 button {
-  color: #e5e9f0;
-  background-color: rgba(40, 44, 52, 0.82);
-  border: 2px solid rgba(136, 146, 176, 0.35);
-  border-radius: 14px;
+  color: #f8eddc;
+  background-color: rgba(36, 40, 53, 0.92);
+  border: 2px solid rgba(161, 122, 181, 0.75);
+  border-radius: 12px;
   margin: 15px;
-  padding: 20px;
+  padding: 12px;
   min-width: 180px;
   min-height: 120px;
 }
 
 button:hover {
-  background-color: rgba(94, 129, 172, 0.28);
-  border-color: rgba(136, 192, 208, 0.95);
+  background-color: rgba(0, 132, 154, 0.30);
+  border-color: rgba(138, 217, 233, 0.98);
 }
 
 #lock {
-  border-color: rgba(136, 192, 208, 0.65);
+  border-color: rgba(0, 132, 154, 0.90);
 }
 
 #logout {
-  border-color: rgba(250, 179, 135, 0.70);
+  border-color: rgba(216, 131, 73, 0.85);
 }
 
 #reboot {
-  border-color: rgba(246, 193, 119, 0.75);
+  border-color: rgba(202, 165, 62, 0.90);
 }
 
 #shutdown {
-  border-color: rgba(243, 139, 168, 0.75);
+  border-color: rgba(200, 76, 83, 0.90);
 }

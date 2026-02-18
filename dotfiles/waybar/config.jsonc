@@ -6,11 +6,12 @@
 
   "modules-left": ["sway/workspaces", "sway/window"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "custom/layout", "custom/protonvpn", "custom/notification_center", "custom/power", "tray"],
+  "modules-right": ["custom/updates", "custom/disks", "custom/cam", "custom/mic", "custom/audio", "custom/layout", "custom/protonvpn", "custom/notification_center", "custom/power"],
 
   "sway/workspaces": {
     "disable-scroll": true,
-    "all-outputs": true
+    "all-outputs": true,
+    "format": "{name}"
   },
 
   "sway/window": {
@@ -87,9 +88,5 @@
     "interval": 3600,
     "on-click": "~/.config/scripts/disks_menu.sh",
     "return-type": "json"
-  },
-
-  "tray": {
-    "spacing": 8
   }
 }

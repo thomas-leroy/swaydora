@@ -31,7 +31,7 @@ elif command -v nmcli >/dev/null 2>&1; then
 fi
 
 if [[ "$connected" -eq 1 ]]; then
-  printf '{"text":"󰌾","class":"on","tooltip":"%s"}\n' "$tooltip"
+  printf '{"text":"","class":"on","tooltip":"%s"}\n' "$tooltip"
 else
-  printf '{"text":"󰌿","class":"off","tooltip":"%s"}\n' "$tooltip"
+  printf '{"text":"","class":"off","tooltip":"%s"}\n' "$tooltip"
 fi

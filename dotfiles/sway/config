@@ -35,8 +35,8 @@ client.placeholder $ember_bg_deep $ember_bg_deep $ember_muted $ember_mauve $embe
 client.background $ember_bg_deep
 # Rounded corners (SwayFX).
 corner_radius 12
-gaps inner 15
-gaps outer 15
+gaps inner 8
+gaps outer 8
 blur on
 blur_passes 3
 blur_radius 3
