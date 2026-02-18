@@ -34,6 +34,10 @@ for_window [window_type="dialog"] floating enable, resize set width 62 ppt heigh
 for_window [window_role="pop-up"] floating enable, resize set width 62 ppt height 38 ppt, move position center
 # Updates runner window opened from Waybar.
 for_window [title="System Updates"] floating enable, resize set width 72 ppt height 62 ppt, move position center
+# Tools menu TUI windows opened in Kitty.
+for_window [title="^Tools TUI:"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+# Discover package manager window from tools menu.
+for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 
 # Keybindings: launch terminal.
 bindsym $mod+Return exec $terminal
@@ -43,6 +47,9 @@ bindsym $mod+space exec $menu
 
 # Keybindings: command palette (maintained in ~/.config/sway/commands_palette.list).
 bindsym $mod+k exec ~/.config/scripts/commands_palette.sh
+
+# Keybindings: custom tools menu (fuzzy).
+bindsym $mod+Shift+p exec ~/.config/scripts/tools_menu.sh
 
 # Keybindings: focus windows with arrows.
 bindsym $mod+Left focus left

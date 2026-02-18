@@ -5,6 +5,7 @@
 # - `command` is optional; if empty, the palette only documents the shortcut.
 
 Meta+k|Open this command palette|~/.config/scripts/commands_palette.sh
+Meta+Shift+p|Open custom tools fuzzy menu|~/.config/scripts/tools_menu.sh
 Meta+Return|Open a Kitty terminal|kitty
 Meta+space|Open the Fuzzel app launcher|fuzzel
 Meta+q|Close the focused window|swaymsg kill

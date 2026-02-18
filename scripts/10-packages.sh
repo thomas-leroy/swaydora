@@ -433,8 +433,9 @@ main() {
   queue_pkg v4l-utils
   queue_pkg guvcview
 
-  # Security and update automation tools.
+  # Security, updates, and package manager UI tools.
   log 'updates and security packages'
+  queue_pkg plasma-discover
   if [[ -n "$automatic_pkg" ]]; then
     queue_pkg "$automatic_pkg"
   else

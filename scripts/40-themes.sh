@@ -30,6 +30,9 @@ main() {
   cat > "$HOME/.config/environment.d/90-theme.conf" <<'EOT'
 GTK_THEME=Adwaita-dark
 XCURSOR_THEME=Adwaita
+THEME_PALETTE_DIR=$HOME/.config/themes/palettes
+THEME_PALETTE_DARK=$HOME/.config/themes/palettes/emberstone-dark.json
+THEME_PALETTE_EMBERSTONE_DARK=$HOME/.config/themes/palettes/emberstone-dark.json
 EOT
 
   log 'applied minimal GTK/icon/cursor defaults'

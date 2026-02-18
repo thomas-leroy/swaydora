@@ -1,0 +1,6 @@
+# Custom tools launcher for Meta+Shift+p
+# Format: name|description|command
+# Add one tool per line.
+
+discover|Open Discover package manager in floating window|sh -lc 'if command -v discover >/dev/null 2>&1; then exec discover; fi; if command -v plasma-discover >/dev/null 2>&1; then exec plasma-discover; fi; notify-send "Tools Menu" "Discover is not installed (missing discover/plasma-discover)"'
+btop|Open system monitor TUI in floating Kitty|kitty --title "Tools TUI: btop" sh -lc 'if command -v btop >/dev/null 2>&1; then exec btop; fi; echo "btop not found."; echo; read -r -p "Press Enter to close..." _'
