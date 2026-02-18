@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # Validate required tools.
-command -v fuzzel >/dev/null 2>&1 || { notify-send "Disks" "fuzzel not found"; exit 1; }
+MENU_LAUNCHER="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/menu_launcher.sh"
+[[ -x "$MENU_LAUNCHER" ]] || { notify-send "Disks" "menu launcher not found"; exit 1; }
 command -v lsblk >/dev/null 2>&1 || { notify-send "Disks" "lsblk not found"; exit 1; }
 command -v udisksctl >/dev/null 2>&1 || { notify-send "Disks" "udisksctl not found"; exit 1; }
 
@@ -43,7 +44,7 @@ for item in "${devices[@]}"; do
 done
 
 # Ask user which disk action to run.
-choice="$(printf '%s\n' "${menu[@]}" | fuzzel --dmenu --prompt 'Disks')"
+choice="$(printf '%s\n' "${menu[@]}" | "$MENU_LAUNCHER" --prompt 'Disks')"
 [[ -n "$choice" ]] || exit 0
 
 # Run mount/unmount action and notify result.

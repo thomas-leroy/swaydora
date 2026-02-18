@@ -14,10 +14,10 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Local setup: config in `dotfiles/waybar/config.jsonc`, styles in `dotfiles/waybar/style.css`, custom modules in `dotfiles/scripts/`.
 - Docs: https://github.com/Alexays/Waybar
 
-### Fuzzel
-- Purpose: launcher and lightweight dmenu-style selector.
-- Local setup: `dotfiles/fuzzel/fuzzel.ini`; used by several runtime scripts.
-- Docs: https://codeberg.org/dnkl/fuzzel
+### Wofi
+- Purpose: launcher and dmenu-style selector with richer styling options.
+- Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh` (wofi first, fuzzel fallback).
+- Docs: https://hg.sr.ht/~scoopta/wofi
 
 ## Session / Notifications
 

@@ -18,8 +18,9 @@ trim() {
 }
 
 main() {
-  command -v fuzzel >/dev/null 2>&1 || {
-    log_err "fuzzel is required"
+  local menu_launcher="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/menu_launcher.sh"
+  [[ -x "$menu_launcher" ]] || {
+    log_err "menu launcher is required"
     exit 1
   }
 
@@ -56,7 +57,7 @@ main() {
     exit 1
   }
 
-  choice="$(printf '%s\n' "${items[@]}" | fuzzel --dmenu --prompt 'Tools')"
+  choice="$(printf '%s\n' "${items[@]}" | "$menu_launcher" --prompt 'Tools')"
   [[ -n "${choice:-}" ]] || exit 0
 
   command="${action_by_item[$choice]:-}"

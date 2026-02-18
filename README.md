@@ -1,6 +1,6 @@
 # dotfiles-fedora-swayfx
 
-Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, SwayNC, Fuzzel, and Kitty.
+Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, SwayNC, Wofi, and Kitty.
 
 ## Goals
 - Stable and secure daily environment
@@ -87,7 +87,7 @@ Shell aliases configured in dotfiles:
 | Shortcut | Action |
 | --- | --- |
 | `Super+Enter` | Open terminal (`$terminal`) |
-| `Super+Space` | Open launcher (`fuzzel`) |
+| `Super+Space` | Open launcher (`wofi`) |
 | `Super+Arrow` | Focus window direction |
 | `Super+Shift+Arrow` | Move window direction |
 | `Super+1..9` | Switch to workspace 1..9 (top row via bindcode) |
@@ -106,7 +106,7 @@ Shell aliases configured in dotfiles:
 | `Super+Shift+R` | Reload Sway config |
 | `Super+Shift+E` | Exit Sway |
 | `Print` | Region screenshot to `~/Pictures` |
-| `Super+Shift+W` | Open wallpaper picker (fuzzy via fuzzel) |
+| `Super+Shift+W` | Open wallpaper picker (fuzzy via wofi) |
 | `Super+Q` | Kill focused window |
 | `Super+Shift+Space` | Toggle floating |
 

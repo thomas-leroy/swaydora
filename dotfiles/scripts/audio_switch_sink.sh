@@ -3,7 +3,8 @@ set -euo pipefail
 
 # Validate required tools.
 command -v wpctl >/dev/null 2>&1 || { notify-send "Audio" "wpctl not found"; exit 1; }
-command -v fuzzel >/dev/null 2>&1 || { notify-send "Audio" "fuzzel not found"; exit 1; }
+MENU_LAUNCHER="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/menu_launcher.sh"
+[[ -x "$MENU_LAUNCHER" ]] || { notify-send "Audio" "menu launcher not found"; exit 1; }
 
 # Parse sink lines from wpctl status output.
 mapfile -t lines < <(wpctl status | awk '
@@ -31,8 +32,8 @@ for line in "${lines[@]}"; do
   id_by_label["$label"]="$id"
 done
 
-# Ask user to pick a sink through fuzzel.
-choice="$(printf '%s\n' "${menu_items[@]}" | fuzzel --dmenu --prompt 'Sink')"
+# Ask user to pick a sink through launcher.
+choice="$(printf '%s\n' "${menu_items[@]}" | "$MENU_LAUNCHER" --prompt 'Sink')"
 [[ -n "$choice" ]] || exit 0
 
 # Resolve selected sink id.

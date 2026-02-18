@@ -7,7 +7,7 @@
 Meta+k|Open this command palette|~/.config/scripts/commands_palette.sh
 Meta+Shift+p|Open custom tools fuzzy menu|~/.config/scripts/tools_menu.sh
 Meta+Return|Open a Kitty terminal|kitty
-Meta+space|Open the Fuzzel app launcher|fuzzel
+Meta+space|Open the Wofi app launcher|wofi --show drun --allow-images --insensitive --matching fuzzy --prompt Apps
 Meta+q|Close the focused window|swaymsg kill
 Meta+f|Toggle fullscreen for focused window|swaymsg fullscreen toggle
 Meta+Shift+space|Toggle floating mode for focused window|swaymsg floating toggle

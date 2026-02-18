@@ -3,8 +3,8 @@
 # Global variables.
 set $mod Mod4
 set $terminal kitty
-set $menu fuzzel
-# Emberstone palette (shared direction with Kitty/Fuzzel).
+set $menu wofi --show drun --allow-images --insensitive --matching fuzzy --prompt Apps
+# Emberstone palette (shared direction with Kitty/Wofi).
 set $ember_bg #242835
 set $ember_bg_deep #151722
 set $ember_fg #F8EDDC

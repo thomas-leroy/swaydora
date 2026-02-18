@@ -19,6 +19,7 @@
 - Audio: status/switch/volume/mute scripts (`audio_*`)
 - Disks: `disks_menu.sh`
 - Calendar: `calendar_popup.sh`
+- Menu wrapper: `menu_launcher.sh`
 - Layout switch: `layout_status.sh`, `layout_toggle.sh`
 - Power/session: `power_screen.sh`, `session_menu.sh`
 - VPN: `protonvpn_status.sh`, `protonvpn_toggle_window.sh`

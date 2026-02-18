@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Interactive wallpaper picker using fuzzel with persistent selection.
+# Interactive wallpaper picker using menu launcher with persistent selection.
 # WALLPAPER_DIRS is a colon-separated list of directories to scan.
 WALLPAPER_DIRS="${WALLPAPER_DIRS:-$HOME/.config/sway/wallpapers:$HOME/.local/share/wallpapers:$HOME/Pictures/wallpapers:$HOME/Pictures/Wallpapers:/usr/share/backgrounds:/usr/share/wallpapers}"
 DEFAULT_WALLPAPER="$HOME/.config/sway/default-wallpaper.svg"
@@ -50,8 +50,9 @@ apply_wallpaper() {
 }
 
 main() {
-  command -v fuzzel >/dev/null 2>&1 || {
-    log_err 'fuzzel is required for wallpaper picker'
+  local menu_launcher="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/menu_launcher.sh"
+  [[ -x "$menu_launcher" ]] || {
+    log_err 'menu launcher is required for wallpaper picker'
     exit 1
   }
 
@@ -96,7 +97,7 @@ main() {
     path_by_label["$label"]="$wp"
   done
 
-  choice="$(printf '%s\n' "${labels[@]}" | sort -u | fuzzel --dmenu --prompt 'Wallpaper')"
+  choice="$(printf '%s\n' "${labels[@]}" | sort -u | "$menu_launcher" --prompt 'Wallpaper')"
   [[ -n "$choice" ]] || exit 0
 
   selected="${path_by_label[$choice]:-}"

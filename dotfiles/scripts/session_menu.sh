@@ -5,9 +5,10 @@ set -euo pipefail
 show_menu() {
   local entries
   entries=$'lock\nlogout\nsuspend\nreboot\npoweroff'
+  local menu_launcher="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/menu_launcher.sh"
 
-  if command -v fuzzel >/dev/null 2>&1; then
-    printf '%s\n' "$entries" | fuzzel --dmenu --prompt 'Session'
+  if [[ -x "$menu_launcher" ]]; then
+    printf '%s\n' "$entries" | "$menu_launcher" --prompt 'Session'
     return 0
   fi
 

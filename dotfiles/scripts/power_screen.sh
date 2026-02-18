@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Open graphical power screen and avoid fallback to fuzzel-based menu.
+# Open graphical power screen.
 if ! command -v wlogout >/dev/null 2>&1; then
   notify-send "Power menu" "wlogout is not installed"
   exit 1
