@@ -28,7 +28,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 
 ### swaync (SwayNotificationCenter)
 - Purpose: notifications and notification center.
-- Local setup: autostarted in Sway config; Waybar module uses `notification_center_status.sh` and `notification_center_toggle.sh`.
+- Local setup: autostarted in Sway config; themed via `dotfiles/swaync/style.css`; Waybar module uses `notification_center_status.sh` and `notification_center_toggle.sh`.
 - Docs: https://github.com/ErikReider/SwayNotificationCenter
 
 ### swaylock / swayidle

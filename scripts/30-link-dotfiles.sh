@@ -55,12 +55,12 @@ main() {
   fi
 
   # Link all managed config directories.
-  for dir in sway waybar mako fuzzel kitty wlogout zsh fastfetch atuin environment.d scripts; do
+  for dir in sway waybar mako swaync fuzzel kitty wlogout zsh fastfetch atuin environment.d scripts; do
     link_one "$dir"
   done
 
   # Create local override files if missing.
-  touch "$HOME/.config/sway/local.conf" "$HOME/.config/waybar/local.css" "$HOME/.config/mako/local.conf"
+  touch "$HOME/.config/sway/local.conf" "$HOME/.config/waybar/local.css" "$HOME/.config/mako/local.conf" "$HOME/.config/swaync/local.css"
   log 'ensured local override files exist (untracked by git)'
 
   log 'done'

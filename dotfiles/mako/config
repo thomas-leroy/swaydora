@@ -1,12 +1,12 @@
-# Minimal mako style
+# Emberstone notification fallback style (mako).
 font=JetBrainsMono Nerd Font 11
-background-color=#1e1e2ecc
-text-color=#e6e9ef
-border-color=#6c7086
+background-color=#242835f2
+text-color=#f8eddc
+border-color=#a17ab5
 border-size=2
-border-radius=8
-padding=10
-margin=8
+border-radius=12
+padding=12
+margin=15
 default-timeout=5000
 anchor=top-right
 max-visible=5

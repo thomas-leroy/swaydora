@@ -39,7 +39,7 @@ gaps inner 15
 gaps outer 15
 blur on
 blur_passes 3
-blur_radius 10
+blur_radius 3
 blur_xray off
 for_window [app_id=".*"] opacity 0.9
 for_window [class=".*"] opacity 0.9

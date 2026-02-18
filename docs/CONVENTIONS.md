@@ -9,6 +9,7 @@ Use per-machine local files not tracked by git:
 - `~/.config/sway/local.conf`
 - `~/.config/waybar/local.css`
 - `~/.config/mako/local.conf`
+- `~/.config/swaync/local.css`
 
 ## Repository Structure
 - `scripts/`: setup scripts for installation and system preparation

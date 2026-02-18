@@ -1,0 +1,101 @@
+/* Emberstone theme for swaync notifications + control center. */
+* {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 12px;
+}
+
+/* Shared palette */
+@define-color ember_bg rgba(36, 40, 53, 0.95);
+@define-color ember_bg_deep rgba(21, 23, 34, 0.98);
+@define-color ember_fg #f8eddc;
+@define-color ember_muted #a7a9a1;
+@define-color ember_ocean #00849a;
+@define-color ember_mauve #a17ab5;
+@define-color ember_rose #c84c53;
+@define-color ember_gold #ecda9c;
+
+/* Notification popups */
+.notification-row {
+  margin: 0;
+}
+
+.notification {
+  background: transparent;
+  border-radius: 12px;
+  margin: 15px 15px 0 15px;
+}
+
+.notification-content,
+.notification-default-action {
+  background: @ember_bg;
+  color: @ember_fg;
+  border: 2px solid @ember_mauve;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.notification-default-action:hover {
+  background: rgba(0, 132, 154, 0.26);
+  border-color: @ember_ocean;
+}
+
+.summary {
+  color: @ember_fg;
+  font-weight: 700;
+}
+
+.body {
+  color: @ember_muted;
+}
+
+.time {
+  color: @ember_gold;
+}
+
+.close-button {
+  background: @ember_rose;
+  color: @ember_fg;
+  border-radius: 999px;
+}
+
+.close-button:hover {
+  background: #edb7bf;
+  color: #151722;
+}
+
+/* Notification center */
+.control-center {
+  background: @ember_bg_deep;
+  color: @ember_fg;
+  border: 2px solid @ember_mauve;
+  border-radius: 12px;
+  margin: 15px;
+  padding: 12px;
+}
+
+.control-center .notification-row .notification {
+  margin: 0 0 12px 0;
+}
+
+.control-center .notification-row .notification-content,
+.control-center .notification-row .notification-default-action {
+  background: @ember_bg;
+}
+
+.widget-title,
+.widget-title > label {
+  color: @ember_fg;
+}
+
+.widget-title > button {
+  background: rgba(0, 132, 154, 0.2);
+  border: 1px solid @ember_ocean;
+  border-radius: 10px;
+  color: @ember_fg;
+}
+
+.widget-title > button:hover {
+  background: rgba(0, 132, 154, 0.35);
+}
+
+@import "local.css";
