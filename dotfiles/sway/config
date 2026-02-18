@@ -32,12 +32,17 @@ output * bg #1d1f21 solid_color
 # Golden-ratio inspired floating defaults for dialogs/popups.
 for_window [window_type="dialog"] floating enable, resize set width 62 ppt height 38 ppt, move position center
 for_window [window_role="pop-up"] floating enable, resize set width 62 ppt height 38 ppt, move position center
+# Updates runner window opened from Waybar.
+for_window [title="System Updates"] floating enable, resize set width 72 ppt height 62 ppt, move position center
 
 # Keybindings: launch terminal.
 bindsym $mod+Return exec $terminal
 
 # Keybindings: launcher.
 bindsym $mod+space exec $menu
+
+# Keybindings: command palette (maintained in ~/.config/sway/commands_palette.list).
+bindsym $mod+k exec ~/.config/scripts/commands_palette.sh
 
 # Keybindings: focus windows with arrows.
 bindsym $mod+Left focus left
@@ -130,6 +135,9 @@ bindsym $mod+Shift+w exec ~/.config/scripts/wallpaper_picker.sh
 # Keybindings: close focused window.
 bindsym $mod+q kill
 
+# Keybindings: toggle fullscreen (Sway default).
+bindsym $mod+f fullscreen toggle
+
 # Keybindings: toggle floating mode.
 bindsym $mod+Shift+space floating toggle
 
@@ -137,5 +145,5 @@ bindsym $mod+Shift+space floating toggle
 exec_always --no-startup-id ~/.config/scripts/swayfx_effects_apply.sh
 exec_always --no-startup-id swaync
 exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
-exec_always --no-startup-id waybar
+exec_always --no-startup-id sh -c 'pkill -x waybar || true; waybar'
 exec_always --no-startup-id udiskie --tray

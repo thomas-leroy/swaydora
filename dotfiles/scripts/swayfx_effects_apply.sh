@@ -13,8 +13,8 @@ apply_if_supported() {
 for _ in 1 2 3 4 5; do
   # Background blur for windows.
   apply_if_supported 'blur enable'
-  apply_if_supported 'blur_passes 2'
-  apply_if_supported 'blur_radius 6'
+  apply_if_supported 'blur_passes 3'
+  apply_if_supported 'blur_radius 12'
 
   # Light opacity for windows (90%).
   apply_if_supported 'default_opacity 0.9'

@@ -1,22 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run full system upgrade with fresh metadata.
-run_upgrade() {
-  sudo dnf upgrade --refresh
-}
-
-# If script is run in an interactive terminal, run upgrade directly.
-if [[ -t 1 ]]; then
-  run_upgrade
+# Run full system upgrade in Kitty.
+# Sway rule in config matches this title and makes it floating/centered.
+if command -v kitty >/dev/null 2>&1; then
+  kitty --title "System Updates" sh -lc \
+    'sudo dnf upgrade --refresh; printf "\nDone. Press Enter to close..."; read -r _'
   exit 0
 fi
 
-# Otherwise try opening a terminal emulator and run the upgrade there.
-if command -v wezterm >/dev/null 2>&1; then
-  wezterm start -- bash -lc 'sudo dnf upgrade --refresh; read -rp "Press Enter to close..."' &
-elif command -v alacritty >/dev/null 2>&1; then
-  alacritty -e bash -lc 'sudo dnf upgrade --refresh; read -rp "Press Enter to close..."' &
-else
-  notify-send "Updates" "Open a terminal and run: sudo dnf upgrade --refresh"
-fi
+notify-send "Updates" "Kitty is not available. Run: sudo dnf upgrade --refresh"
+exit 1

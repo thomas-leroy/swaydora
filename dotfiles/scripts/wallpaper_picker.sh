@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Interactive wallpaper picker using fuzzel with persistent selection.
 # WALLPAPER_DIRS is a colon-separated list of directories to scan.
-WALLPAPER_DIRS="${WALLPAPER_DIRS:-$HOME/.config/sway/wallpapers:$HOME/.local/share/wallpapers}"
+WALLPAPER_DIRS="${WALLPAPER_DIRS:-$HOME/.config/sway/wallpapers:$HOME/.local/share/wallpapers:$HOME/Pictures/wallpapers:$HOME/Pictures/Wallpapers:/usr/share/backgrounds:/usr/share/wallpapers}"
 DEFAULT_WALLPAPER="$HOME/.config/sway/default-wallpaper.svg"
 STATE_FILE="$HOME/.config/sway/.current_wallpaper"
 
@@ -17,11 +17,11 @@ list_wallpapers() {
   for dir in "${dirs[@]}"; do
     [[ -d "$dir" ]] || continue
     if command -v fd >/dev/null 2>&1; then
-      fd -HI -t f -e jpg -e jpeg -e png -e webp -e bmp -e gif -e svg . "$dir" 2>/dev/null
+      fd -HI -t f -e jpg -e jpeg -e png -e webp -e bmp -e gif -e svg -e avif . "$dir" 2>/dev/null
     else
       find "$dir" -type f \( \
         -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o \
-        -iname '*.bmp' -o -iname '*.gif' -o -iname '*.svg' \
+        -iname '*.bmp' -o -iname '*.gif' -o -iname '*.svg' -o -iname '*.avif' \
       \) 2>/dev/null
     fi
   done
@@ -55,7 +55,8 @@ main() {
     exit 1
   }
 
-  mkdir -p "$HOME/.config/sway/wallpapers" "$HOME/.local/share/wallpapers"
+  mkdir -p "$HOME/.config/sway/wallpapers" "$HOME/.local/share/wallpapers" \
+    "$HOME/Pictures/wallpapers" "$HOME/Pictures/Wallpapers"
 
   # Sort and deduplicate to keep the picker stable when roots overlap.
   mapfile -t wallpapers < <(list_wallpapers | sort -u)
@@ -81,8 +82,14 @@ main() {
       label="local/${wp#"$HOME/.local/share/wallpapers/"}"
     elif [[ "$wp" == "$HOME/.config/sway/"* ]]; then
       label="sway/${wp#"$HOME/.config/sway/"}"
+    elif [[ "$wp" == "$HOME/Pictures/"* ]]; then
+      label="pictures/${wp#"$HOME/Pictures/"}"
+    elif [[ "$wp" == "/usr/share/backgrounds/"* ]]; then
+      label="system-bg/${wp#/usr/share/backgrounds/}"
+    elif [[ "$wp" == "/usr/share/wallpapers/"* ]]; then
+      label="system-wp/${wp#/usr/share/wallpapers/}"
     else
-      label="$(basename "$wp")"
+      label="$wp"
     fi
 
     labels+=("$label")
