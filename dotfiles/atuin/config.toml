@@ -1,6 +1,10 @@
-# Atuin defaults
-style = "compact"
-inline_height = 20
+# Atuin tuned for cleaner inline search layout.
+# "full" tends to align entries more consistently than "compact".
+style = "full"
+
+# Reduce popup height to avoid stretched/odd vertical spacing.
+inline_height = 12
+
 show_help = false
 sync_address = "https://api.atuin.sh"
 search_mode = "fuzzy"
