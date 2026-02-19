@@ -4,7 +4,7 @@
   "height": 30,
   "spacing": 8,
 
-  "modules-left": ["custom/fedora", "sway/workspaces", "sway/window"],
+  "modules-left": ["custom/fedora", "sway/workspaces"],
   "modules-center": ["clock"],
   "modules-right": [
     "custom/updates",
@@ -12,6 +12,7 @@
     "custom/cam",
     "custom/mic",
     "custom/audio",
+    "cpu",
     "custom/layout",
     "custom/protonvpn",
     "custom/notification_center",
@@ -44,11 +45,6 @@
     }
   },
 
-  "sway/window": {
-    "max-length": 70,
-    "separate-outputs": true
-  },
-
   "clock": {
     "format": "{:%a %Y-%m-%d %H:%M}",
     "tooltip-format": "<tt>{calendar}</tt>",
@@ -69,6 +65,16 @@
     "on-scroll-up": "~/.config/scripts/audio_sink_volume_up.sh",
     "on-scroll-down": "~/.config/scripts/audio_sink_volume_down.sh",
     "return-type": "json"
+  },
+
+  "cpu": {
+    "interval": 5,
+    "format": "󰍛",
+    "states": {
+      "warning": 80,
+      "critical": 90
+    },
+    "on-click": "kitty --title 'Tools TUI: CPU' btop"
   },
 
   "custom/layout": {

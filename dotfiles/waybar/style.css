@@ -16,6 +16,7 @@ window#waybar {
 #clock,
 #custom-fedora,
 #custom-audio,
+#cpu,
 #custom-updates,
 #custom-disks,
 #custom-cam,
@@ -66,7 +67,6 @@ window#waybar {
   color: #f8eddc;
   background: rgba(236, 218, 156, 0.18);
   border-color: rgba(236, 218, 156, 0.82);
-  box-shadow: 0 0 0 1px rgba(236, 218, 156, 0.2);
 }
 
 #workspaces button.focused,
@@ -75,7 +75,6 @@ window#waybar {
   color: #f8eddc;
   background: rgba(0, 132, 154, 0.38);
   border: 1px solid rgba(138, 217, 233, 0.98);
-  box-shadow: inset 0 -2px 0 rgba(138, 217, 233, 0.98), 0 0 0 1px rgba(138, 217, 233, 0.22);
   font-weight: 700;
 }
 
@@ -88,6 +87,7 @@ window#waybar {
 #workspaces button:hover,
 #custom-fedora:hover,
 #custom-audio:hover,
+#cpu:hover,
 #custom-updates:hover,
 #custom-disks:hover,
 #custom-layout:hover,
@@ -121,6 +121,18 @@ window#waybar {
 
 #custom-protonvpn.off {
   color: #a7a9a1;
+}
+
+#cpu {
+  color: #f8eddc;
+}
+
+#cpu.warning {
+  color: #ffb347;
+}
+
+#cpu.critical {
+  color: #c84c53;
 }
 
 #custom-power {
