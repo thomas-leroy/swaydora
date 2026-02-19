@@ -50,7 +50,7 @@ scripts/30-link-dotfiles.sh
 scripts/40-themes.sh
 scripts/50-fonts.sh
 scripts/60-waybar-reload.sh
-scripts/80-wallpapers-sync.sh   # optional: pull wallpapers from dharmx/walls
+scripts/80-wallpapers-sync.sh   # optional: pull wallpapers from Noctax-Wallpapers
 ```
 
 Then login to SwayFX and run:
@@ -66,7 +66,7 @@ Set `SWAYFX_COPR=<owner/project>` if you want to override the default COPR sourc
 - `WITH_VIRT=1 scripts/10-packages.sh`: install virtualization packages.
 - `AUTO_ADD_VIDEO_GROUP=1 scripts/10-packages.sh`: add current user to `video` group if missing.
 - `SWAYFX_COPR=<owner/project>`: override default COPR source used for `swayfx`.
-- `WALLS_FULL=1 scripts/80-wallpapers-sync.sh`: full clone of `dharmx/walls` (large).
+- `WALLS_FULL=1 scripts/80-wallpapers-sync.sh`: full clone of `Noctax-Wallpapers` (default).
 
 ## Developer Bootstrap
 `scripts/10-packages.sh` also installs a development baseline:
@@ -106,7 +106,7 @@ Shell aliases configured in dotfiles:
 | `Super+Shift+R` | Reload Sway config |
 | `Super+Shift+E` | Exit Sway |
 | `Print` | Region screenshot to `~/Pictures` |
-| `Super+Shift+W` | Open wallpaper picker (fuzzy via wofi) |
+| `Super+Shift+W` | Open Waypaper wallpaper browser |
 | `Super+Q` | Kill focused window |
 | `Super+Shift+Space` | Toggle floating |
 
@@ -118,8 +118,8 @@ Shell aliases configured in dotfiles:
 - Local machine-specific overrides live outside tracked files (see `docs/CONVENTIONS.md`).
 
 ## Wallpaper Source (Optional)
-Use `scripts/80-wallpapers-sync.sh` to clone/update wallpapers from `https://github.com/dharmx/walls`.
-By default it uses sparse checkout (selected folders) to avoid very large downloads.
-Set `WALLS_FULL=1` for a full clone.
-Default sync location is `~/.local/share/wallpapers/dharmx-walls` (outside git repo).
-Use `Super+Shift+W` to select a wallpaper with fuzzy search (folder/name), then apply. Selection is persisted across sessions.
+Use `scripts/80-wallpapers-sync.sh` to clone/update wallpapers from `https://github.com/Noctax/Noctax-Wallpapers`.
+By default it performs a full clone to keep all categories available in the picker.
+Set `WALLS_FULL=0` for sparse mode and use `WALLS_CATEGORIES` to limit synced folders.
+Default sync location is `~/.local/share/wallpapers/Noctax-Wallpapers` (outside git repo).
+Use `Super+Shift+W` to pick a Noctax category, then browse wallpapers in Waypaper with preview before applying.

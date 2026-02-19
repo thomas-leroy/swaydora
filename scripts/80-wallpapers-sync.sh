@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Sync wallpapers from dharmx/walls into local Sway wallpaper directory.
-# Default behavior uses sparse checkout for selected categories to avoid multi-GB download.
+# Sync wallpapers from Noctax-Wallpapers into local wallpaper directory.
 #
 # Env vars:
-#   WALLS_REPO_URL   (default: https://github.com/dharmx/walls.git)
-#   WALLS_DEST       (default: ~/.local/share/wallpapers/dharmx-walls)
-#   WALLS_FULL       (1=full clone, 0=sparse mode; default: 0)
+#   WALLS_REPO_URL   (default: https://github.com/Noctax/Noctax-Wallpapers.git)
+#   WALLS_DEST       (default: ~/.local/share/wallpapers/Noctax-Wallpapers)
+#   WALLS_FULL       (1=full clone, 0=sparse mode; default: 1)
 #   WALLS_CATEGORIES (space-separated dirs in sparse mode)
 
-WALLS_REPO_URL="${WALLS_REPO_URL:-https://github.com/dharmx/walls.git}"
-WALLS_DEST="${WALLS_DEST:-$HOME/.local/share/wallpapers/dharmx-walls}"
-WALLS_FULL="${WALLS_FULL:-0}"
-WALLS_CATEGORIES="${WALLS_CATEGORIES:-nature abstract minimal nord chillop mountain}"
+WALLS_REPO_URL="${WALLS_REPO_URL:-https://github.com/Noctax/Noctax-Wallpapers.git}"
+WALLS_DEST="${WALLS_DEST:-$HOME/.local/share/wallpapers/Noctax-Wallpapers}"
+WALLS_FULL="${WALLS_FULL:-1}"
+WALLS_CATEGORIES="${WALLS_CATEGORIES:-Anime City Fantasy Games Landscape Minimal Nature Space}"
 
 log() {
   printf '[walls-sync] %s\n' "$*"
@@ -70,7 +69,7 @@ main() {
   fi
 
   log "done; wallpapers available under: $WALLS_DEST"
-  log 'tip: run ~/.config/scripts/wallpaper_picker.sh and search by folder/file name'
+  log 'tip: run ~/.config/scripts/wallpaper_picker.sh to pick a category and browse in Waypaper'
 }
 
 main "$@"

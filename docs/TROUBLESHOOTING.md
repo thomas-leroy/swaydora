@@ -23,6 +23,6 @@
 - Re-login if group membership changed.
 
 ## Wallpaper sync pollutes git repo
-- Default sync destination is `~/.local/share/wallpapers/dharmx-walls` (outside repo).
+- Default sync destination is `~/.local/share/wallpapers/Noctax-Wallpapers` (outside repo).
 - If you previously synced into repo, remove local clone:
-  - `rm -rf ~/.config/sway/wallpapers/dharmx-walls`
+  - `rm -rf ~/.config/sway/wallpapers/Noctax-Wallpapers`

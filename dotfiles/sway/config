@@ -59,6 +59,9 @@ for_window [title="System Updates"] floating enable, resize set width 72 ppt hei
 for_window [title="^Tools TUI:"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 # Discover package manager window from tools menu.
 for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+# Waypaper wallpaper browser window.
+for_window [title="(?i)waypaper"] floating enable, resize set width 82 ppt height 82 ppt, move position center
+for_window [app_id="(?i)waypaper"] floating enable, resize set width 82 ppt height 82 ppt, move position center
 
 # Keybindings: launch terminal.
 bindsym $mod+Return exec $terminal

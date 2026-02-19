@@ -9,7 +9,7 @@
 - `50-fonts.sh`: install JetBrains Mono Nerd Font.
 - `60-waybar-reload.sh`: install helper symlink for config reload.
 - `70-oh-my-zsh.sh`: standalone unattended oh-my-zsh setup helper.
-- `80-wallpapers-sync.sh`: sync wallpapers from `dharmx/walls` (sparse by default).
+- `80-wallpapers-sync.sh`: sync wallpapers from `Noctax-Wallpapers` (full clone by default, sparse mode optional).
 - `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
 
 ## Runtime scripts (`dotfiles/scripts/`)
