@@ -147,8 +147,8 @@ bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym Alt+XF86AudioRaiseVolume exec brightnessctl set +10%
 bindsym Alt+XF86AudioLowerVolume exec brightnessctl set 10%-
 
-# Keybindings: reload config.
-bindsym $mod+Shift+r reload
+# Keybindings: reload config and restart Waybar reliably.
+bindsym $mod+Shift+r exec ~/.config/scripts/reload_env.sh
 
 # Keybindings: restart Sway session.
 bindsym $mod+Shift+e exec "swaymsg exit"

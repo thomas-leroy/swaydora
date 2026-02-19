@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "never",
+    "source.fixAll.eslint": "never",
+    "source.organizeImports": "never"
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": false
+  },
+  "[css]": {
+    "editor.formatOnSave": false
+  },
+  "[bash]": {
+    "editor.formatOnSave": false
+  }
+}

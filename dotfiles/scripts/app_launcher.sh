@@ -7,6 +7,11 @@ if ! command -v wofi >/dev/null 2>&1; then
   exit 127
 fi
 
+# Prevent stacked launchers on repeated clicks/shortcuts.
+if pgrep -x wofi >/dev/null 2>&1; then
+  exit 0
+fi
+
 args=(
   --show drun
   --prompt Apps
