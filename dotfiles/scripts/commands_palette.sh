@@ -17,6 +17,110 @@ trim() {
   printf '%s' "$s"
 }
 
+pango_escape() {
+  local s="${1:-}"
+  s="${s//&/&amp;}"
+  s="${s//</&lt;}"
+  s="${s//>/&gt;}"
+  printf '%s' "$s"
+}
+
+pretty_key_name() {
+  case "${1:-}" in
+    Meta|Super)
+      printf ''
+      ;;
+    Ctrl)
+      printf 'Ctrl'
+      ;;
+    Alt)
+      printf 'Alt'
+      ;;
+    Shift)
+      printf 'Shift'
+      ;;
+    Print)
+      printf 'PrtSc'
+      ;;
+    XF86AudioRaiseVolume)
+      printf 'Vol+'
+      ;;
+    XF86AudioLowerVolume)
+      printf 'Vol-'
+      ;;
+    XF86AudioMute)
+      printf 'Mute'
+      ;;
+    XF86MonBrightnessUp|XF86KbdBrightnessUp)
+      printf 'Bri+'
+      ;;
+    XF86MonBrightnessDown|XF86KbdBrightnessDown)
+      printf 'Bri-'
+      ;;
+    *)
+      printf '%s' "$1"
+      ;;
+  esac
+}
+
+render_keycap_markup() {
+  local key label
+  key="$(trim "${1:-}")"
+  label="$(pretty_key_name "$key")"
+  label="$(pango_escape "$label")"
+  printf "<span foreground='#ECDA9C' weight='700'>⟦</span><span background='#242835' foreground='#F8EDDC' weight='700'> %s </span><span foreground='#ECDA9C' weight='700'>⟧</span>" "$label"
+}
+
+render_shortcut_plain() {
+  local shortcut parts out i
+  shortcut="$(trim "${1:-}")"
+  IFS='+' read -r -a parts <<<"$shortcut"
+  if [[ "${#parts[@]}" -eq 0 ]]; then
+    printf '%s' "$shortcut"
+    return 0
+  fi
+
+  out=''
+  for ((i=0; i<${#parts[@]}; i++)); do
+    local key
+    key="$(trim "${parts[$i]}")"
+    key="$(pretty_key_name "$key")"
+    if [[ $i -gt 0 ]]; then
+      out+=" + "
+    fi
+    out+="$key"
+  done
+  printf '%s' "$out"
+}
+
+render_shortcut_markup() {
+  local shortcut parts out i
+  shortcut="$(trim "${1:-}")"
+
+  # Keep pointer-only labels as plain text.
+  if [[ "$shortcut" == Waybar* || "$shortcut" == Setup* ]]; then
+    printf '%s' "$(pango_escape "$shortcut")"
+    return 0
+  fi
+
+  IFS='+' read -r -a parts <<<"$shortcut"
+  if [[ "${#parts[@]}" -eq 0 ]]; then
+    printf '%s' "$(pango_escape "$shortcut")"
+    return 0
+  fi
+
+  out=''
+  for ((i=0; i<${#parts[@]}; i++)); do
+    local key
+    key="$(trim "${parts[$i]}")"
+    if [[ $i -gt 0 ]]; then
+      out+=" <span foreground='#A7A9A1' weight='700'>+</span> "
+    fi
+    out+="$(render_keycap_markup "$key")"
+  done
+  printf '%s' "$out"
+}
+
 main() {
   local menu_launcher="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/menu_launcher.sh"
   [[ -x "$menu_launcher" ]] || {
@@ -29,9 +133,10 @@ main() {
     exit 1
   }
 
-  local line shortcut description command item choice
-  local -a items=()
+  local line shortcut description command item item_plain choice
+  local -a meta_items=() other_items=() items=()
   declare -A action_by_item
+  declare -A action_by_plain
 
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="$(trim "$line")"
@@ -43,24 +148,46 @@ main() {
     command="$(trim "${command:-}")"
     [[ -z "$shortcut" || -z "$description" ]] && continue
 
-    item="$(printf '%-34s %s' "$shortcut" "$description")"
+    item_plain="$(printf '%-34s %s' "$(render_shortcut_plain "$shortcut")" "$description")"
+    item="$(printf "%s  <span foreground='#A7A9A1'>%s</span>" "$(render_shortcut_markup "$shortcut")" "$(pango_escape "$description")")"
+
     while [[ -v "action_by_item[$item]" ]]; do
       item+=" "
     done
+    while [[ -v "action_by_plain[$item_plain]" ]]; do
+      item_plain+=" "
+    done
 
-    items+=("$item")
+    if [[ "$shortcut" == Meta* ]]; then
+      meta_items+=("$item")
+    else
+      other_items+=("$item")
+    fi
     action_by_item["$item"]="$command"
+    action_by_plain["$item_plain"]="$command"
   done <"$PALETTE_FILE"
+
+  items=("${meta_items[@]}" "${other_items[@]}")
 
   [[ "${#items[@]}" -gt 0 ]] || {
     log_err "palette is empty"
     exit 1
   }
 
-  choice="$(printf '%s\n' "${items[@]}" | "$menu_launcher" --prompt 'Commands')"
+  choice="$(
+    printf '%s\n' "${items[@]}" | "$menu_launcher" \
+      --prompt 'Commands' \
+      --allow-markup \
+      --width '72%' \
+      --height '62%' \
+      --sort-order default
+  )"
   [[ -n "${choice:-}" ]] || exit 0
 
   command="${action_by_item[$choice]:-}"
+  if [[ -z "$command" ]]; then
+    command="${action_by_plain[$choice]:-}"
+  fi
   if [[ -z "$command" ]]; then
     notify-send "Command Palette" "Shortcut is documentation-only"
     exit 0

@@ -42,18 +42,3 @@ XF86AudioLowerVolume|Decrease output volume by 5%|wpctl set-volume @DEFAULT_AUDI
 XF86AudioMute|Toggle output mute|wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 Alt+XF86AudioRaiseVolume|Increase screen brightness by 10%|brightnessctl set +10%
 Alt+XF86AudioLowerVolume|Decrease screen brightness by 10%|brightnessctl set 10%-
-
-Waybar click clock|Open calendar popup|~/.config/scripts/calendar_popup.sh
-Waybar click audio|Select active audio output|~/.config/scripts/audio_switch_sink.sh
-Waybar scroll audio up|Raise output volume|~/.config/scripts/audio_sink_volume_up.sh
-Waybar scroll audio down|Lower output volume|~/.config/scripts/audio_sink_volume_down.sh
-Waybar click mic|Toggle microphone mute|~/.config/scripts/audio_source_mute.sh
-Waybar click layout|Toggle keyboard layout FR/US|~/.config/scripts/layout_toggle.sh
-Waybar click notifications|Toggle notification center panel|~/.config/scripts/notification_center_toggle.sh
-Waybar click ProtonVPN|Toggle ProtonVPN window|~/.config/scripts/protonvpn_toggle_window.sh
-Waybar right-click ProtonVPN|Open session menu|~/.config/scripts/session_menu.sh
-Waybar click power|Open power menu panel|~/.config/scripts/power_screen.sh
-Waybar click updates|Run system updates|~/.config/scripts/updates_apply.sh
-Waybar click disks|Open external disks menu|~/.config/scripts/disks_menu.sh
-
-Setup command|Reload Sway and restart Waybar cleanly|~/.config/scripts/reload_env.sh

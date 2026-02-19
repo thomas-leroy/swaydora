@@ -9,5 +9,6 @@ insensitive=true
 matching=fuzzy
 sort_order=alphabetical
 dmenu-parse_action=true
+allow_markup=true
 prompt=Apps
 gtk_dark=true
