@@ -46,9 +46,9 @@
   },
 
   "clock": {
-    "format": "{:%a %Y-%m-%d %H:%M}",
-    "tooltip-format": "<tt>{calendar}</tt>",
-    "on-click": "~/.config/scripts/calendar_popup.sh"
+    "format": "{:L%A %H:%M}",
+    "format-alt": "{:L%d %B %Y (W%V) %H:%M}",
+    "tooltip": false
   },
 
   "custom/fedora": {
