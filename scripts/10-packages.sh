@@ -9,6 +9,8 @@ AUTO_ADD_VIDEO_GROUP="${AUTO_ADD_VIDEO_GROUP:-1}"
 REQUIRE_SWAYFX="${REQUIRE_SWAYFX:-1}"
 # COPR repo used to install swayfx when not in default enabled repos.
 SWAYFX_COPR="${SWAYFX_COPR:-swayfx/swayfx}"
+# COPR repo used to install swayosd when not in default enabled repos.
+SWAYOSD_COPR="${SWAYOSD_COPR:-erikreider/swayosd}"
 # VS Code official repository file.
 VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 
@@ -150,6 +152,17 @@ enable_swayfx_copr_if_needed() {
   log "swayfx not found in current repos, enabling COPR: ${SWAYFX_COPR}"
   ensure_copr_command
   run_as_root dnf -y copr enable "${SWAYFX_COPR}"
+}
+
+# Enable swayosd COPR when swayosd package is not available yet.
+enable_swayosd_copr_if_needed() {
+  if pkg_is_available swayosd; then
+    return 0
+  fi
+
+  log "swayosd not found in current repos, enabling COPR: ${SWAYOSD_COPR}"
+  ensure_copr_command
+  run_as_root dnf -y copr enable "${SWAYOSD_COPR}"
 }
 
 # Verify whether current user can access brightness/video related devices.
@@ -298,9 +311,10 @@ main() {
 
   # Resolve distro-specific package names.
   log 'resolving package variants for swayfx, terminal, swaylock, wallpaper, clipboard, updates, and dev stack'
-  local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg notify_center_pkg
+  local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg notify_center_pkg swayosd_pkg
   local node_pkg npm_pkg docker_pkg docker_compose_pkg sysinfo_pkg fd_pkg
   enable_swayfx_copr_if_needed
+  enable_swayosd_copr_if_needed
   enable_vscode_repo_if_needed
   if ! pkg_is_available swayfx; then
     if [[ "$REQUIRE_SWAYFX" == '1' ]]; then
@@ -335,6 +349,7 @@ main() {
   launcher_pkg="$(resolve_pkg wofi || true)"
   automatic_pkg="$(resolve_pkg dnf5-plugin-automatic dnf-automatic || true)"
   notify_center_pkg="$(resolve_pkg swaync SwayNotificationCenter swaynotificationcenter || true)"
+  swayosd_pkg="$(resolve_pkg swayosd || true)"
   node_pkg="$(resolve_pkg nodejs || true)"
   npm_pkg="$(resolve_pkg npm || true)"
   docker_pkg="$(resolve_pkg docker moby-engine docker-ce || true)"
@@ -357,6 +372,11 @@ main() {
     queue_pkg "$notify_center_pkg"
   else
     log 'notification center package not found (expected swaync or swaynotificationcenter), continuing without it'
+  fi
+  if [[ -n "$swayosd_pkg" ]]; then
+    queue_pkg "$swayosd_pkg"
+  else
+    log 'swayosd package not found, continuing without it'
   fi
   queue_pkg wlogout
   queue_pkg brightnessctl

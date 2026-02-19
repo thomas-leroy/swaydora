@@ -71,6 +71,11 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://pipewire.org/
 - Docs: https://pipewire.pages.freedesktop.org/wireplumber/
 
+### SwayOSD
+- Purpose: on-screen display overlay for volume/brightness feedback.
+- Local setup: `scripts/10-packages.sh` enables COPR `erikreider/swayosd` when needed, installs `swayosd` when available, and `dotfiles/sway/config` autostarts `swayosd-server` when present.
+- Docs: https://github.com/ErikReider/SwayOSD
+
 ### UDisks2 + udiskie
 - Purpose: removable disk mount/unmount with tray support.
 - Local setup: `udiskie --tray` autostart, disk menu script `dotfiles/scripts/disks_menu.sh`.

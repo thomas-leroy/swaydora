@@ -1,6 +1,6 @@
 # dotfiles-fedora-swayfx
 
-Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, SwayNC, Wofi, and Kitty.
+Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, SwayNC, SwayOSD, Wofi, and Kitty.
 
 ## Goals
 - Stable and secure daily environment
@@ -61,11 +61,14 @@ Then login to SwayFX and run:
 
 SwayFX is mandatory for this profile. When unavailable in enabled repos, setup automatically enables COPR `swayfx/swayfx`.
 Set `SWAYFX_COPR=<owner/project>` if you want to override the default COPR source.
+When `swayosd` is unavailable in enabled repos, setup enables COPR `erikreider/swayosd`.
+Set `SWAYOSD_COPR=<owner/project>` if you want to override the default SwayOSD COPR source.
 
 ## Optional Flags
 - `WITH_VIRT=1 scripts/10-packages.sh`: install virtualization packages.
 - `AUTO_ADD_VIDEO_GROUP=1 scripts/10-packages.sh`: add current user to `video` group if missing.
 - `SWAYFX_COPR=<owner/project>`: override default COPR source used for `swayfx`.
+- `SWAYOSD_COPR=<owner/project>`: override default COPR source used for `swayosd`.
 - `WALLS_FULL=0 scripts/80-wallpapers-sync.sh`: sparse sync of `abstract` from `dharmx/walls` (default).
 
 ## Developer Bootstrap

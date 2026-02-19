@@ -171,6 +171,7 @@ bindsym $mod+Shift+space floating toggle
 # Autostart components.
 exec_always --no-startup-id ~/.config/scripts/swayfx_effects_apply.sh
 exec_always --no-startup-id swaync
+exec_always --no-startup-id sh -c 'command -v swayosd-server >/dev/null 2>&1 && { pkill -x swayosd-server >/dev/null 2>&1 || true; swayosd-server; }'
 exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
 exec_always --no-startup-id sh -c 'pkill -x waybar || true; waybar'
 exec_always --no-startup-id udiskie --tray
