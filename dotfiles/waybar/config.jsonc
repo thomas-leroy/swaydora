@@ -84,7 +84,7 @@
 
   "custom/notification_center": {
     "exec": "~/.config/scripts/notification_center_status.sh",
-    "interval": 5,
+    "interval": 2,
     "on-click": "~/.config/scripts/notification_center_toggle.sh",
     "return-type": "json"
   },
@@ -132,7 +132,7 @@
   },
 
   "custom/tray_toggle": {
-    "exec": "printf '{\"text\":\"\",\"tooltip\":\"Quick tray (hover to reveal)\"}'",
+    "exec": "printf '{\"text\":\"\\udb84\\ude96\",\"tooltip\":\"Quick tray (hover to reveal)\"}'",
     "interval": 3600,
     "return-type": "json"
   },
