@@ -44,6 +44,11 @@ while [[ $# -gt 0 ]]; do
 done
 
 if command -v wofi >/dev/null 2>&1; then
+  # Prevent stacking multiple wofi menus at once.
+  if pgrep -x wofi >/dev/null 2>&1; then
+    exit 0
+  fi
+
   args=(--dmenu --prompt "$prompt")
   args+=(--matching fuzzy --insensitive)
   [[ "$allow_images" == 'yes' ]] && args+=(--allow-images)

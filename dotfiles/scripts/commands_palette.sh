@@ -17,6 +17,29 @@ trim() {
   printf '%s' "$s"
 }
 
+extract_kitty_title() {
+  local cmd="${1:-}"
+  sed -nE 's/.*kitty[[:space:]]+--title[[:space:]]+"([^"]+)".*/\1/p' <<<"$cmd" | head -n 1
+}
+
+window_exists_by_title() {
+  local title="${1:-}"
+  [[ -n "$title" ]] || return 1
+  command -v swaymsg >/dev/null 2>&1 || return 1
+  if command -v jq >/dev/null 2>&1; then
+    swaymsg -t get_tree 2>/dev/null | jq -e --arg t "$title" '.. | objects | select(.name? == $t)' >/dev/null 2>&1
+    return $?
+  fi
+  swaymsg -t get_tree 2>/dev/null | grep -Fq "\"name\":\"$title\""
+}
+
+focus_window_by_title() {
+  local title="${1:-}"
+  [[ -n "$title" ]] || return 1
+  command -v swaymsg >/dev/null 2>&1 || return 1
+  swaymsg "[title=\"^${title}$\"] focus" >/dev/null 2>&1 || true
+}
+
 pango_escape() {
   local s="${1:-}"
   s="${s//&/&amp;}"
@@ -190,6 +213,13 @@ main() {
   fi
   if [[ -z "$command" ]]; then
     notify-send "Command Palette" "Shortcut is documentation-only"
+    exit 0
+  fi
+
+  local title
+  title="$(extract_kitty_title "$command")"
+  if [[ -n "${title:-}" ]] && window_exists_by_title "$title"; then
+    focus_window_by_title "$title"
     exit 0
   fi
 

@@ -72,7 +72,7 @@
       "warning": 80,
       "critical": 90
     },
-    "on-click": "kitty --title 'Tools TUI: CPU' btop"
+    "on-click": "~/.config/scripts/cpu_popup.sh"
   },
 
   "custom/layout": {
@@ -142,7 +142,7 @@
     "drawer": {
       "transition-duration": 280,
       "children-class": "tray-item",
-      "transition-left-to-right": false
+      "transition-left-to-right": true
     },
     "modules": [
       "custom/tray_toggle",

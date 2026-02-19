@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run full system upgrade in Kitty.
-# Sway rule in config matches this title and makes it floating/centered.
-TITLE='System Updates'
+TITLE='Tools TUI: CPU'
 
 window_exists() {
   command -v swaymsg >/dev/null 2>&1 || return 1
@@ -24,11 +22,9 @@ if window_exists; then
   exit 0
 fi
 
-if command -v kitty >/dev/null 2>&1; then
-  kitty --title "$TITLE" sh -lc \
-    'sudo dnf upgrade --refresh; printf "\nDone. Press Enter to close..."; read -r _'
-  exit 0
+if ! command -v kitty >/dev/null 2>&1; then
+  notify-send "CPU Monitor" "kitty not found"
+  exit 127
 fi
 
-notify-send "Updates" "Kitty is not available. Run: sudo dnf upgrade --refresh"
-exit 1
+exec kitty --title "$TITLE" sh -lc 'if command -v btop >/dev/null 2>&1; then exec btop; fi; echo "btop not found."; echo; read -r -p "Press Enter to close..." _'
