@@ -74,6 +74,7 @@ main() {
 
   # Build relative labels for better fuzzy search by folder/name.
   labels=()
+  entries=()
   declare -A path_by_label
   local wp label
   for wp in "${wallpapers[@]}"; do
@@ -94,11 +95,20 @@ main() {
     fi
 
     labels+=("$label")
+    # Wofi image escape sequence (render thumbnail + text in dmenu mode).
+    entries+=("img:$wp:text:$label")
     path_by_label["$label"]="$wp"
   done
 
-  choice="$(printf '%s\n' "${labels[@]}" | sort -u | "$menu_launcher" --prompt 'Wallpaper')"
+  choice="$(
+    printf '%s\n' "${entries[@]}" | sort -u | "$menu_launcher" --prompt 'Wallpaper' --allow-images
+  )"
   [[ -n "$choice" ]] || exit 0
+
+  # Fallback when dmenu-parse_action is not applied by local wofi build.
+  if [[ "$choice" == img:*:text:* ]]; then
+    choice="${choice##*:text:}"
+  fi
 
   selected="${path_by_label[$choice]:-}"
   [[ -n "$selected" && -f "$selected" ]] || {
