@@ -8,15 +8,13 @@
   "modules-center": ["clock"],
   "modules-right": [
     "custom/updates",
-    "custom/disks",
     "custom/cam",
     "custom/mic",
     "custom/audio",
     "cpu",
     "custom/layout",
-    "custom/protonvpn",
     "custom/notification_center",
-    "custom/power"
+    "group/quick_tray"
   ],
 
   "sway/workspaces": {
@@ -131,5 +129,26 @@
     "interval": 3600,
     "on-click": "~/.config/scripts/disks_menu.sh",
     "return-type": "json"
+  },
+
+  "custom/tray_toggle": {
+    "exec": "printf '{\"text\":\"\",\"tooltip\":\"Quick tray (hover to reveal)\"}'",
+    "interval": 3600,
+    "return-type": "json"
+  },
+
+  "group/quick_tray": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 280,
+      "children-class": "tray-item",
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "custom/tray_toggle",
+      "custom/protonvpn",
+      "custom/disks",
+      "custom/power"
+    ]
   }
 }
