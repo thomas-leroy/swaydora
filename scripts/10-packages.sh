@@ -9,8 +9,6 @@ AUTO_ADD_VIDEO_GROUP="${AUTO_ADD_VIDEO_GROUP:-1}"
 REQUIRE_SWAYFX="${REQUIRE_SWAYFX:-1}"
 # COPR repo used to install swayfx when not in default enabled repos.
 SWAYFX_COPR="${SWAYFX_COPR:-swayfx/swayfx}"
-# COPR repo used to install waypaper when unavailable in default enabled repos.
-WAYPAPER_COPR="${WAYPAPER_COPR:-solopasha/hyprland}"
 # VS Code official repository file.
 VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 
@@ -152,17 +150,6 @@ enable_swayfx_copr_if_needed() {
   log "swayfx not found in current repos, enabling COPR: ${SWAYFX_COPR}"
   ensure_copr_command
   run_as_root dnf -y copr enable "${SWAYFX_COPR}"
-}
-
-# Enable waypaper COPR when waypaper package is not available yet.
-enable_waypaper_copr_if_needed() {
-  if pkg_is_available waypaper; then
-    return 0
-  fi
-
-  log "waypaper not found in current repos, enabling COPR: ${WAYPAPER_COPR}"
-  ensure_copr_command
-  run_as_root dnf -y copr enable "${WAYPAPER_COPR}"
 }
 
 # Verify whether current user can access brightness/video related devices.
@@ -312,10 +299,8 @@ main() {
   # Resolve distro-specific package names.
   log 'resolving package variants for swayfx, terminal, swaylock, wallpaper, clipboard, updates, and dev stack'
   local sway_pkg terminal_pkg swaylock_pkg wallpaper_pkg clipboard_pkg automatic_pkg notify_center_pkg
-  local waypaper_pkg
   local node_pkg npm_pkg docker_pkg docker_compose_pkg sysinfo_pkg fd_pkg
   enable_swayfx_copr_if_needed
-  enable_waypaper_copr_if_needed
   enable_vscode_repo_if_needed
   if ! pkg_is_available swayfx; then
     if [[ "$REQUIRE_SWAYFX" == '1' ]]; then
@@ -331,17 +316,23 @@ main() {
     printf '[packages] no terminal package found (expected kitty, wezterm, or alacritty)\n' >&2
     exit 1
   }
-  swaylock_pkg="$(resolve_pkg swaylock-effects swaylock)" || {
-    printf '[packages] no swaylock package found (expected swaylock-effects or swaylock)\n' >&2
-    exit 1
-  }
+  # Keep currently installed swaylock variant to avoid COPR conflict churn.
+  if pkg_is_installed swaylock; then
+    swaylock_pkg='swaylock'
+  elif pkg_is_installed swaylock-effects; then
+    swaylock_pkg='swaylock-effects'
+  else
+    swaylock_pkg="$(resolve_pkg swaylock swaylock-effects)" || {
+      printf '[packages] no swaylock package found (expected swaylock or swaylock-effects)\n' >&2
+      exit 1
+    }
+  fi
   wallpaper_pkg="$(resolve_pkg swww swaybg)" || {
     printf '[packages] no wallpaper package found (expected swww or swaybg)\n' >&2
     exit 1
   }
   clipboard_pkg="$(resolve_pkg cliphist clipman || true)"
   launcher_pkg="$(resolve_pkg wofi || true)"
-  waypaper_pkg="$(resolve_pkg waypaper || true)"
   automatic_pkg="$(resolve_pkg dnf5-plugin-automatic dnf-automatic || true)"
   notify_center_pkg="$(resolve_pkg swaync SwayNotificationCenter swaynotificationcenter || true)"
   node_pkg="$(resolve_pkg nodejs || true)"
@@ -368,11 +359,6 @@ main() {
     log 'notification center package not found (expected swaync or swaynotificationcenter), continuing without it'
   fi
   queue_pkg wlogout
-  if [[ -n "$waypaper_pkg" ]]; then
-    queue_pkg "$waypaper_pkg"
-  else
-    log 'waypaper package not found, continuing without it'
-  fi
   queue_pkg brightnessctl
   queue_pkg swayidle
   queue_pkg "$swaylock_pkg"

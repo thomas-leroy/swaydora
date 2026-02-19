@@ -41,14 +41,14 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 
 ### swww (fallback swaybg)
 - Purpose: wallpaper backend.
-- Local setup: `dotfiles/scripts/wallpaper_start.sh` starts `swww` if present, else `swaybg`; wallpaper browser launcher is `dotfiles/scripts/wallpaper_picker.sh` (Waypaper).
+- Local setup: `dotfiles/scripts/wallpaper_start.sh` starts `swww` if present, else `swaybg`; `dotfiles/scripts/wallpaper_picker.sh` uses Wofi fuzzy search to pick/apply wallpapers.
 - Docs: https://github.com/LGFae/swww
 - Docs: https://github.com/swaywm/swaybg
 
-### Noctax-Wallpapers (optional source repository)
+### dharmx/walls (optional source repository)
 - Purpose: curated wallpaper collection for picker/search.
-- Local setup: `scripts/80-wallpapers-sync.sh` clones/updates into `~/.local/share/wallpapers/Noctax-Wallpapers`; full clone by default, sparse mode optional via `WALLS_FULL=0`.
-- Docs: https://github.com/Noctax/Noctax-Wallpapers
+- Local setup: `scripts/80-wallpapers-sync.sh` keeps a clone in `~/.cache/walls-sync/dharmx-walls`, sparse-checkout `abstract` by default, then exports files into `~/.local/share/wallpapers/Wallpapers` without `.git`.
+- Docs: https://github.com/dharmx/walls
 
 ### grim + slurp
 - Purpose: region screenshots.

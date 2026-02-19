@@ -3,7 +3,7 @@
 # Global variables.
 set $mod Mod4
 set $terminal kitty
-set $menu wofi --show drun --allow-images --insensitive --matching fuzzy --prompt Apps
+set $menu ~/.config/scripts/app_launcher.sh
 # Emberstone palette (shared direction with Kitty/Wofi).
 set $ember_bg #242835
 set $ember_bg_deep #151722
@@ -59,10 +59,6 @@ for_window [title="System Updates"] floating enable, resize set width 72 ppt hei
 for_window [title="^Tools TUI:"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 # Discover package manager window from tools menu.
 for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt height 72 ppt, move position center
-# Waypaper wallpaper browser window.
-for_window [title="(?i)waypaper"] floating enable, resize set width 82 ppt height 82 ppt, move position center
-for_window [app_id="(?i)waypaper"] floating enable, resize set width 82 ppt height 82 ppt, move position center
-
 # Keybindings: launch terminal.
 bindsym $mod+Return exec $terminal
 

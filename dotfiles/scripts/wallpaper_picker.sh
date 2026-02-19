@@ -1,13 +1,48 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Open Waypaper with a fuzzy category selector for Noctax wallpapers.
-NOCTAX_WALLS_DIR="${NOCTAX_WALLS_DIR:-$HOME/.local/share/wallpapers/Noctax-Wallpapers}"
-BACKEND="${WAYPAPER_BACKEND:-swww}"
-WAYPAPER_BIN="${WAYPAPER_BIN:-}"
+# Fuzzy wallpaper picker with Wofi (no preview).
+WALLPAPERS_DIR="${WALLPAPERS_DIR:-${NOCTAX_WALLS_DIR:-$HOME/.local/share/wallpapers/Wallpapers}}"
+STATE_FILE="${STATE_FILE:-$HOME/.config/sway/.current_wallpaper}"
 
 log_err() {
   notify-send "Wallpaper" "$1"
+}
+
+is_supported_image() {
+  local file="$1"
+  case "${file,,}" in
+    *.jpg|*.jpeg|*.png|*.webp|*.bmp|*.gif|*.tif|*.tiff|*.svg)
+      return 0
+      ;;
+  esac
+  return 1
+}
+
+apply_wallpaper() {
+  local image="$1"
+
+  if command -v swww >/dev/null 2>&1 && command -v swww-daemon >/dev/null 2>&1; then
+    if ! pgrep -x swww-daemon >/dev/null 2>&1; then
+      swww-daemon >/dev/null 2>&1 &
+    fi
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+      swww query >/dev/null 2>&1 && break
+      sleep 0.1
+    done
+
+    if swww img "$image" --transition-type simple --transition-duration 0.4 >/dev/null 2>&1; then
+      return 0
+    fi
+  fi
+
+  if command -v swaybg >/dev/null 2>&1; then
+    pkill -x swaybg >/dev/null 2>&1 || true
+    swaybg -i "$image" -m fill >/dev/null 2>&1 &
+    return 0
+  fi
+
+  return 1
 }
 
 main() {
@@ -16,50 +51,55 @@ main() {
     log_err 'menu launcher is required for wallpaper picker'
     exit 1
   }
-  if [[ -z "$WAYPAPER_BIN" ]]; then
-    if command -v waypaper >/dev/null 2>&1; then
-      WAYPAPER_BIN="$(command -v waypaper)"
-    elif [[ -x "$HOME/.local/bin/waypaper" ]]; then
-      WAYPAPER_BIN="$HOME/.local/bin/waypaper"
-    fi
-  fi
-  [[ -n "$WAYPAPER_BIN" ]] || {
-    log_err 'waypaper is required (not found in PATH or ~/.local/bin)'
+
+  [[ -d "$WALLPAPERS_DIR" ]] || {
+    log_err "Wallpaper source not found: $WALLPAPERS_DIR"
     exit 1
   }
 
-  [[ -d "$NOCTAX_WALLS_DIR" ]] || {
-    log_err "Wallpaper source not found: $NOCTAX_WALLS_DIR"
-    exit 1
-  }
-
-  local -a categories=() items=()
-  local entry category selected
+  local -a candidates=() items=()
+  local entry selected selected_path rel dir file label
   declare -A path_by_label
-  if command -v fd >/dev/null 2>&1; then
-    mapfile -t categories < <(fd -HI -t d -d 1 . "$NOCTAX_WALLS_DIR" | sort -u)
+
+  if command -v fd >/dev/null 2>&1 && command -v sort >/dev/null 2>&1; then
+    mapfile -d '' -t candidates < <(fd -HI -t f -0 . "$WALLPAPERS_DIR" | sort -z)
+  elif command -v fd >/dev/null 2>&1; then
+    mapfile -d '' -t candidates < <(fd -HI -t f -0 . "$WALLPAPERS_DIR")
+  elif command -v sort >/dev/null 2>&1; then
+    mapfile -d '' -t candidates < <(find "$WALLPAPERS_DIR" -type f -print0 | sort -z)
   else
-    mapfile -t categories < <(find "$NOCTAX_WALLS_DIR" -mindepth 1 -maxdepth 1 -type d | sort -u)
+    mapfile -d '' -t candidates < <(find "$WALLPAPERS_DIR" -type f -print0)
   fi
 
-  [[ "${#categories[@]}" -gt 0 ]] || {
-    log_err "No categories found in $NOCTAX_WALLS_DIR"
-    exit 1
-  }
-
-  for entry in "${categories[@]}"; do
-    category="${entry#"$NOCTAX_WALLS_DIR/"}"
-    items+=("$category")
-    path_by_label["$category"]="$entry"
+  for entry in "${candidates[@]}"; do
+    is_supported_image "$entry" || continue
+    rel="${entry#"$WALLPAPERS_DIR/"}"
+    file="${rel##*/}"
+    dir="${rel%/*}"
+    [[ "$dir" == "$rel" ]] && dir='.'
+    label="$dir - $file"
+    items+=("$label")
+    path_by_label["$label"]="$entry"
   done
 
-  selected="$(printf '%s\n' "${items[@]}" | "$menu_launcher" --prompt 'Wallpaper category')"
+  [[ "${#items[@]}" -gt 0 ]] || {
+    log_err "No image files found in $WALLPAPERS_DIR"
+    exit 1
+  }
+
+  selected="$(printf '%s\n' "${items[@]}" | "$menu_launcher" --prompt 'Wallpaper')"
 
   [[ -n "${selected:-}" ]] || exit 0
-  selected="${path_by_label[$selected]:-}"
-  [[ -d "$selected" ]] || exit 0
+  selected_path="${path_by_label[$selected]:-}"
+  [[ -f "$selected_path" ]] || exit 0
 
-  exec "$WAYPAPER_BIN" --folder "$selected" --backend "$BACKEND"
+  if ! apply_wallpaper "$selected_path"; then
+    log_err 'No wallpaper backend available (swww/swaybg not found)'
+    exit 1
+  fi
+
+  mkdir -p "$(dirname "$STATE_FILE")"
+  printf '%s\n' "$selected_path" > "$STATE_FILE"
 }
 
 main "$@"

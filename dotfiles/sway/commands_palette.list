@@ -7,7 +7,7 @@
 Meta+k|Open this command palette|~/.config/scripts/commands_palette.sh
 Meta+Shift+p|Open custom tools fuzzy menu|~/.config/scripts/tools_menu.sh
 Meta+Return|Open a Kitty terminal|kitty
-Meta+space|Open the Wofi app launcher|wofi --show drun --allow-images --insensitive --matching fuzzy --prompt Apps
+Meta+space|Open the Wofi app launcher|~/.config/scripts/app_launcher.sh
 Meta+q|Close the focused window|swaymsg kill
 Meta+f|Toggle fullscreen for focused window|swaymsg fullscreen toggle
 Meta+Shift+space|Toggle floating mode for focused window|swaymsg floating toggle
@@ -35,7 +35,7 @@ Meta+Shift+e|Exit Sway session|swaymsg exit
 Meta+l|Lock current session|swaylock -f -c 000000
 Ctrl+Alt+Delete|Open session menu (lock/logout/suspend/reboot/poweroff)|~/.config/scripts/session_menu.sh
 Print|Capture selected screenshot to ~/Pictures|sh -lc 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/Pictures/screenshot-$(date +%F-%T).png"'
-Meta+Shift+w|Open Waypaper category launcher|~/.config/scripts/wallpaper_picker.sh
+Meta+Shift+w|Open wallpaper fuzzy picker|~/.config/scripts/wallpaper_picker.sh
 
 XF86AudioRaiseVolume|Increase output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 XF86AudioLowerVolume|Decrease output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-

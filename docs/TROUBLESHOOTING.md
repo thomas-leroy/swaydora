@@ -23,6 +23,6 @@
 - Re-login if group membership changed.
 
 ## Wallpaper sync pollutes git repo
-- Default sync destination is `~/.local/share/wallpapers/Noctax-Wallpapers` (outside repo).
-- If you previously synced into repo, remove local clone:
-  - `rm -rf ~/.config/sway/wallpapers/Noctax-Wallpapers`
+- Default sync destination is `~/.local/share/wallpapers/Wallpapers` (outside repo), exported without `.git`.
+- If you previously synced into an old location, remove it:
+  - `rm -rf ~/.local/share/wallpapers/Noctax-Wallpapers`
