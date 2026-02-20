@@ -7,14 +7,14 @@
   "modules-left": ["custom/fedora", "sway/workspaces"],
   "modules-center": ["clock"],
   "modules-right": [
+    "group/quick_tray",
     "custom/updates",
     "custom/cam",
     "custom/mic",
     "custom/audio",
     "cpu",
-    "custom/layout",
     "custom/notification_center",
-    "group/quick_tray"
+    "custom/power"
   ],
 
   "sway/workspaces": {
@@ -142,13 +142,13 @@
     "drawer": {
       "transition-duration": 280,
       "children-class": "tray-item",
-      "transition-left-to-right": true
+      "transition-left-to-right": false
     },
     "modules": [
       "custom/tray_toggle",
       "custom/protonvpn",
       "custom/disks",
-      "custom/power"
+      "custom/layout"
     ]
   }
 }
