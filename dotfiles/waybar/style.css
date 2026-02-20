@@ -34,8 +34,8 @@ window#waybar {
 }
 
 #clock {
-  background: rgba(0, 132, 154, 0.25);
-  border: 1px solid rgba(138, 217, 233, 0.45);
+  background: transparent;
+  border: none;
 }
 
 /* Workspace readability */

@@ -86,8 +86,8 @@
   },
 
   "clock": {
-    "format": "{:L%A %H:%M}",
-    "format-alt": "{:L%d %B %Y (W%V) %H:%M}",
+    "format": "{:%H:%M  %d/%m/%Y}",
+    "format-alt": "{:L%H:%M:%S - %A %d %B %Y (sem.%V)}",
     "tooltip": false
   },
 
