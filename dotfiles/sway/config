@@ -47,6 +47,10 @@ for_window [app_id="kitty"] opacity 0.85
 
 # Pointer/cursor defaults.
 seat seat0 xcursor_theme Adwaita 24
+# Mouse controls for floating windows:
+# - Super + left click: move
+# - Super + right click: resize
+floating_modifier $mod normal
 
 # Wallpaper is managed by ~/.config/scripts/wallpaper_start.sh.
 
@@ -64,6 +68,7 @@ bindsym $mod+Return exec $terminal
 
 # Keybindings: launcher.
 bindsym $mod+space exec $menu
+bindsym $mod+e exec sh -lc 'if command -v nautilus >/dev/null 2>&1; then exec nautilus; fi; if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
 
 # Keybindings: command palette (maintained in ~/.config/sway/commands_palette.list).
 bindsym $mod+k exec ~/.config/scripts/commands_palette.sh
@@ -83,27 +88,17 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Down move down
 
-# Keybindings: workspace switch with top number row (layout-independent keycodes).
-bindcode $mod+10 workspace number 1
-bindcode $mod+11 workspace number 2
-bindcode $mod+12 workspace number 3
-bindcode $mod+13 workspace number 4
-bindcode $mod+14 workspace number 5
-bindcode $mod+15 workspace number 6
-bindcode $mod+16 workspace number 7
-bindcode $mod+17 workspace number 8
-bindcode $mod+18 workspace number 9
+# Keybindings: workspace switch with number row.
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
 
-# Keybindings: move focused window to top number row workspace.
-bindcode $mod+Shift+10 move container to workspace number 1
-bindcode $mod+Shift+11 move container to workspace number 2
-bindcode $mod+Shift+12 move container to workspace number 3
-bindcode $mod+Shift+13 move container to workspace number 4
-bindcode $mod+Shift+14 move container to workspace number 5
-bindcode $mod+Shift+15 move container to workspace number 6
-bindcode $mod+Shift+16 move container to workspace number 7
-bindcode $mod+Shift+17 move container to workspace number 8
-bindcode $mod+Shift+18 move container to workspace number 9
+# Keybindings: move focused window to number row workspace.
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
 
 # Keybindings: workspace switch with numeric keypad.
 bindsym $mod+KP_1 workspace number 1
@@ -127,9 +122,9 @@ bindsym $mod+Shift+KP_7 move container to workspace number 7
 bindsym $mod+Shift+KP_8 move container to workspace number 8
 bindsym $mod+Shift+KP_9 move container to workspace number 9
 
-# Keybindings: cycle focus like simple Alt+Tab behavior.
-bindsym Alt+Tab focus next
-bindsym Alt+Shift+Tab focus prev
+# Keybindings: cycle workspaces.
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
 
 # Keybindings: lock session.
 # If swaylock-effects is installed, adjust lock visuals in local.conf.
@@ -159,14 +154,16 @@ bindsym Print exec sh -c 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/P
 # Keybindings: choose wallpaper with fuzzy picker.
 bindsym $mod+Shift+w exec ~/.config/scripts/wallpaper_picker.sh
 
-# Keybindings: close focused window.
+# Keybindings: close windows.
 bindsym $mod+q kill
+bindsym $mod+w kill
+bindsym $mod+Escape exec ~/.config/scripts/close_all_windows.sh
 
 # Keybindings: toggle fullscreen (Sway default).
 bindsym $mod+f fullscreen toggle
 
 # Keybindings: toggle floating mode.
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+t floating toggle
 
 # Autostart components.
 exec_always --no-startup-id ~/.config/scripts/swayfx_effects_apply.sh

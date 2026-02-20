@@ -9,9 +9,9 @@
   "modules-right": [
     "group/quick_tray",
     "custom/updates",
+    "custom/brightness",
     "custom/cam",
     "custom/mic",
-    "custom/brightness",
     "custom/audio",
     "network",
     "cpu",
@@ -84,7 +84,8 @@
       "Krusader": "\uf07b",
 
       ".*Code": "\udb82\ude1e",
-      "Discover": "\uf1f2"
+      "Discover": "\uf1f2",
+      ".*KDE": "\uf013"
     }
   },
 

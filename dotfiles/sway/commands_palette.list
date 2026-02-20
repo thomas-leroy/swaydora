@@ -8,9 +8,14 @@ Meta+k|Open this command palette|~/.config/scripts/commands_palette.sh
 Meta+Shift+p|Open custom tools fuzzy menu|~/.config/scripts/tools_menu.sh
 Meta+Return|Open a Kitty terminal|kitty
 Meta+space|Open the app launcher (fuzzel/wofi)|~/.config/scripts/app_launcher.sh
+Meta+e|Open a file manager|sh -lc 'if command -v nautilus >/dev/null 2>&1; then exec nautilus; fi; if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
 Meta+q|Close the focused window|swaymsg kill
+Meta+w|Close the focused window|swaymsg kill
+Meta+Escape|Close all windows|~/.config/scripts/close_all_windows.sh
 Meta+f|Toggle fullscreen for focused window|swaymsg fullscreen toggle
-Meta+Shift+space|Toggle floating mode for focused window|swaymsg floating toggle
+Meta+t|Toggle floating mode for focused window|swaymsg floating toggle
+Meta+LeftClick (floating)|Move floating window with mouse|
+Meta+RightClick (floating)|Resize floating window with mouse|
 
 Meta+Left|Focus the window on the left|swaymsg focus left
 Meta+Right|Focus the window on the right|swaymsg focus right
@@ -22,11 +27,11 @@ Meta+Shift+Right|Move focused window to the right|swaymsg move right
 Meta+Shift+Up|Move focused window upward|swaymsg move up
 Meta+Shift+Down|Move focused window downward|swaymsg move down
 
-Alt+Tab|Cycle focus to the next window|swaymsg focus next
-Alt+Shift+Tab|Cycle focus to the previous window|swaymsg focus prev
+Meta+Tab|Switch to next workspace|swaymsg workspace next
+Meta+Shift+Tab|Switch to previous workspace|swaymsg workspace prev
 
-Meta+[1..9] (top row)|Switch to workspace by top-row keycode binding|
-Meta+Shift+[1..9] (top row)|Send focused window to a top-row workspace|
+Meta+[1..4]|Switch to workspace 1..4|
+Meta+Shift+[1..4]|Send focused window to workspace 1..4|
 Meta+KP_[1..9]|Switch to workspace using numpad|
 Meta+Shift+KP_[1..9]|Send focused window to numpad workspace|
 
