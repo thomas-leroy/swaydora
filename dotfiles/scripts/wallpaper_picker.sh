@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Fuzzy wallpaper picker with Wofi (no preview).
+# Fuzzy wallpaper picker (fuzzel-only, for performance testing).
 WALLPAPERS_DIR="${WALLPAPERS_DIR:-${NOCTAX_WALLS_DIR:-$HOME/.local/share/wallpapers/Wallpapers}}"
 STATE_FILE="${STATE_FILE:-$HOME/.config/sway/.current_wallpaper}"
 
@@ -46,10 +46,9 @@ apply_wallpaper() {
 }
 
 main() {
-  local menu_launcher="${XDG_CONFIG_HOME:-$HOME/.config}/scripts/menu_launcher.sh"
-  [[ -x "$menu_launcher" ]] || {
-    log_err 'menu launcher is required for wallpaper picker'
-    exit 1
+  command -v fuzzel >/dev/null 2>&1 || {
+    log_err 'fuzzel not found'
+    exit 127
   }
 
   [[ -d "$WALLPAPERS_DIR" ]] || {
@@ -57,7 +56,7 @@ main() {
     exit 1
   }
 
-  local -a candidates=() items=()
+  local -a candidates=() items=() item_paths=()
   local entry selected selected_path rel dir file label
   declare -A path_by_label
 
@@ -79,6 +78,7 @@ main() {
     [[ "$dir" == "$rel" ]] && dir='.'
     label="$dir - $file"
     items+=("$label")
+    item_paths+=("$entry")
     path_by_label["$label"]="$entry"
   done
 
@@ -87,7 +87,16 @@ main() {
     exit 1
   }
 
-  selected="$(printf '%s\n' "${items[@]}" | "$menu_launcher" --prompt 'Wallpaper')"
+  pgrep -x fuzzel >/dev/null 2>&1 && exit 0
+  selected="$(
+    {
+      local i
+      for i in "${!items[@]}"; do
+        # dmenu row with icon metadata. If unsupported, fuzzel ignores it.
+        printf '%s\0icon\x1f%s\n' "${items[$i]}" "${item_paths[$i]}"
+      done
+    } | fuzzel --dmenu --prompt 'Wallpaper > '
+  )"
 
   [[ -n "${selected:-}" ]] || exit 0
   selected_path="${path_by_label[$selected]:-}"
