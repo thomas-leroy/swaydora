@@ -97,7 +97,7 @@ window#waybar {
 }
 
 #taskbar button:hover {
-  color: inherit;
+  color: #ffffff;
   background: transparent;
   border-color: transparent;
 }

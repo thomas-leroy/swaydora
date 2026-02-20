@@ -36,6 +36,7 @@
 
   "wlr/taskbar": {
     "format": "{name}",
+    "on-click": "activate",
     "tooltip-format": "TEST {app_id} | {name} | {title}",
     "rewrite": {
       "Firefox": "\uf269",
@@ -80,7 +81,7 @@
       "pcmanfm-qt": "\uf07b",
       "Krusader": "\uf07b",
 
-      "Code": "\udb82\ude1e",
+      ".*Code": "\udb82\ude1e",
       "Discover": "\uf1f2"
     }
   },
