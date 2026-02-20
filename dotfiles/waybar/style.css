@@ -15,6 +15,7 @@ window#waybar {
 #window,
 #clock,
 #custom-audio,
+#network,
 #cpu,
 #custom-updates,
 #custom-disks,
@@ -110,6 +111,7 @@ window#waybar {
 
 #workspaces button:hover,
 #custom-audio:hover,
+#network:hover,
 #cpu:hover,
 #custom-updates:hover,
 #custom-disks:hover,

@@ -12,6 +12,7 @@
     "custom/cam",
     "custom/mic",
     "custom/audio",
+    "network",
     "cpu",
     "custom/notification_center",
     "custom/power"
@@ -99,6 +100,16 @@
     "on-scroll-up": "~/.config/scripts/audio_sink_volume_up.sh",
     "on-scroll-down": "~/.config/scripts/audio_sink_volume_down.sh",
     "return-type": "json"
+  },
+
+  "network": {
+    "interval": 2,
+    "format-wifi": "󰤨",
+    "format-ethernet": "󰈀",
+    "format-linked": "󰈀",
+    "format-disconnected": "󰤭",
+    "tooltip-format": "{ifname}: {ipaddr}",
+    "on-click": "sh -c 'nm-connection-editor >/dev/null 2>&1 || gnome-control-center wifi >/dev/null 2>&1 || gnome-control-center network >/dev/null 2>&1'"
   },
 
   "cpu": {
