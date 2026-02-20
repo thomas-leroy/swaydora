@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Return neutral state when no camera device exists.
+# Hide indicator when no camera device exists.
 if ! ls /dev/video* >/dev/null 2>&1; then
-  printf '{"text":"","tooltip":"No camera device"}\n'
+  printf '{"text":"","class":"hidden","tooltip":""}\n'
   exit 0
 fi
 
@@ -18,7 +18,7 @@ done
 
 # Emit Waybar JSON status.
 if [[ "$busy" -eq 1 ]]; then
-  printf '{"text":"","class":"warn","tooltip":"Camera in use"}\n'
+  printf '{"text":"\uebfa","class":"on","tooltip":"Camera in use"}\n'
 else
-  printf '{"text":"","tooltip":"Camera idle"}\n'
+  printf '{"text":"","class":"hidden","tooltip":""}\n'
 fi

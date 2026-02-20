@@ -147,9 +147,22 @@ window#waybar {
 }
 
 #custom-updates.warn,
-#custom-cam.warn,
 #custom-mic.warn {
   color: #ecda9c;
+}
+
+#custom-cam.on {
+  color: #c84c53;
+}
+
+#custom-cam.hidden {
+  color: transparent;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  font-size: 0;
 }
 
 #custom-audio.muted {
