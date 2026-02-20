@@ -33,7 +33,7 @@ Meta+Shift+KP_[1..9]|Send focused window to numpad workspace|
 Meta+Shift+r|Reload Sway configuration|swaymsg reload
 Meta+Shift+e|Exit Sway session|swaymsg exit
 Meta+l|Lock current session|swaylock -f -c 000000
-Ctrl+Alt+Delete|Open session menu (lock/logout/suspend/reboot/poweroff)|~/.config/scripts/session_menu.sh
+Ctrl+Alt+Delete|Open power screen|~/.config/scripts/power_screen.sh
 Print|Capture selected screenshot to ~/Pictures|sh -lc 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/Pictures/screenshot-$(date +%F-%T).png"'
 Meta+Shift+w|Open wallpaper fuzzy picker|~/.config/scripts/wallpaper_picker.sh
 
