@@ -15,6 +15,7 @@ window#waybar {
 #window,
 #clock,
 #custom-audio,
+#custom-brightness,
 #network,
 #cpu,
 #custom-updates,
@@ -111,6 +112,7 @@ window#waybar {
 
 #workspaces button:hover,
 #custom-audio:hover,
+#custom-brightness:hover,
 #network:hover,
 #cpu:hover,
 #custom-updates:hover,
@@ -179,6 +181,22 @@ window#waybar {
 
 #custom-audio.high {
   color: #9bba51;
+}
+
+#custom-brightness.low {
+  color: #8ad9e9;
+}
+
+#custom-brightness.medium {
+  color: #f8eddc;
+}
+
+#custom-brightness.high {
+  color: #ecda9c;
+}
+
+#custom-brightness.warn {
+  color: #c84c53;
 }
 
 #window {
