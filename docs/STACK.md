@@ -14,9 +14,14 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Local setup: config in `dotfiles/waybar/config.jsonc`, styles in `dotfiles/waybar/style.css`, custom modules in `dotfiles/scripts/`.
 - Docs: https://github.com/Alexays/Waybar
 
+### Fuzzel
+- Purpose: fast Wayland-native app launcher (drun), preferred backend for `Meta+space`.
+- Local setup: config in `dotfiles/fuzzel/fuzzel.ini`; app launcher script `dotfiles/scripts/app_launcher.sh` prefers `fuzzel` when installed.
+- Docs: https://codeberg.org/dnkl/fuzzel
+
 ### Wofi
-- Purpose: launcher and dmenu-style selector with richer styling options.
-- Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh`.
+- Purpose: fallback app launcher and dmenu-style selector with richer styling options.
+- Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh`, and `dotfiles/scripts/app_launcher.sh` can fallback to Wofi.
 - Docs: https://hg.sr.ht/~scoopta/wofi
 
 ## Session / Notifications

@@ -1,29 +1,54 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Stable Wofi app launcher settings for drun mode.
-if ! command -v wofi >/dev/null 2>&1; then
-  notify-send "Launcher" "wofi not found"
-  exit 127
-fi
+# Backend selection:
+# - auto (default): prefer fuzzel, then fallback to wofi
+# - fuzzel: force fuzzel
+# - wofi: force wofi
+backend="${APP_LAUNCHER_BACKEND:-auto}"
 
-# Prevent stacked launchers on repeated clicks/shortcuts.
-if pgrep -x wofi >/dev/null 2>&1; then
-  exit 0
-fi
+run_fuzzel() {
+  command -v fuzzel >/dev/null 2>&1 || return 1
+  pgrep -x fuzzel >/dev/null 2>&1 && exit 0
+  exec fuzzel
+}
 
-args=(
-  --show drun
-  --prompt Apps
-  --allow-images
-  --insensitive
-  --matching contains
-  --sort-order alphabetical
-)
+run_wofi() {
+  command -v wofi >/dev/null 2>&1 || return 1
+  pgrep -x wofi >/dev/null 2>&1 && exit 0
 
-# Hide desktop actions when supported to avoid indented sub-entries.
-if wofi --help 2>/dev/null | grep -q -- '--no-actions'; then
-  args+=(--no-actions)
-fi
+  local args=(
+    --show drun
+    --prompt Apps
+    --allow-images
+    --insensitive
+    --matching contains
+    --sort-order alphabetical
+  )
 
-exec wofi "${args[@]}"
+  # Hide desktop actions when supported to avoid indented sub-entries.
+  if wofi --help 2>/dev/null | grep -q -- '--no-actions'; then
+    args+=(--no-actions)
+  fi
+
+  exec wofi "${args[@]}"
+}
+
+case "$backend" in
+  auto)
+    run_fuzzel || run_wofi
+    ;;
+  fuzzel)
+    run_fuzzel
+    ;;
+  wofi)
+    run_wofi
+    ;;
+  *)
+    notify-send "Launcher" "unsupported backend: $backend"
+    exit 2
+    ;;
+esac
+
+notify-send "Launcher" "no launcher found (expected fuzzel or wofi)"
+exit 127
