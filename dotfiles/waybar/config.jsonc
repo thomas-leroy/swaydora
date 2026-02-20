@@ -4,7 +4,7 @@
   "height": 30,
   "spacing": 8,
 
-  "modules-left": ["custom/fedora", "sway/workspaces"],
+  "modules-left": ["sway/workspaces", "wlr/taskbar"],
   "modules-center": ["clock"],
   "modules-right": [
     "group/quick_tray",
@@ -21,20 +21,11 @@
     "on-click": "activate",
     "disable-scroll": true,
     "all-outputs": true,
-    "format": "{icon}",
+    "format": "",
     "format-icons": {
-      "default": "",
-      "1": "1",
-      "2": "2",
-      "3": "3",
-      "4": "4",
-      "5": "5",
-      "6": "6",
-      "7": "7",
-      "8": "8",
-      "9": "9",
-      "10": "0",
-      "active": "󱓻"
+      "default": "",
+      "active": "",
+      "urgent": ""
     },
     "persistent-workspaces": {
       "1": [],
@@ -43,17 +34,61 @@
     }
   },
 
+  "wlr/taskbar": {
+    "format": "{name}",
+    "tooltip-format": "TEST {app_id} | {name} | {title}",
+    "rewrite": {
+      "Firefox": "\uf269",
+      "Google Chrome": "\uf268",
+      "Chromium": "\uf268",
+
+      "Settings": "\uf798",
+      "Gnome-control-center": "\uf798",
+      "gnome-control-center": "\uf798",
+
+      "Kitty": "\uf489",
+      "Konsole": "\uf489",
+      "Warp": "\uf489",
+      "Alacritty": "\uf489",
+      "GNOME Terminal": "\uf489",
+      "org\\.gnome\\.Terminal": "\uf489",
+      "Foot": "\uf489",
+      "WezTerm": "\uf489",
+      "XTerm": "\uf489",
+
+      "Spotify": "\uf1bc",
+      "Thunderbird": "\uf370",
+      "LocalSend": "\udb81\udf1b",
+      "VLC media player": "\uf144",
+      "VLC": "\uf144",
+      "Rhythmbox": "\uf001",
+      "MPV": "\uf144",
+      "Celluloid": "\uf144",
+      "Video\\s*Player": "\uf144",
+      "Music": "\uf001",
+
+      "LibreOffice.*": "\uf15c",
+      "OpenOffice.*": "\uf15c",
+      "Boxes": "\ued75",
+      "Files": "\uf07b",
+      "Nautilus": "\uf07b",
+      "Dolphin": "\uf07b",
+      "Thunar": "\uf07b",
+      "Nemo": "\uf07b",
+      "Caja": "\uf07b",
+      "PCManFM": "\uf07b",
+      "pcmanfm-qt": "\uf07b",
+      "Krusader": "\uf07b",
+
+      "Code": "\udb82\ude1e",
+      "Discover": "\uf1f2"
+    }
+  },
+
   "clock": {
     "format": "{:L%A %H:%M}",
     "format-alt": "{:L%d %B %Y (W%V) %H:%M}",
     "tooltip": false
-  },
-
-  "custom/fedora": {
-    "exec": "printf '{\"text\":\"\\ue7d9\",\"tooltip\":\"Application launcher\"}'",
-    "interval": 3600,
-    "on-click": "~/.config/scripts/app_launcher.sh",
-    "return-type": "json"
   },
 
   "custom/audio": {

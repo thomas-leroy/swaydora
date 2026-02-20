@@ -27,6 +27,12 @@ for _ in 1 2 3 4 5; do
   # Keep Kitty a bit more transparent so blur is perceptible.
   apply_if_supported '[app_id="kitty"] opacity 0.85'
 
+  # Try enabling blur for Waybar layer-shell surface when supported by SwayFX.
+  apply_if_supported 'layer_effects "waybar" blur enable'
+  apply_if_supported 'layer_effects waybar blur enable'
+  apply_if_supported 'layer_effects "waybar" blur_ignore_transparent enable'
+  apply_if_supported 'layer_effects waybar blur_ignore_transparent enable'
+
   sleep 0.2
 done
 
