@@ -23,7 +23,11 @@ fi
 
 # Emit Waybar JSON.
 if [[ "$muted" == 'yes' ]]; then
-  printf '{"text":" %s%%","class":"warn","tooltip":"Sink muted"}\n' "$vol"
+  printf '{"text":" %s%%","class":"muted","tooltip":"Sink muted"}\n' "$vol"
+elif (( vol < 34 )); then
+  printf '{"text":" %s%%","class":"low","tooltip":"Default sink volume"}\n' "$vol"
+elif (( vol < 67 )); then
+  printf '{"text":" %s%%","class":"medium","tooltip":"Default sink volume"}\n' "$vol"
 else
-  printf '{"text":" %s%%","tooltip":"Default sink volume"}\n' "$vol"
+  printf '{"text":" %s%%","class":"high","tooltip":"Default sink volume"}\n' "$vol"
 fi

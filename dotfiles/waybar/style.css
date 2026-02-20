@@ -152,6 +152,22 @@ window#waybar {
   color: #ecda9c;
 }
 
+#custom-audio.muted {
+  color: #c84c53;
+}
+
+#custom-audio.low {
+  color: #8ad9e9;
+}
+
+#custom-audio.medium {
+  color: #f8eddc;
+}
+
+#custom-audio.high {
+  color: #9bba51;
+}
+
 #window {
   color: #e3e3e3;
   min-width: 260px;

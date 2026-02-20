@@ -96,7 +96,7 @@
   "custom/audio": {
     "exec": "~/.config/scripts/audio_status.sh",
     "interval": 2,
-    "on-click": "~/.config/scripts/audio_switch_sink.sh",
+    "on-click": "~/.config/scripts/audio_sink_mute.sh",
     "on-scroll-up": "~/.config/scripts/audio_sink_volume_up.sh",
     "on-scroll-down": "~/.config/scripts/audio_sink_volume_down.sh",
     "return-type": "json"
@@ -155,6 +155,8 @@
     "exec": "~/.config/scripts/indicator_mic.sh",
     "interval": 2,
     "on-click": "~/.config/scripts/audio_source_mute.sh",
+    "on-scroll-up": "~/.config/scripts/audio_source_volume_up.sh",
+    "on-scroll-down": "~/.config/scripts/audio_source_volume_down.sh",
     "return-type": "json"
   },
 
