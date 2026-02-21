@@ -1,6 +1,6 @@
-# dotfiles-fedora-swayfx
+# Swaydora
 
-Fedora 43 dotfiles for a VM staging setup with SwayFX, Waybar, SwayNC, SwayOSD, Wofi, and Kitty.
+Swaydora is an omakase distribution setup based on Fedora and the tiling window manager SwayFX. It ships with everything a modern software developer needs to be productive immediately.
 
 ## Goals
 - Stable and secure daily environment
