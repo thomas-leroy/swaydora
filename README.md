@@ -126,3 +126,21 @@ By default it uses sparse checkout for `abstract`, then exports files without `.
 Set `WALLS_FULL=1` for a full clone, or change `WALLS_CATEGORIES` to sync other folders.
 Default sync location is `~/.local/share/wallpapers/Wallpapers` (outside git repo).
 Use `Super+Shift+W` to search wallpapers directly with Wofi (format: `sous-dossier - fichier.ext`) and apply instantly.
+
+# "Backlog"
+
+## To add
+Impala for network management
+Alsamixer for audio
+1Password on OS
+Thunderbird for mails
+bluetuith / bluetui for bluetooth management
+Voxtype for stt
+Ollama / OpenCode for local AI
+zoxide for directory jumping
+starship to replace OMZ
+
+
+## To do 
+Create a wiki to centralise documentation
+Add battery management notification
