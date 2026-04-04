@@ -11,6 +11,8 @@ REQUIRE_SWAYFX="${REQUIRE_SWAYFX:-1}"
 SWAYFX_COPR="${SWAYFX_COPR:-swayfx/swayfx}"
 # COPR repo used to install swayosd when not in default enabled repos.
 SWAYOSD_COPR="${SWAYOSD_COPR:-erikreider/swayosd}"
+# Handy official RPM used when the package is not available in enabled repos.
+HANDY_RPM_URL="${HANDY_RPM_URL:-https://github.com/cjpais/Handy/releases/download/v0.8.1/Handy-0.8.1-1.x86_64.rpm}"
 # VS Code official repository file.
 VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 
@@ -217,6 +219,22 @@ ensure_pnpm_installed() {
 
   log 'installing pnpm globally via npm fallback'
   run_as_root npm install -g pnpm
+}
+
+# Install Handy from its official RPM when it is not available in repos yet.
+ensure_handy_installed() {
+  if command -v handy >/dev/null 2>&1; then
+    log 'Handy already installed'
+    return 0
+  fi
+
+  if pkg_is_available handy; then
+    queue_pkg handy
+    return 0
+  fi
+
+  log "installing Handy from official RPM: ${HANDY_RPM_URL}"
+  run_as_root dnf install -y "$HANDY_RPM_URL"
 }
 
 # Install oh-my-zsh for the current user in unattended mode.
@@ -490,6 +508,7 @@ main() {
   # Apply installation.
   ensure_swayfx_installed_without_conflict
   install_queued
+  ensure_handy_installed
 
   # Validate group access for brightness/video controls.
   check_video_group_membership
