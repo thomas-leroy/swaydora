@@ -196,6 +196,13 @@
     "return-type": "json"
   },
 
+  "custom/bluetooth": {
+    "exec": "printf '{\"text\":\"\",\"tooltip\":\"Bluetooth\"}'",
+    "interval": 3600,
+    "on-click": "~/.config/scripts/bluetooth_tui.sh",
+    "return-type": "json"
+  },
+
   "group/quick_tray": {
     "orientation": "inherit",
     "drawer": {
@@ -205,6 +212,7 @@
     },
     "modules": [
       "custom/tray_toggle",
+      "custom/bluetooth",
       "custom/protonvpn",
       "custom/disks",
       "custom/layout"

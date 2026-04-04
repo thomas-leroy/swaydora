@@ -46,6 +46,7 @@ Meta+Shift+r|Reload Sway configuration|swaymsg reload
 Meta+Shift+x|Exit Sway session|swaymsg exit
 Meta+l|Lock current session|swaylock -f -c 000000
 Ctrl+Alt+Delete|Open power screen|~/.config/scripts/power_screen.sh
+Waybar Bluetooth icon|Open Bluetuith in floating terminal|~/.config/scripts/bluetooth_tui.sh
 Meta+Ctrl+c|Open capture menu|~/.config/scripts/capture_menu.sh
 Print|Take a screenshot|~/.config/scripts/screenshot_capture.sh
 Meta+Print|Take a screenshot of the active window|~/.config/scripts/screenshot_active_window.sh

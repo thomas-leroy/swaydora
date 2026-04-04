@@ -38,6 +38,7 @@ main() {
   enable_now firewalld.service
   enable_now fwupd-refresh.timer
   # Developer services.
+  enable_now bluetooth.service
   enable_now docker.service
   enable_now sshd.service
   log 'done'

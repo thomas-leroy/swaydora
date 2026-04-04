@@ -15,6 +15,8 @@ SWAYOSD_COPR="${SWAYOSD_COPR:-erikreider/swayosd}"
 HANDY_RPM_URL="${HANDY_RPM_URL:-https://github.com/cjpais/Handy/releases/download/v0.8.1/Handy-0.8.1-1.x86_64.rpm}"
 # Obsidian official AppImage used when no distro package is available.
 OBSIDIAN_APPIMAGE_URL="${OBSIDIAN_APPIMAGE_URL:-https://github.com/obsidianmd/obsidian-releases/releases/download/v1.10.6/Obsidian-1.10.6.AppImage}"
+# Bluetuith official release archive used when no distro package is available.
+BLUETUITH_ARCHIVE_URL="${BLUETUITH_ARCHIVE_URL:-https://github.com/bluetuith-org/bluetuith/releases/download/v0.2.6/bluetuith_0.2.6_Linux_x86_64.tar.gz}"
 # VS Code official repository file.
 VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 
@@ -265,6 +267,37 @@ ensure_obsidian_installed() {
   ln -sfn "$appimage_path" "$launcher_path"
 }
 
+# Install Bluetuith using distro package when available, otherwise the official release archive.
+ensure_bluetuith_installed() {
+  local install_dir archive_path binary_path launcher_path tmp_dir
+
+  if command -v bluetuith >/dev/null 2>&1; then
+    log 'Bluetuith already installed'
+    return 0
+  fi
+
+  if pkg_is_available bluetuith; then
+    queue_pkg bluetuith
+    return 0
+  fi
+
+  require_cmd curl
+  require_cmd tar
+  install_dir="$HOME/.local/opt/bluetuith"
+  archive_path="$install_dir/bluetuith.tar.gz"
+  binary_path="$install_dir/bluetuith"
+  launcher_path="$HOME/.local/bin/bluetuith"
+  tmp_dir="$(mktemp -d)"
+
+  mkdir -p "$install_dir" "$HOME/.local/bin"
+  log "installing Bluetuith from official release: ${BLUETUITH_ARCHIVE_URL}"
+  curl -fsSL "$BLUETUITH_ARCHIVE_URL" -o "$archive_path"
+  tar -xzf "$archive_path" -C "$tmp_dir"
+  install -m 0755 "$tmp_dir/bluetuith" "$binary_path"
+  ln -sfn "$binary_path" "$launcher_path"
+  rm -rf "$tmp_dir"
+}
+
 # Install oh-my-zsh for the current user in unattended mode.
 install_oh_my_zsh_if_needed() {
   if [[ -d "$HOME/.oh-my-zsh" ]]; then
@@ -436,6 +469,8 @@ main() {
   queue_pkg xdg-desktop-portal
   queue_pkg xdg-desktop-portal-gtk
   queue_pkg xdg-desktop-portal-wlr
+  queue_pkg bluez
+  queue_pkg bluez-tools
   queue_pkg wl-clipboard
   if [[ -n "$clipboard_pkg" ]]; then
     queue_pkg "$clipboard_pkg"
@@ -546,6 +581,7 @@ main() {
   install_queued
   ensure_handy_installed
   ensure_obsidian_installed
+  ensure_bluetuith_installed
 
   # Validate group access for brightness/video controls.
   check_video_group_membership

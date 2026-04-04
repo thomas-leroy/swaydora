@@ -20,6 +20,7 @@ window#waybar {
 #cpu,
 #custom-updates,
 #custom-disks,
+#custom-bluetooth,
 #custom-cam,
 #custom-mic,
 #custom-layout,
@@ -117,6 +118,7 @@ window#waybar {
 #cpu:hover,
 #custom-updates:hover,
 #custom-disks:hover,
+#custom-bluetooth:hover,
 #custom-layout:hover,
 #custom-protonvpn:hover,
 #custom-notification_center:hover,
@@ -141,6 +143,7 @@ window#waybar {
 }
 
 #group-quick_tray #custom-tray_toggle,
+#group-quick_tray #custom-bluetooth,
 #group-quick_tray #custom-protonvpn,
 #group-quick_tray #custom-disks,
 #group-quick_tray #custom-power {
