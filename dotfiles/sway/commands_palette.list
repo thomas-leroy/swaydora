@@ -13,6 +13,10 @@ Meta+q|Close the focused window|swaymsg kill
 Meta+w|Close the focused window|swaymsg kill
 Meta+Escape|Close all windows|~/.config/scripts/close_all_windows.sh
 Meta+f|Toggle fullscreen for focused window|swaymsg fullscreen toggle
+Meta+v|Split pane beside (vertical)|swaymsg splitv
+Meta+h|Split pane below (horizontal)|swaymsg splith
+Meta+Shift+v|Set current container layout to vertical split|swaymsg layout splitv
+Meta+Shift+h|Set current container layout to horizontal split|swaymsg layout splith
 Meta+t|Toggle floating mode for focused window|swaymsg floating toggle
 Meta+LeftClick (floating)|Move floating window with mouse|
 Meta+RightClick (floating)|Resize floating window with mouse|

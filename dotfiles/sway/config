@@ -162,6 +162,12 @@ bindsym $mod+Escape exec ~/.config/scripts/close_all_windows.sh
 # Keybindings: toggle fullscreen (Sway default).
 bindsym $mod+f fullscreen toggle
 
+# Keybindings: split layout orientation.
+bindsym $mod+v splitv
+bindsym $mod+h splith
+bindsym $mod+Shift+v layout splitv
+bindsym $mod+Shift+h layout splith
+
 # Keybindings: toggle floating mode.
 bindsym $mod+t floating toggle
 
