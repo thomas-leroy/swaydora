@@ -26,7 +26,16 @@ fi
 
 if command -v kitty >/dev/null 2>&1; then
   kitty --title "$TITLE" sh -lc \
-    'sudo dnf upgrade --refresh; printf "\nDone. Press Enter to close..."; read -r _'
+    'cat <<'"'"'EOF'"'"'
+ ▗▄▄▖▗▖ ▗▖ ▗▄▖▗▖  ▗▖▗▄▄▄  ▗▄▖ ▗▄▄▖  ▗▄▖
+▐▌   ▐▌ ▐▌▐▌ ▐▌▝▚▞▘ ▐▌  █▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌
+ ▝▀▚▖▐▌ ▐▌▐▛▀▜▌ ▐▌  ▐▌  █▐▌ ▐▌▐▛▀▚▖▐▛▀▜▌
+▗▄▄▞▘▐▙█▟▌▐▌ ▐▌ ▐▌  ▐▙▄▄▀▝▚▄▞▘▐▌ ▐▌▐▌ ▐▌
+EOF
+printf "\n"
+sudo dnf upgrade --refresh
+printf "\nDone. Press Enter to close..."
+read -r _'
   exit 0
 fi
 

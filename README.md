@@ -1,14 +1,23 @@
 # Swaydora
 
-Swaydora is an omakase distribution setup based on Fedora and the tiling window manager SwayFX. It ships with everything a modern software developer needs to be productive immediately.
+```text
+ ▗▄▄▖▗▖ ▗▖ ▗▄▖▗▖  ▗▖▗▄▄▄  ▗▄▖ ▗▄▄▖  ▗▄▖
+▐▌   ▐▌ ▐▌▐▌ ▐▌▝▚▞▘ ▐▌  █▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌
+ ▝▀▚▖▐▌ ▐▌▐▛▀▜▌ ▐▌  ▐▌  █▐▌ ▐▌▐▛▀▚▖▐▛▀▜▌
+▗▄▄▞▘▐▙█▟▌▐▌ ▐▌ ▐▌  ▐▙▄▄▀▝▚▄▞▘▐▌ ▐▌▐▌ ▐▌
+```
+
+Swaydora is a Fedora + SwayFX desktop setup built to share my vision of an efficient, polished developer workstation. The goal is a practical daily driver with strong defaults, fast setup, and just enough visual refinement to feel good to use.
+
+This project is strongly inspired by [Omarchy](https://omarchy.org/), adapted here around Fedora, SwayFX, and my own workflow choices.
 
 > Status: **ALPHA** - **UNSTABLE**. Breaking changes and regressions are expected.
 
 ## Goals
-- Stable and secure daily environment
-- Priority on updates and system maintenance
-- Minimal ricing (rounded corners + light transitions)
-- Idempotent install scripts
+- Efficient daily desktop for development work
+- Stable and secure Fedora-based environment
+- Sensible defaults with lightweight visual polish
+- Reproducible, idempotent setup scripts
 
 ## Repository Layout
 - `dotfiles/`: app configs linked into `~/.config`
