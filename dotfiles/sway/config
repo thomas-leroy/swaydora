@@ -148,8 +148,13 @@ bindsym $mod+Shift+r exec ~/.config/scripts/reload_env.sh
 # Keybindings: restart Sway session.
 bindsym $mod+Shift+e exec "swaymsg exit"
 
-# Keybindings: screenshot selected region to ~/Pictures.
-bindsym Print exec sh -c 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/Pictures/screenshot-$(date +%F-%T).png"'
+# Keybindings: screenshot, recording, and color tools.
+bindsym $mod+Ctrl+c exec ~/.config/scripts/capture_menu.sh
+bindsym Print exec ~/.config/scripts/screenshot_capture.sh
+bindsym $mod+Print exec ~/.config/scripts/screenshot_active_window.sh
+bindsym $mod+Sys_Req exec ~/.config/scripts/screenshot_active_window.sh
+bindsym $mod+Shift+Print exec ~/.config/scripts/color_picker.sh
+bindsym $mod+Shift+Sys_Req exec ~/.config/scripts/color_picker.sh
 
 # Keybindings: choose wallpaper with fuzzy picker.
 bindsym $mod+Shift+w exec ~/.config/scripts/wallpaper_picker.sh

@@ -43,7 +43,10 @@ Meta+Shift+r|Reload Sway configuration|swaymsg reload
 Meta+Shift+e|Exit Sway session|swaymsg exit
 Meta+l|Lock current session|swaylock -f -c 000000
 Ctrl+Alt+Delete|Open power screen|~/.config/scripts/power_screen.sh
-Print|Capture selected screenshot to ~/Pictures|sh -lc 'mkdir -p "$HOME/Pictures"; grim -g "$(slurp)" "$HOME/Pictures/screenshot-$(date +%F-%T).png"'
+Meta+Ctrl+c|Open capture menu|~/.config/scripts/capture_menu.sh
+Print|Take a screenshot|~/.config/scripts/screenshot_capture.sh
+Meta+Print|Take a screenshot of the active window|~/.config/scripts/screenshot_active_window.sh
+Meta+Shift+Print|Open color picker|~/.config/scripts/color_picker.sh
 Meta+Shift+w|Open wallpaper fuzzy picker|~/.config/scripts/wallpaper_picker.sh
 
 XF86AudioRaiseVolume|Increase output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+

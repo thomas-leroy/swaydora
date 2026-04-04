@@ -385,6 +385,8 @@ main() {
   queue_pkg "$wallpaper_pkg"
   queue_pkg grim
   queue_pkg slurp
+  queue_pkg hyprpicker
+  queue_pkg jq
   queue_pkg wl-clipboard
   if [[ -n "$clipboard_pkg" ]]; then
     queue_pkg "$clipboard_pkg"
