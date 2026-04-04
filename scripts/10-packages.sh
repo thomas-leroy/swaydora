@@ -506,6 +506,10 @@ main() {
   queue_pkg wireplumber
   queue_pkg pavucontrol
 
+  # Network management helpers.
+  log 'network packages'
+  queue_pkg NetworkManager-tui
+
   # External disk management tools.
   log 'external disk packages'
   queue_pkg udisks2
