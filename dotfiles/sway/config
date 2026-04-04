@@ -146,8 +146,9 @@ bindsym Alt+XF86AudioLowerVolume exec brightnessctl set 10%-
 # Keybindings: reload config and restart Waybar reliably.
 bindsym $mod+Shift+r exec ~/.config/scripts/reload_env.sh
 
-# Keybindings: restart Sway session.
-bindsym $mod+Shift+e exec "swaymsg exit"
+# Keybindings: mail and session.
+bindsym $mod+Shift+e exec ~/.config/scripts/mail_launcher.sh
+bindsym $mod+Shift+x exec "swaymsg exit"
 
 # Keybindings: screenshot, recording, and color tools.
 bindsym $mod+Ctrl+c exec ~/.config/scripts/capture_menu.sh

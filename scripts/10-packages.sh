@@ -467,6 +467,7 @@ main() {
     log 'docker compose package not found (expected docker-compose or docker-compose-plugin)'
   fi
   queue_pkg code
+  queue_pkg thunderbird
 
   # Audio stack and fallback UI mixer.
   log 'audio packages'
