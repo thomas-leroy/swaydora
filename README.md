@@ -14,12 +14,14 @@ This project is strongly inspired by [Omarchy](https://omarchy.org/), adapted he
 > Status: **ALPHA** - **UNSTABLE**. Breaking changes and regressions are expected.
 
 ## Goals
+
 - Efficient daily desktop for development work
 - Stable and secure Fedora-based environment
 - Sensible defaults with lightweight visual polish
 - Reproducible, idempotent setup scripts
 
 ## Repository Layout
+
 - `dotfiles/`: app configs linked into `~/.config`
 - `dotfiles/scripts/`: runtime scripts used by Waybar/Sway
 - `scripts/`: setup/install scripts executed in VM
@@ -28,6 +30,7 @@ This project is strongly inspired by [Omarchy](https://omarchy.org/), adapted he
 - `dotfiles/zsh`, `dotfiles/fastfetch`, `dotfiles/atuin`: portable shell/tool configs
 
 ## Documentation
+
 - `docs/STACK.md`: installed tools/services, purpose, local setup details, official docs links
 - `docs/SCRIPTS.md`: setup/runtime script reference
 - `docs/VM_WORKFLOW.md`: VM workflow and rollback
@@ -35,6 +38,7 @@ This project is strongly inspired by [Omarchy](https://omarchy.org/), adapted he
 - `docs/CONVENTIONS.md`: repository conventions
 
 ## VM Setup (VirtioFS)
+
 Manual mount in VM:
 
 ```bash
@@ -49,6 +53,7 @@ dotfiles /mnt/dotfiles virtiofs defaults,nofail,x-systemd.automount 0 0
 ```
 
 ## Execution Order
+
 Run from repo root inside Fedora 43 VM:
 
 ```bash
@@ -76,6 +81,7 @@ When `swayosd` is unavailable in enabled repos, setup enables COPR `erikreider/s
 Set `SWAYOSD_COPR=<owner/project>` if you want to override the default SwayOSD COPR source.
 
 ## Optional Flags
+
 - `WITH_VIRT=1 scripts/10-packages.sh`: install virtualization packages.
 - `AUTO_ADD_VIDEO_GROUP=1 scripts/10-packages.sh`: add current user to `video` group if missing.
 - `SWAYFX_COPR=<owner/project>`: override default COPR source used for `swayfx`.
@@ -83,34 +89,43 @@ Set `SWAYOSD_COPR=<owner/project>` if you want to override the default SwayOSD C
 - `WALLS_FULL=0 scripts/80-wallpapers-sync.sh`: sparse sync of `abstract` from `dharmx/walls` (default).
 
 ## Developer Bootstrap
+
 `scripts/10-packages.sh` also installs a development baseline:
-- CLI/tools: `nano`, `openssh-server`, `btop`, `bat`, `fd`/`fd-find`, `ripgrep`, `fzf`, `duf`, `grep`, `gawk`, `sed`, `gcc`, `python3`, `python3-pip`, `git-extras`, `tig`, `fastfetch` (or `neofetch` fallback)
+
+- CLI/tools: `nano`, `openssh-server`, `btop`, `bat`, `fd`/`fd-find`, `ripgrep`, `fzf`, `duf`, `grep`, `gawk`, `sed`, `gcc`, `python3`, `git-extras`, `tig`, `jq`, `fastfetch` (or `neofetch` fallback)
 - Shell/dev: `zsh`, oh-my-zsh (unattended), `zoxide`, `atuin`, `nodejs`, `npm`, `pnpm`
 - Containers: `docker`, `docker-compose`
 - Editor: Visual Studio Code (`code`) via official Microsoft repo when needed
+- Wayland desktop extras: `grim`, `slurp`, `hyprpicker`, `wl-clipboard`, `udiskie`, `swaync`, `swayosd`
+- Handy: installed from its official RPM when not available in enabled repos
 
 Shell aliases configured in dotfiles:
+
 - `cat` -> `bat` (or `batcat` fallback)
 - `find` -> `fd` (or `fdfind` fallback)
 
 `scripts/20-services.sh` enables and starts:
+
 - `docker.service`
 - `sshd.service`
 
 ## Sway Keybindings
+
 | Shortcut | Action |
 | --- | --- |
 | `Super+Enter` | Open terminal (`$terminal`) |
 | `Super+Space` | Open launcher (`wofi`) |
+| `Super+Shift+Space` | Launch Handy |
+| `Super+E` | Open a file manager |
 | `Super+Arrow` | Focus window direction |
 | `Super+Shift+Arrow` | Move window direction |
-| `Super+1..9` | Switch to workspace 1..9 (top row via bindcode) |
-| `Super+Shift+1..9` | Move window to workspace 1..9 (top row via bindcode) |
+| `Super+1..4` | Switch to workspace 1..4 |
+| `Super+Shift+1..4` | Move window to workspace 1..4 |
 | `Super+KP_1..9` | Switch to workspace 1..9 |
 | `Super+Shift+KP_1..9` | Move window to workspace 1..9 |
-| `Alt+Tab` / `Alt+Shift+Tab` | Focus next / previous window |
+| `Super+Tab` / `Super+Shift+Tab` | Next / previous workspace |
 | `Super+L` | Lock session (`swaylock`) |
-| `Ctrl+Alt+Delete` | Open session menu (`session_menu.sh`) |
+| `Ctrl+Alt+Delete` | Open power screen (`power_screen.sh`) |
 | `Waybar power icon` | Open/close `wlogout` power screen |
 | `XF86AudioRaiseVolume` | Volume up (`wpctl`) |
 | `XF86AudioLowerVolume` | Volume down (`wpctl`) |
@@ -119,21 +134,52 @@ Shell aliases configured in dotfiles:
 | `Alt+XF86AudioLowerVolume` | Brightness down (`brightnessctl`) |
 | `Super+Shift+R` | Reload Sway config |
 | `Super+Shift+E` | Exit Sway |
-| `Print` | Region screenshot to `~/Pictures` |
+| `Super+Ctrl+C` | Open capture menu |
+| `Print` | Screenshot to XDG pictures `Screenshots/` |
+| `Super+Print` | Screenshot of the active window |
+| `Super+Shift+Print` | Color picker |
 | `Super+Shift+W` | Open wallpaper fuzzy picker (`wofi`) |
 | `Super+Q` | Kill focused window |
-| `Super+Shift+Space` | Toggle floating |
+| `Super+W` | Kill focused window |
+| `Super+Escape` | Close all windows |
+| `Super+F` | Toggle fullscreen |
+| `Super+T` | Toggle floating |
+| `Super+V` / `Super+H` | Set next split orientation |
+| `Super+Shift+V` / `Super+Shift+H` | Change current container layout |
 
 ## Notes
+
 - Notification daemon and center is `swaync` (Waybar module included).
 - `mako` is kept as a lightweight fallback package; current autostart uses `swaync`.
+- Screenshots are saved in the XDG pictures directory under `Screenshots/`.
 - Waybar includes modules for active app/window title, keyboard layout switch (FR/US), Proton VPN state, and power button.
 - No secrets are stored in this repository.
 - Local machine-specific overrides live outside tracked files (see `docs/CONVENTIONS.md`).
 
 ## Wallpaper Source (Optional)
+
 Use `scripts/80-wallpapers-sync.sh` to sync wallpapers from `https://github.com/dharmx/walls.git`.
 By default it uses sparse checkout for `abstract`, then exports files without `.git` into the wallpapers folder.
 Set `WALLS_FULL=1` for a full clone, or change `WALLS_CATEGORIES` to sync other folders.
 Default sync location is `~/.local/share/wallpapers/Wallpapers` (outside git repo).
 Use `Super+Shift+W` to search wallpapers directly with Wofi (format: `sous-dossier - fichier.ext`) and apply instantly.
+
+## Open Source Foundations
+
+Swaydora builds on top of a lot of great open source work. The main upstream projects used in this setup are:
+
+- Inspiration: [Omarchy](https://omarchy.org/)
+- Window manager/compositor: [SwayFX](https://github.com/WillPower3309/swayfx)
+- Status bar: [Waybar](https://github.com/Alexays/Waybar)
+- Launchers and menus: [Fuzzel](https://codeberg.org/dnkl/fuzzel), [Wofi](https://hg.sr.ht/~scoopta/wofi)
+- Power menu: [wlogout](https://github.com/ArtsyMacaw/wlogout)
+- Notifications: [SwayNotificationCenter](https://github.com/ErikReider/SwayNotificationCenter), [SwayOSD](https://github.com/ErikReider/SwayOSD)
+- Locking and idle handling: [swaylock](https://github.com/swaywm/swaylock), [swayidle](https://github.com/swaywm/swayidle)
+- Wallpapers: [swaybg](https://github.com/swaywm/swaybg), optional source [dharmx/walls](https://github.com/dharmx/walls)
+- Screenshots and color tools: [grim](https://github.com/emersion/grim), [slurp](https://github.com/emersion/slurp), [hyprpicker](https://github.com/hyprwm/hyprpicker)
+- Clipboard helpers: [wl-clipboard](https://github.com/bugaevc/wl-clipboard), [cliphist](https://github.com/sentriz/cliphist), [clipman](https://github.com/chmouel/clipman)
+- Device helpers: [udisks](https://github.com/storaged-project/udisks), [udiskie](https://github.com/coldfix/udiskie), [v4l-utils](https://gitlab.freedesktop.org/v4l-utils/v4l-utils)
+- Audio stack: [PipeWire](https://pipewire.org/), [WirePlumber](https://pipewire.pages.freedesktop.org/wireplumber/)
+- Shell and CLI tooling: [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh), [bat](https://github.com/sharkdp/bat), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep), [fzf](https://github.com/junegunn/fzf), [duf](https://github.com/muesli/duf), [btop](https://github.com/aristocratos/btop), [zoxide](https://github.com/ajeetdsouza/zoxide), [atuin](https://github.com/atuinsh/atuin), [fastfetch](https://github.com/fastfetch-cli/fastfetch)
+- Developer tooling: [Node.js](https://nodejs.org/), [pnpm](https://pnpm.io/), [Docker](https://github.com/docker), [Visual Studio Code](https://github.com/microsoft/vscode)
+- Extra workflow tool: [Handy](https://github.com/cjpais/Handy)
