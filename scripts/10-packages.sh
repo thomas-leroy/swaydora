@@ -13,6 +13,8 @@ SWAYFX_COPR="${SWAYFX_COPR:-swayfx/swayfx}"
 SWAYOSD_COPR="${SWAYOSD_COPR:-erikreider/swayosd}"
 # Handy official RPM used when the package is not available in enabled repos.
 HANDY_RPM_URL="${HANDY_RPM_URL:-https://github.com/cjpais/Handy/releases/download/v0.8.1/Handy-0.8.1-1.x86_64.rpm}"
+# Obsidian official AppImage used when no distro package is available.
+OBSIDIAN_APPIMAGE_URL="${OBSIDIAN_APPIMAGE_URL:-https://github.com/obsidianmd/obsidian-releases/releases/download/v1.10.6/Obsidian-1.10.6.AppImage}"
 # VS Code official repository file.
 VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 
@@ -237,6 +239,32 @@ ensure_handy_installed() {
   run_as_root dnf install -y "$HANDY_RPM_URL"
 }
 
+# Install Obsidian using distro package when available, otherwise the official AppImage.
+ensure_obsidian_installed() {
+  local install_dir appimage_path launcher_path
+
+  if command -v obsidian >/dev/null 2>&1; then
+    log 'Obsidian already installed'
+    return 0
+  fi
+
+  if pkg_is_available obsidian; then
+    queue_pkg obsidian
+    return 0
+  fi
+
+  require_cmd curl
+  install_dir="$HOME/.local/opt/obsidian"
+  appimage_path="$install_dir/Obsidian.AppImage"
+  launcher_path="$HOME/.local/bin/obsidian"
+
+  mkdir -p "$install_dir" "$HOME/.local/bin"
+  log "installing Obsidian from official AppImage: ${OBSIDIAN_APPIMAGE_URL}"
+  curl -fsSL "$OBSIDIAN_APPIMAGE_URL" -o "$appimage_path"
+  chmod +x "$appimage_path"
+  ln -sfn "$appimage_path" "$launcher_path"
+}
+
 # Install oh-my-zsh for the current user in unattended mode.
 install_oh_my_zsh_if_needed() {
   if [[ -d "$HOME/.oh-my-zsh" ]]; then
@@ -405,6 +433,9 @@ main() {
   queue_pkg slurp
   queue_pkg hyprpicker
   queue_pkg jq
+  queue_pkg xdg-desktop-portal
+  queue_pkg xdg-desktop-portal-gtk
+  queue_pkg xdg-desktop-portal-wlr
   queue_pkg wl-clipboard
   if [[ -n "$clipboard_pkg" ]]; then
     queue_pkg "$clipboard_pkg"
@@ -510,6 +541,7 @@ main() {
   ensure_swayfx_installed_without_conflict
   install_queued
   ensure_handy_installed
+  ensure_obsidian_installed
 
   # Validate group access for brightness/video controls.
   check_video_group_membership

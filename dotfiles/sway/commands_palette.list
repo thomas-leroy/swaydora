@@ -9,6 +9,7 @@ Meta+Shift+p|Open custom tools fuzzy menu|~/.config/scripts/tools_menu.sh
 Meta+Return|Open a Kitty terminal|kitty
 Meta+space|Open the app launcher (fuzzel/wofi)|~/.config/scripts/app_launcher.sh
 Meta+Shift+space|Launch Handy|~/.config/scripts/handy_launch.sh
+Meta+Shift+o|Launch Obsidian|~/.config/scripts/obsidian_launch.sh
 Meta+Shift+e|Launch email client (Thunderbird)|~/.config/scripts/mail_launcher.sh
 Meta+e|Open a file manager|sh -lc 'if command -v nautilus >/dev/null 2>&1; then exec nautilus; fi; if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
 Meta+q|Close the focused window|swaymsg kill

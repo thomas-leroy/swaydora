@@ -63,12 +63,15 @@ for_window [title="System Updates"] floating enable, resize set width 72 ppt hei
 for_window [title="^Tools TUI:"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 # Discover package manager window from tools menu.
 for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+# Keep Obsidian as a regular tiled window by default.
+for_window [app_id="obsidian"] floating disable
 # Keybindings: launch terminal.
 bindsym $mod+Return exec $terminal
 
 # Keybindings: launcher.
 bindsym $mod+space exec $menu
 bindsym $mod+Shift+space exec ~/.config/scripts/handy_launch.sh
+bindsym $mod+Shift+o exec ~/.config/scripts/obsidian_launch.sh
 bindsym $mod+e exec sh -lc 'if command -v nautilus >/dev/null 2>&1; then exec nautilus; fi; if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
 
 # Keybindings: command palette (maintained in ~/.config/sway/commands_palette.list).
@@ -179,6 +182,7 @@ bindsym $mod+Shift+h layout splith
 bindsym $mod+t floating toggle
 
 # Autostart components.
+exec_always --no-startup-id ~/.config/scripts/portal_session_fix.sh
 exec_always --no-startup-id ~/.config/scripts/swayfx_effects_apply.sh
 exec_always --no-startup-id swaync
 exec_always --no-startup-id sh -c 'command -v swayosd-server >/dev/null 2>&1 && { pkill -x swayosd-server >/dev/null 2>&1 || true; swayosd-server; }'
