@@ -41,6 +41,8 @@
     "on-click": "activate",
     "tooltip-format": "TEST {app_id} | {name} | {title}",
     "rewrite": {
+      "LibreWolf": "\uf269",
+      "librewolf": "\uf269",
       "Firefox": "\uf269",
       "Google Chrome": "\uf268",
       "Chromium": "\uf268",

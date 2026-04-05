@@ -59,6 +59,12 @@ main() {
     link_one "$dir"
   done
 
+  # Link top-level XDG files.
+  if [[ -e "$DOTFILES_SRC/mimeapps.list" ]]; then
+    log "linking: $HOME/.config/mimeapps.list -> $DOTFILES_SRC/mimeapps.list"
+    ln -sfn "$DOTFILES_SRC/mimeapps.list" "$HOME/.config/mimeapps.list"
+  fi
+
   # Create local override files if missing.
   touch "$HOME/.config/sway/local.conf" "$HOME/.config/waybar/local.css" "$HOME/.config/mako/local.conf" "$HOME/.config/swaync/local.css"
   log 'ensured local override files exist (untracked by git)'

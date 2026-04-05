@@ -560,6 +560,7 @@ main() {
   queue_pkg wl-clipboard
   queue_pkg gnome-keyring
   queue_pkg seahorse
+  queue_pkg celluloid
   if [[ -n "$clipboard_pkg" ]]; then
     queue_pkg "$clipboard_pkg"
   else
