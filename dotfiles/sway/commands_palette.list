@@ -38,6 +38,8 @@ Meta+Shift+Down|Move focused window downward|swaymsg move down
 
 Meta+Tab|Switch to next workspace|swaymsg workspace next
 Meta+Shift+Tab|Switch to previous workspace|swaymsg workspace prev
+Meta+Ctrl+Right|Switch to next workspace|swaymsg workspace next
+Meta+Ctrl+Left|Switch to previous workspace|swaymsg workspace prev
 
 Meta+[&,é,",',(,-,è,_,ç]|Switch to workspace 1..9 on AZERTY top row|
 Meta+Shift+[&,é,",',(,-,è,_,ç]|Send focused window to workspace 1..9 and follow it on AZERTY top row|

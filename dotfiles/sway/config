@@ -141,6 +141,8 @@ bindsym $mod+Shift+KP_9 move container to workspace number 9; workspace number 9
 # Keybindings: cycle workspaces.
 bindsym $mod+Tab workspace next
 bindsym $mod+Shift+Tab workspace prev
+bindsym $mod+Ctrl+Right workspace next
+bindsym $mod+Ctrl+Left workspace prev
 
 # Keybindings: lock session.
 # If swaylock-effects is installed, adjust lock visuals in local.conf.
