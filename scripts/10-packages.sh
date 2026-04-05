@@ -513,6 +513,8 @@ main() {
   queue_pkg bluez
   queue_pkg bluez-tools
   queue_pkg wl-clipboard
+  queue_pkg gnome-keyring
+  queue_pkg seahorse
   if [[ -n "$clipboard_pkg" ]]; then
     queue_pkg "$clipboard_pkg"
   else

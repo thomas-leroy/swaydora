@@ -8,6 +8,8 @@
 - `40-themes.sh`: apply minimal GTK/icon/cursor defaults.
 - `50-fonts.sh`: install JetBrains Mono Nerd Font.
 - `60-waybar-reload.sh`: install helper symlink for config reload.
+- `65-vscode-extensions.sh`: install VS Code extensions from `dotfiles/vscode/extensions.list`.
+- `66-vscode-preferences.sh`: install VS Code launcher/wrapper preferences from `dotfiles/vscode/`.
 - `70-oh-my-zsh.sh`: standalone unattended oh-my-zsh setup helper.
 - `80-wallpapers-sync.sh`: sync wallpapers from `dharmx/walls` into `~/.local/share/wallpapers/Wallpapers` (exported without `.git`; sparse `abstract` by default).
 - `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
@@ -24,5 +26,6 @@
 - Power/session: `power_screen.sh`, `session_menu.sh`
 - VPN: `protonvpn_status.sh`, `protonvpn_toggle_window.sh`
 - Reload: `reload_env.sh`
+- Session/keyring: `portal_session_fix.sh`, `keyring_start.sh`
 - Wallpaper: `wallpaper_start.sh`, `wallpaper_picker.sh`
 - Visual effects: `swayfx_effects_apply.sh`
