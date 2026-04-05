@@ -4,7 +4,9 @@ set -euo pipefail
 # Cache location and behavior for updates count.
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles"
 CACHE_FILE="$CACHE_DIR/updates_count"
+LOCK_FILE="$CACHE_DIR/updates_count.lock"
 TTL="${UPDATES_CACHE_TTL:-900}"
+DNF_TIMEOUT_SEC="${DNF_TIMEOUT_SEC:-20}"
 PLAIN="${1:-}"
 
 # Ensure cache directory exists.
@@ -25,7 +27,7 @@ count_updates() {
 
   # dnf uses exit code 100 when updates are available.
   set +e
-  output="$(dnf -q check-update 2>/dev/null)"
+  output="$(timeout --foreground "$DNF_TIMEOUT_SEC" dnf -q check-update 2>/dev/null)"
   rc=$?
   set -e
 
@@ -39,12 +41,30 @@ count_updates() {
   awk '/^[[:alnum:]_.+-]+[[:space:]]+[[:alnum:]_.:+~-]+[[:space:]]/{count++} END{print count+0}' <<<"$output"
 }
 
+read_cached_count() {
+  if [[ -f "$CACHE_FILE" ]]; then
+    cat "$CACHE_FILE"
+  else
+    echo 0
+  fi
+}
+
 # Use cached value when possible, otherwise recompute and refresh cache.
 if fresh_cache; then
-  count="$(cat "$CACHE_FILE")"
+  count="$(read_cached_count)"
 else
-  count="$(count_updates)"
-  printf '%s\n' "$count" > "$CACHE_FILE"
+  if command -v flock >/dev/null 2>&1; then
+    exec 9>"$LOCK_FILE"
+    if flock -n 9; then
+      count="$(count_updates)"
+      printf '%s\n' "$count" > "$CACHE_FILE"
+    else
+      count="$(read_cached_count)"
+    fi
+  else
+    count="$(count_updates)"
+    printf '%s\n' "$count" > "$CACHE_FILE"
+  fi
 fi
 
 # Plain mode is used by notification scripts.

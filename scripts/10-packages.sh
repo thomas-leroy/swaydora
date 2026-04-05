@@ -11,6 +11,9 @@ REQUIRE_SWAYFX="${REQUIRE_SWAYFX:-1}"
 SWAYFX_COPR="${SWAYFX_COPR:-swayfx/swayfx}"
 # COPR repo used to install swayosd when not in default enabled repos.
 SWAYOSD_COPR="${SWAYOSD_COPR:-erikreider/swayosd}"
+# LibreWolf official repository and key.
+LIBREWOLF_REPO_URL="${LIBREWOLF_REPO_URL:-https://repo.librewolf.net/librewolf.repo}"
+LIBREWOLF_GPG_KEY_URL="${LIBREWOLF_GPG_KEY_URL:-https://repo.librewolf.net/pubkey.gpg}"
 # Handy official RPM used when the package is not available in enabled repos.
 HANDY_RPM_URL="${HANDY_RPM_URL:-https://github.com/cjpais/Handy/releases/download/v0.8.1/Handy-0.8.1-1.x86_64.rpm}"
 # Obsidian official AppImage used when no distro package is available.
@@ -25,6 +28,26 @@ VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 # Print consistent log messages for this script.
 log() {
   printf '[packages] %s\n' "$*"
+}
+
+ensure_no_competing_pkg_manager() {
+  local matches
+
+  matches="$(ps -eo pid=,comm=,args= | awk -v self="$$" '
+    {
+      pid=$1
+      comm=$2
+      if (pid == self) next
+      if (comm == "dnf" || comm == "dnf5" || comm == "packagekitd" || comm == "pkcon" || comm == "rpm") print
+    }
+  ' || true)"
+
+  if [[ -n "$matches" ]]; then
+    printf '[packages] another package-management process is already running; aborting to avoid freezes/conflicts\n' >&2
+    printf '%s\n' "$matches" >&2
+    printf '[packages] close/stop that process, then rerun 10-packages.sh\n' >&2
+    exit 1
+  fi
 }
 
 # Run privileged commands with sudo when not root.
@@ -54,14 +77,15 @@ pkg_is_available() {
   local pkg="$1"
   local out
 
-  # Check exact package match in available packages.
-  out="$(dnf -q list --available "$pkg" 2>/dev/null || true)"
+  # Check installed packages first to avoid expensive repo probes when the
+  # package is already present locally.
+  out="$(dnf -q list --installed "$pkg" 2>/dev/null || true)"
   if awk -v p="$pkg" '$1 ~ ("^" p "(\\.|$)") {found=1} END{exit(found ? 0 : 1)}' <<<"$out"; then
     return 0
   fi
 
-  # Check exact package match in installed packages.
-  out="$(dnf -q list --installed "$pkg" 2>/dev/null || true)"
+  # Check exact package match in available packages.
+  out="$(dnf -q list --available "$pkg" 2>/dev/null || true)"
   awk -v p="$pkg" '$1 ~ ("^" p "(\\.|$)") {found=1} END{exit(found ? 0 : 1)}' <<<"$out"
 }
 
@@ -131,6 +155,25 @@ enabled=1
 gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOT
+}
+
+# Enable LibreWolf repository and import its GPG key up front to avoid
+# interactive trust prompts during package installation.
+enable_librewolf_repo_if_needed() {
+  if pkg_is_available librewolf || pkg_is_installed librewolf; then
+    return 0
+  fi
+
+  log 'importing LibreWolf GPG key'
+  run_as_root rpm --import "$LIBREWOLF_GPG_KEY_URL"
+
+  if dnf -q repolist --all 2>/dev/null | awk 'NR > 1 && $1 == "librewolf" {found=1} END{exit(found ? 0 : 1)}'; then
+    log 'LibreWolf repository already configured'
+    return 0
+  fi
+
+  log 'enabling LibreWolf repository'
+  run_as_root dnf config-manager addrepo --from-repofile "$LIBREWOLF_REPO_URL"
 }
 
 # Ensure `dnf copr` command is available.
@@ -424,6 +467,7 @@ main() {
   # Validate package manager commands.
   require_cmd dnf
   require_cmd rpm
+  ensure_no_competing_pkg_manager
 
   # Arrays used to keep install summary.
   TO_INSTALL=()
@@ -436,6 +480,7 @@ main() {
   enable_swayfx_copr_if_needed
   enable_swayosd_copr_if_needed
   enable_vscode_repo_if_needed
+  enable_librewolf_repo_if_needed
   if ! pkg_is_available swayfx; then
     if [[ "$REQUIRE_SWAYFX" == '1' ]]; then
       printf '[packages] swayfx package is required but still unavailable after COPR enable (%s)\n' "$SWAYFX_COPR" >&2
@@ -575,6 +620,7 @@ main() {
   else
     log 'docker compose package not found (expected docker-compose or docker-compose-plugin)'
   fi
+  queue_pkg librewolf
   queue_pkg code
   queue_pkg thunderbird
   queue_pkg localsend
