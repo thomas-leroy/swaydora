@@ -15,6 +15,8 @@ SWAYOSD_COPR="${SWAYOSD_COPR:-erikreider/swayosd}"
 HANDY_RPM_URL="${HANDY_RPM_URL:-https://github.com/cjpais/Handy/releases/download/v0.8.1/Handy-0.8.1-1.x86_64.rpm}"
 # Obsidian official AppImage used when no distro package is available.
 OBSIDIAN_APPIMAGE_URL="${OBSIDIAN_APPIMAGE_URL:-https://github.com/obsidianmd/obsidian-releases/releases/download/v1.10.6/Obsidian-1.10.6.AppImage}"
+# LocalSend official AppImage used when no distro package is available.
+LOCALSEND_APPIMAGE_URL="${LOCALSEND_APPIMAGE_URL:-https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-linux-x86-64.AppImage}"
 # Bluetuith official release archive used when no distro package is available.
 BLUETUITH_ARCHIVE_URL="${BLUETUITH_ARCHIVE_URL:-https://github.com/bluetuith-org/bluetuith/releases/download/v0.2.6/bluetuith_0.2.6_Linux_x86_64.tar.gz}"
 # VS Code official repository file.
@@ -265,6 +267,45 @@ ensure_obsidian_installed() {
   curl -fsSL "$OBSIDIAN_APPIMAGE_URL" -o "$appimage_path"
   chmod +x "$appimage_path"
   ln -sfn "$appimage_path" "$launcher_path"
+}
+
+# Install LocalSend using distro package when available, otherwise the official AppImage.
+ensure_localsend_installed() {
+  local install_dir appimage_path launcher_path desktop_dir desktop_file
+
+  if command -v localsend >/dev/null 2>&1 || command -v localsend_app >/dev/null 2>&1; then
+    log 'LocalSend already installed'
+    return 0
+  fi
+
+  if pkg_is_available localsend; then
+    queue_pkg localsend
+    return 0
+  fi
+
+  require_cmd curl
+  install_dir="$HOME/.local/opt/localsend"
+  appimage_path="$install_dir/LocalSend.AppImage"
+  launcher_path="$HOME/.local/bin/localsend"
+  desktop_dir="$HOME/.local/share/applications"
+  desktop_file="$desktop_dir/org.localsend.localsend_app.desktop"
+
+  mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  log "installing LocalSend from official AppImage: ${LOCALSEND_APPIMAGE_URL}"
+  curl -fsSL "$LOCALSEND_APPIMAGE_URL" -o "$appimage_path"
+  chmod +x "$appimage_path"
+  ln -sfn "$appimage_path" "$launcher_path"
+  cat > "$desktop_file" <<EOT
+[Desktop Entry]
+Type=Application
+Name=LocalSend
+Comment=Share files with nearby devices
+Exec=$launcher_path
+Icon=org.localsend.localsend_app
+Terminal=false
+Categories=Network;FileTransfer;
+StartupNotify=true
+EOT
 }
 
 # Install Bluetuith using distro package when available, otherwise the official release archive.
@@ -534,6 +575,7 @@ main() {
   fi
   queue_pkg code
   queue_pkg thunderbird
+  queue_pkg localsend
 
   # Audio stack and fallback UI mixer.
   log 'audio packages'
@@ -581,6 +623,7 @@ main() {
   install_queued
   ensure_handy_installed
   ensure_obsidian_installed
+  ensure_localsend_installed
   ensure_bluetuith_installed
 
   # Validate group access for brightness/video controls.

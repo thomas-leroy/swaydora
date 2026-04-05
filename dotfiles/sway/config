@@ -72,6 +72,7 @@ bindsym $mod+Return exec $terminal
 bindsym $mod+space exec $menu
 bindsym $mod+Shift+space exec ~/.config/scripts/handy_launch.sh
 bindsym $mod+Shift+o exec ~/.config/scripts/obsidian_launch.sh
+bindsym $mod+Ctrl+s exec ~/.config/scripts/localsend_launch.sh
 bindsym $mod+e exec sh -lc 'if command -v nautilus >/dev/null 2>&1; then exec nautilus; fi; if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
 
 # Keybindings: command palette (maintained in ~/.config/sway/commands_palette.list).
