@@ -67,6 +67,7 @@ for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt 
 for_window [app_id="obsidian"] floating disable
 # Keybindings: launch terminal.
 bindsym $mod+Return exec $terminal
+bindsym $mod+Shift+Return exec ~/.config/scripts/browser_launch.sh
 
 # Keybindings: launcher.
 bindsym $mod+space exec $menu
