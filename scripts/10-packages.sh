@@ -18,6 +18,9 @@ LIBREWOLF_GPG_KEY_URL="${LIBREWOLF_GPG_KEY_URL:-https://repo.librewolf.net/pubke
 HANDY_RPM_URL="${HANDY_RPM_URL:-https://github.com/cjpais/Handy/releases/download/v0.8.1/Handy-0.8.1-1.x86_64.rpm}"
 # Obsidian official AppImage used when no distro package is available.
 OBSIDIAN_APPIMAGE_URL="${OBSIDIAN_APPIMAGE_URL:-https://github.com/obsidianmd/obsidian-releases/releases/download/v1.10.6/Obsidian-1.10.6.AppImage}"
+# Insomnia official AppImage used when no distro package is available.
+INSOMNIA_VERSION="${INSOMNIA_VERSION:-12.5.0}"
+INSOMNIA_APPIMAGE_URL="${INSOMNIA_APPIMAGE_URL:-https://github.com/Kong/insomnia/releases/download/core@${INSOMNIA_VERSION}/Insomnia.Core-${INSOMNIA_VERSION}.AppImage}"
 # LocalSend official AppImage used when no distro package is available.
 LOCALSEND_APPIMAGE_URL="${LOCALSEND_APPIMAGE_URL:-https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-linux-x86-64.AppImage}"
 # Bluetuith official release archive used when no distro package is available.
@@ -351,6 +354,50 @@ StartupNotify=true
 EOT
 }
 
+# Install Insomnia using distro package when available, otherwise the official AppImage.
+ensure_insomnia_installed() {
+  local install_dir appimage_path launcher_path desktop_dir desktop_file
+
+  if command -v insomnia >/dev/null 2>&1; then
+    log 'Insomnia already installed'
+    return 0
+  fi
+
+  if pkg_is_available insomnia; then
+    if pkg_is_installed insomnia; then
+      log 'Insomnia already installed'
+    else
+      log 'installing Insomnia from enabled repos'
+      run_as_root dnf install -y insomnia
+    fi
+    return 0
+  fi
+
+  require_cmd curl
+  install_dir="$HOME/.local/opt/insomnia"
+  appimage_path="$install_dir/Insomnia.AppImage"
+  launcher_path="$HOME/.local/bin/insomnia"
+  desktop_dir="$HOME/.local/share/applications"
+  desktop_file="$desktop_dir/insomnia.desktop"
+
+  mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  log "installing Insomnia from official AppImage: ${INSOMNIA_APPIMAGE_URL}"
+  curl -fsSL "$INSOMNIA_APPIMAGE_URL" -o "$appimage_path"
+  chmod +x "$appimage_path"
+  ln -sfn "$appimage_path" "$launcher_path"
+  cat > "$desktop_file" <<EOT
+[Desktop Entry]
+Type=Application
+Name=Insomnia
+Comment=API client for REST, GraphQL, gRPC, and more
+Exec=$launcher_path
+Icon=insomnia
+Terminal=false
+Categories=Development;Network;
+StartupNotify=true
+EOT
+}
+
 # Install Bluetuith using distro package when available, otherwise the official release archive.
 ensure_bluetuith_installed() {
   local install_dir archive_path binary_path launcher_path tmp_dir
@@ -625,7 +672,6 @@ main() {
   queue_pkg librewolf
   queue_pkg code
   queue_pkg thunderbird
-  queue_pkg localsend
 
   # Audio stack and fallback UI mixer.
   log 'audio packages'
@@ -673,6 +719,7 @@ main() {
   install_queued
   ensure_handy_installed
   ensure_obsidian_installed
+  ensure_insomnia_installed
   ensure_localsend_installed
   ensure_bluetuith_installed
 

@@ -29,4 +29,5 @@ video/x-matroska=io.github.celluloid_player.Celluloid.desktop;
 video/x-ms-asf=io.github.celluloid_player.Celluloid.desktop;
 video/x-msvideo=io.github.celluloid_player.Celluloid.desktop;
 video/x-ogm+ogg=io.github.celluloid_player.Celluloid.desktop;
+x-scheme-handler/insomnia=insomnia.desktop
 

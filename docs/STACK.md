@@ -155,3 +155,8 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Purpose: code editor/IDE.
 - Local setup: setup script enables Microsoft RPM repo when needed, then installs `code`.
 - Docs: https://code.visualstudio.com/docs
+
+### Insomnia
+- Purpose: API client for designing, testing, and debugging HTTP/gRPC/GraphQL requests.
+- Local setup: setup script installs `insomnia` from enabled repos when available, otherwise falls back to the official AppImage in `~/.local/opt/insomnia`.
+- Docs: https://insomnia.rest/

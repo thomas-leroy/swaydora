@@ -100,6 +100,7 @@ Set `SWAYOSD_COPR=<owner/project>` if you want to override the default SwayOSD C
 - Shell/dev: `zsh`, oh-my-zsh (unattended), `zoxide`, `atuin`, `nodejs`, `npm`, `pnpm`
 - Containers: `docker`, `docker-compose`
 - Editor: Visual Studio Code (`code`) via official Microsoft repo when needed
+- API client: `insomnia` via distro package when available, otherwise official AppImage fallback
 - Wayland desktop extras: `grim`, `slurp`, `hyprpicker`, `wl-clipboard`, `udiskie`, `swaync`, `swayosd`
 - Handy: installed from its official RPM when not available in enabled repos
 
@@ -185,5 +186,5 @@ Swaydora builds on top of a lot of great open source work. The main upstream pro
 - Device helpers: [udisks](https://github.com/storaged-project/udisks), [udiskie](https://github.com/coldfix/udiskie), [v4l-utils](https://gitlab.freedesktop.org/v4l-utils/v4l-utils)
 - Audio stack: [PipeWire](https://pipewire.org/), [WirePlumber](https://pipewire.pages.freedesktop.org/wireplumber/)
 - Shell and CLI tooling: [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh), [bat](https://github.com/sharkdp/bat), [fd](https://github.com/sharkdp/fd), [ripgrep](https://github.com/BurntSushi/ripgrep), [fzf](https://github.com/junegunn/fzf), [duf](https://github.com/muesli/duf), [btop](https://github.com/aristocratos/btop), [zoxide](https://github.com/ajeetdsouza/zoxide), [atuin](https://github.com/atuinsh/atuin), [fastfetch](https://github.com/fastfetch-cli/fastfetch)
-- Developer tooling: [Node.js](https://nodejs.org/), [pnpm](https://pnpm.io/), [Docker](https://github.com/docker), [Visual Studio Code](https://github.com/microsoft/vscode)
+- Developer tooling: [Node.js](https://nodejs.org/), [pnpm](https://pnpm.io/), [Docker](https://github.com/docker), [Visual Studio Code](https://github.com/microsoft/vscode), [Insomnia](https://insomnia.rest/)
 - Extra workflow tool: [Handy](https://github.com/cjpais/Handy)
