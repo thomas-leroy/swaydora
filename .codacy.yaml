@@ -1,0 +1,8 @@
+---
+# Codacy's generic CSS analyzers don't understand the GTK CSS dialect used by
+# Waybar and swaync (`@define-color`, `@color_name`, trailing `@import` for
+# local overrides). Exclude only those files to keep the rest of the repo
+# analyzed normally.
+exclude_paths:
+  - "dotfiles/swaync/style.css"
+  - "dotfiles/waybar/style.css"
