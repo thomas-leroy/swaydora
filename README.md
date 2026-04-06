@@ -1,5 +1,7 @@
 # Swaydora
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2bdade97669c49929b3737eace621e9a)](https://app.codacy.com/gh/thomas-leroy/swaydora?utm_source=github.com&utm_medium=referral&utm_content=thomas-leroy/swaydora&utm_campaign=Badge_Grade)
+
 ```text
  ▗▄▄▖▗▖ ▗▖ ▗▄▖▗▖  ▗▖▗▄▄▄  ▗▄▖ ▗▄▄▖  ▗▄▖
 ▐▌   ▐▌ ▐▌▐▌ ▐▌▝▚▞▘ ▐▌  █▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌
