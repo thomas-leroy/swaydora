@@ -6,6 +6,8 @@
 
 Meta+k|Open this command palette|~/.config/scripts/commands_palette.sh
 Meta+Shift+p|Open custom tools fuzzy menu|~/.config/scripts/tools_menu.sh
+Alt+Tab|Cycle through open windows, release Alt to confirm|~/.config/scripts/window_switcher.sh --cycle-next
+Alt+Shift+Tab|Cycle backward through open windows, release Alt to confirm|~/.config/scripts/window_switcher.sh --cycle-prev
 Meta+Return|Open a Kitty terminal|kitty
 Meta+Shift+Return|Open LibreWolf (default browser)|~/.config/scripts/browser_launch.sh
 Meta+space|Open the app launcher (fuzzel/wofi)|~/.config/scripts/app_launcher.sh

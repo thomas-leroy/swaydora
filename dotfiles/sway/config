@@ -81,6 +81,10 @@ bindsym $mod+k exec ~/.config/scripts/commands_palette.sh
 
 # Keybindings: custom tools menu (fuzzy).
 bindsym $mod+Shift+p exec ~/.config/scripts/tools_menu.sh
+bindsym Mod1+Tab exec ~/.config/scripts/window_switcher.sh --cycle-next
+bindsym Mod1+Shift+Tab exec ~/.config/scripts/window_switcher.sh --cycle-prev
+bindsym --release Alt_L exec ~/.config/scripts/window_switcher.sh --accept
+bindsym --release Alt_R exec ~/.config/scripts/window_switcher.sh --accept
 
 # Keybindings: focus windows with arrows.
 bindsym $mod+Left focus left

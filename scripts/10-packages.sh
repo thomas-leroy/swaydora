@@ -558,6 +558,7 @@ main() {
   queue_pkg bluez
   queue_pkg bluez-tools
   queue_pkg wl-clipboard
+  queue_pkg wtype
   queue_pkg gnome-keyring
   queue_pkg seahorse
   queue_pkg celluloid
