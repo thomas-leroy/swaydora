@@ -9,15 +9,17 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/979ba9f5962d4c4687dbcb3a7169a7c5)](https://app.codacy.com/gh/thomas-leroy/swaydora/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-Swaydora is a Fedora + SwayFX desktop setup built to share my vision of an efficient, polished developer workstation. The goal is a practical daily driver with strong defaults, fast setup, and just enough visual refinement to feel good to use.
+Swaydora is a Fedora + SwayFX desktop setup focused on helping with the initial setup of a new machine. It is meant to bootstrap a fresh Fedora environment quickly, with opinionated defaults for a polished developer workstation.
 
-This project is strongly inspired by [Omarchy](https://omarchy.org/), adapted here around Fedora, SwayFX, and my own workflow choices.
+This is a side project built as a Fedora-flavored alternative to the excellent [Omarchy](https://omarchy.org/), adapted here around Fedora, SwayFX, and my own workflow choices.
 
 > Status: **ALPHA** - **UNSTABLE**. Breaking changes and regressions are expected.
+> Recommendation: use this to prepare a fresh machine or a staging VM first. I do not recommend migrating a machine that is already used daily.
 
 ## Goals
 
-- Efficient daily desktop for development work
+- Fast initial setup for a fresh Fedora machine
+- Efficient desktop for development work
 - Stable and secure Fedora-based environment
 - Sensible defaults with lightweight visual polish
 - Reproducible, idempotent setup scripts
