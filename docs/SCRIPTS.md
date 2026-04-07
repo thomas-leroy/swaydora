@@ -1,6 +1,7 @@
 # Scripts Reference
 
 ## Setup scripts (`scripts/`)
+
 - `00-bootstrap.sh`: create baseline folders.
 - `10-packages.sh`: install packages with Fedora-aware fallbacks and developer bootstrap.
 - `20-services.sh`: enable/start required systemd services/timers.
@@ -19,6 +20,7 @@ It also validates Fedora 43+, disk/RAM requirements, and critical commands befor
 Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh`.
 
 ## Runtime scripts (`dotfiles/scripts/`)
+
 - Notifications: `notify_test.sh`, `notify_updates.sh`, `notification_center_status.sh`, `notification_center_toggle.sh`
 - Updates: `updates_check.sh`, `updates_apply.sh`
 - Indicators: `indicator_mic.sh`, `indicator_cam.sh`

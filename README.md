@@ -42,7 +42,7 @@ See [SECURITY.md](SECURITY.md) for the support scope and reporting guidance.
 Run from the repo root inside a Fedora 43 VM or fresh machine:
 
 ```bash
-DRY_RUN=1 scripts/10-packages.sh
+scripts/10-packages.sh
 scripts/00-bootstrap.sh
 scripts/10-packages.sh
 scripts/20-services.sh
@@ -60,12 +60,14 @@ Then log into SwayFX and run:
 
 For VirtioFS mounting, snapshots, rollback, and full execution notes, see [docs/VM_WORKFLOW.md](docs/VM_WORKFLOW.md).
 
+Once inside the session, see the direct [Sway keybindings reference](docs/KEYBINDINGS.md).
+
 ## Documentation
 
+- [docs/KEYBINDINGS.md](docs/KEYBINDINGS.md): Sway keybindings
 - [docs/VM_WORKFLOW.md](docs/VM_WORKFLOW.md): VM setup, execution order, snapshots, rollback
 - [docs/STACK.md](docs/STACK.md): installed tools/services, purpose, local setup, upstream docs
 - [docs/SCRIPTS.md](docs/SCRIPTS.md): setup scripts, runtime helpers, flags, shared logging
-- [docs/KEYBINDINGS.md](docs/KEYBINDINGS.md): Sway keybindings
 - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md): common issues and fixes
 - [docs/CONVENTIONS.md](docs/CONVENTIONS.md): repository conventions and local overrides
 

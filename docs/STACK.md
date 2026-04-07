@@ -5,21 +5,25 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ## Display / WM
 
 ### SwayFX
+
 - Purpose: Wayland compositor and tiling WM with visual effects support.
 - Local setup: installed via COPR `swayfx/swayfx` in `scripts/10-packages.sh`; config in `dotfiles/sway/config` with `corner_radius 12` and 15px gaps.
 - Docs: https://github.com/WillPower3309/swayfx
 
 ### Waybar
+
 - Purpose: top bar with workspaces, active window, updates, audio, VPN, layout switch, notifications, and power button.
 - Local setup: config in `dotfiles/waybar/config.jsonc`, styles in `dotfiles/waybar/style.css`, custom modules in `dotfiles/scripts/`.
 - Docs: https://github.com/Alexays/Waybar
 
 ### Fuzzel
+
 - Purpose: fast Wayland-native app launcher (drun), preferred backend for `Meta+space`.
 - Local setup: config in `dotfiles/fuzzel/fuzzel.ini`; app launcher script `dotfiles/scripts/app_launcher.sh` prefers `fuzzel` when installed.
 - Docs: https://codeberg.org/dnkl/fuzzel
 
 ### Wofi
+
 - Purpose: fallback app launcher and dmenu-style selector with richer styling options.
 - Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh`, and `dotfiles/scripts/app_launcher.sh` can fallback to Wofi.
 - Docs: https://hg.sr.ht/~scoopta/wofi
@@ -27,16 +31,19 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ## Session / Notifications
 
 ### wlogout
+
 - Purpose: graphical power screen (lock/logout/reboot/shutdown).
 - Local setup: theme and actions in `dotfiles/wlogout/layout` and `dotfiles/wlogout/style.css`; opened by `dotfiles/scripts/power_screen.sh`.
 - Docs: https://github.com/ArtsyMacaw/wlogout
 
 ### swaync (SwayNotificationCenter)
+
 - Purpose: notifications and notification center.
 - Local setup: autostarted in Sway config; themed via `dotfiles/swaync/style.css`; Waybar module uses `notification_center_status.sh` and `notification_center_toggle.sh`.
 - Docs: https://github.com/ErikReider/SwayNotificationCenter
 
 ### swaylock / swayidle
+
 - Purpose: screen lock and idle handling.
 - Local setup: lock bind in Sway (`Super+L`), power menu lock action uses `swaylock`.
 - Docs: https://github.com/swaywm/swaylock
@@ -45,12 +52,14 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ## Wallpaper / Screenshots / Clipboard
 
 ### swww (fallback swaybg)
+
 - Purpose: wallpaper backend.
 - Local setup: `dotfiles/scripts/wallpaper_start.sh` starts `swww` if present, else `swaybg`; `dotfiles/scripts/wallpaper_picker.sh` uses Wofi fuzzy search to pick/apply wallpapers.
 - Docs: https://github.com/LGFae/swww
 - Docs: https://github.com/swaywm/swaybg
 
 ### dharmx/walls (optional source repository)
+
 - Purpose: curated wallpaper collection for picker/search.
 - Local setup: `scripts/80-wallpapers-sync.sh` keeps a clone in `~/.cache/walls-sync/dharmx-walls`, sparse-checkout `abstract` by default, then exports files into `~/.local/share/wallpapers/Wallpapers` without `.git`.
 - Runtime: `Super+Shift+W` opens a Wofi fuzzy picker using `dotfiles/scripts/wallpaper_picker.sh`; entries use the format `subfolder - file.ext`.
@@ -58,12 +67,14 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://github.com/dharmx/walls
 
 ### grim + slurp
+
 - Purpose: region screenshots.
 - Local setup: `Print` bind saves screenshot to `~/Pictures`.
 - Docs: https://github.com/emersion/grim
 - Docs: https://github.com/emersion/slurp
 
 ### wl-clipboard + cliphist/clipman
+
 - Purpose: Wayland clipboard access/history.
 - Local setup: installed by package script with distro-aware fallback (`cliphist` -> `clipman`).
 - Docs: https://github.com/bugaevc/wl-clipboard
@@ -73,23 +84,27 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ## Audio / Video / Devices
 
 ### PipeWire + WirePlumber
+
 - Purpose: audio server and session manager (`wpctl` controls).
 - Local setup: Waybar audio/mic modules and keybinds use `wpctl` scripts.
 - Docs: https://pipewire.org/
 - Docs: https://pipewire.pages.freedesktop.org/wireplumber/
 
 ### SwayOSD
+
 - Purpose: on-screen display overlay for volume/brightness feedback.
 - Local setup: `scripts/10-packages.sh` enables COPR `erikreider/swayosd` when needed, installs `swayosd` when available, and `dotfiles/sway/config` autostarts `swayosd-server` when present.
 - Docs: https://github.com/ErikReider/SwayOSD
 
 ### UDisks2 + udiskie
+
 - Purpose: removable disk mount/unmount with tray support.
 - Local setup: `udiskie --tray` autostart, disk menu script `dotfiles/scripts/disks_menu.sh`.
 - Docs: https://github.com/storaged-project/udisks
 - Docs: https://github.com/coldfix/udiskie
 
 ### v4l-utils
+
 - Purpose: webcam tooling (`v4l2-ctl`), camera status checks.
 - Local setup: camera indicator script checks `/dev/video*` usage.
 - Docs: https://gitlab.freedesktop.org/v4l-utils/v4l-utils
@@ -97,26 +112,31 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ## Security / System Services
 
 ### firewalld
+
 - Purpose: host firewall management.
 - Local setup: enabled and started by `scripts/20-services.sh`.
 - Docs: https://firewalld.org/
 
 ### fwupd
+
 - Purpose: firmware metadata refresh/updates.
 - Local setup: `fwupd-refresh.timer` enabled when available.
 - Docs: https://fwupd.org/
 
 ### dnf automatic (dnf5/dnf variants)
+
 - Purpose: automated update checks.
 - Local setup: `dnf5-automatic.timer` and/or `dnf-automatic.timer` enabled when present.
 - Docs: https://dnf.readthedocs.io/
 
 ### openssh-server
+
 - Purpose: remote SSH access to the machine.
 - Local setup: `sshd.service` enabled by `scripts/20-services.sh`.
 - Docs: https://www.openssh.com/
 
 ### Docker + Compose
+
 - Purpose: container runtime and compose workflows.
 - Local setup: installed with package fallbacks; `docker.service` enabled; user added to `docker` group by setup script.
 - Docs: https://docs.docker.com/engine/
@@ -125,12 +145,14 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ## Shell / Developer Tooling
 
 ### zsh + oh-my-zsh
+
 - Purpose: interactive shell and plugin/theme framework.
 - Local setup: installed unattended in `scripts/10-packages.sh`; default shell switched to zsh; `~/.zshrc` is patched idempotently to source `~/.config/zsh/aliases.zsh` and `~/.config/zsh/tools.zsh`.
 - Docs: https://www.zsh.org/
 - Docs: https://ohmyz.sh/
 
 ### bat / fd / ripgrep / fzf / duf / btop / zoxide / atuin / fastfetch
+
 - Purpose: modern CLI baseline for navigation, search, history, monitoring.
 - Local setup:
   - aliases in `dotfiles/zsh/aliases.zsh`: `cat -> bat`, `find -> fd`
@@ -147,6 +169,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://github.com/fastfetch-cli/fastfetch
 
 ### Node.js / npm / pnpm
+
 - Purpose: JavaScript runtime + package managers.
 - Local setup: `nodejs` and `npm` via distro packages when available; `pnpm` via package or npm fallback.
 - Docs: https://nodejs.org/
@@ -154,11 +177,13 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://pnpm.io/
 
 ### VS Code (`code`)
+
 - Purpose: code editor/IDE.
 - Local setup: setup script enables Microsoft RPM repo when needed, then installs `code`.
 - Docs: https://code.visualstudio.com/docs
 
 ### Insomnia
+
 - Purpose: API client for designing, testing, and debugging HTTP/gRPC/GraphQL requests.
 - Local setup: setup script installs `insomnia` from enabled repos when available, otherwise falls back to the official SHA256-verified AppImage in `~/.local/opt/insomnia`.
 - Docs: https://insomnia.rest/

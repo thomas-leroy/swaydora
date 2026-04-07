@@ -1,24 +1,25 @@
 # VM Workflow
 
 ## 1) Mount VirtioFS
+
 ```bash
 sudo mkdir -p /mnt/dotfiles
 sudo mount -t virtiofs dotfiles /mnt/dotfiles
 ```
 
 Persist in fstab:
+
 ```fstab
 dotfiles /mnt/dotfiles virtiofs defaults,nofail,x-systemd.automount 0 0
 ```
 
 ## 2) Run Setup Scripts
-Preview package, repository, download, and group changes first:
-```bash
-DRY_RUN=1 scripts/10-packages.sh
-```
+
+Install packages, repository, download, and group changes first:
 
 ```bash
 scripts/00-bootstrap.sh
+scripts/10-packages.sh
 scripts/10-packages.sh
 scripts/20-services.sh
 scripts/30-link-dotfiles.sh
@@ -34,14 +35,17 @@ When `swayosd` is unavailable in enabled repos, setup enables COPR `erikreider/s
 Set `SWAYOSD_COPR=<owner/project>` to override the default SwayOSD COPR source.
 
 ## 3) Start Session
+
 - Login into SwayFX.
 - Run `~/.config/scripts/reload_env.sh`.
 
 ## 4) Snapshot Strategy
+
 - Snapshot before package stack updates.
 - Snapshot before Sway/Waybar config rewrites.
 
 ## 5) Rollback
+
 - Restore VM snapshot.
 - Or restore `~/.backup_configs/config_backup_YYYYMMDD_HHMMSS/` created by `scripts/30-link-dotfiles.sh`.
 - Per-config `*.bak*` files may also exist for configs replaced during linking.
