@@ -36,6 +36,9 @@ LOCALSEND_APPIMAGE_SHA256="${LOCALSEND_APPIMAGE_SHA256:-c1a1e7bc7bb7eebdf6c365a3
 BLUETUITH_ARCHIVE_URL="${BLUETUITH_ARCHIVE_URL:-https://github.com/bluetuith-org/bluetuith/releases/download/v0.2.6/bluetuith_0.2.6_Linux_x86_64.tar.gz}"
 # VS Code official repository file.
 VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
+# Oh My Zsh official repository used for manual installation.
+OH_MY_ZSH_REPO_URL="${OH_MY_ZSH_REPO_URL:-https://github.com/ohmyzsh/ohmyzsh.git}"
+OH_MY_ZSH_REF="${OH_MY_ZSH_REF:-master}"
 MIN_FEDORA_VERSION="${MIN_FEDORA_VERSION:-43}"
 MIN_DISK_KIB="${MIN_DISK_KIB:-8388608}"
 MIN_RAM_KIB="${MIN_RAM_KIB:-8388608}"
@@ -699,8 +702,11 @@ ensure_bluetuith_installed() {
   run_cmd rm -rf "$tmp_dir"
 }
 
-# Install oh-my-zsh for the current user in unattended mode.
+# Install oh-my-zsh for the current user without executing a remote installer.
 install_oh_my_zsh_if_needed() {
+  local install_dir="$HOME/.oh-my-zsh"
+  local clone_dir
+
   if [[ -d "$HOME/.oh-my-zsh" ]]; then
     log_success 'oh-my-zsh already installed'
     return 0
@@ -711,17 +717,30 @@ install_oh_my_zsh_if_needed() {
     return 0
   fi
 
-  if ! command -v curl >/dev/null 2>&1; then
-    log_warn 'curl not found, skipping oh-my-zsh install'
+  if ! command -v git >/dev/null 2>&1; then
+    log_warn 'git not found, skipping oh-my-zsh install'
     return 0
   fi
 
-  log 'installing oh-my-zsh in unattended mode'
+  log "installing oh-my-zsh from git repository: ${OH_MY_ZSH_REPO_URL} (${OH_MY_ZSH_REF})"
+  clone_dir="$TEMP_DIR/oh-my-zsh"
   if is_dry_run; then
-    log 'DRY_RUN: would run oh-my-zsh unattended installer from https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh'
+    run_cmd git init "$clone_dir"
+    run_cmd git -C "$clone_dir" remote add origin "$OH_MY_ZSH_REPO_URL"
+    run_cmd git -C "$clone_dir" fetch --depth=1 origin "$OH_MY_ZSH_REF"
+    run_cmd git -C "$clone_dir" checkout --detach FETCH_HEAD
+    run_cmd git -C "$clone_dir" rev-parse --verify HEAD
+    run_cmd mv "$clone_dir" "$install_dir"
     return 0
   fi
-  RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+  git init "$clone_dir"
+  git -C "$clone_dir" remote add origin "$OH_MY_ZSH_REPO_URL"
+  git -C "$clone_dir" fetch --depth=1 origin "$OH_MY_ZSH_REF"
+  git -C "$clone_dir" checkout --detach FETCH_HEAD
+  git -C "$clone_dir" rev-parse --verify HEAD >/dev/null
+  mv "$clone_dir" "$install_dir"
+  log_success "oh-my-zsh installed at $install_dir ($(git -C "$install_dir" rev-parse --short HEAD))"
 }
 
 # Ensure zsh loads dotfiles aliases/tooling from ~/.config/zsh.
@@ -953,6 +972,7 @@ main() {
   queue_pkg sed
   queue_pkg gcc
   queue_pkg python3
+  queue_pkg git
   queue_pkg git-extras
   queue_pkg tig
   queue_pkg ripgrep

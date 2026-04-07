@@ -147,7 +147,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### zsh + oh-my-zsh
 
 - Purpose: interactive shell and plugin/theme framework.
-- Local setup: installed unattended in `scripts/10-packages.sh`; default shell switched to zsh; `~/.zshrc` is patched idempotently to source `~/.config/zsh/aliases.zsh` and `~/.config/zsh/tools.zsh`.
+- Local setup: installed from the official Git repository in `scripts/10-packages.sh` without `curl | sh`; default shell switched to zsh; `~/.zshrc` is patched idempotently to source `~/.config/zsh/aliases.zsh` and `~/.config/zsh/tools.zsh`.
 - Docs: https://www.zsh.org/
 - Docs: https://ohmyz.sh/
 
