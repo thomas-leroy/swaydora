@@ -12,6 +12,11 @@ dotfiles /mnt/dotfiles virtiofs defaults,nofail,x-systemd.automount 0 0
 ```
 
 ## 2) Run Setup Scripts
+Preview package, repository, download, and group changes first:
+```bash
+DRY_RUN=1 scripts/10-packages.sh
+```
+
 ```bash
 scripts/00-bootstrap.sh
 scripts/10-packages.sh
@@ -20,7 +25,13 @@ scripts/30-link-dotfiles.sh
 scripts/40-themes.sh
 scripts/50-fonts.sh
 scripts/60-waybar-reload.sh
+scripts/80-wallpapers-sync.sh   # optional: sync wallpapers from dharmx/walls snapshot
 ```
+
+SwayFX is mandatory for this profile. When unavailable in enabled repos, setup automatically enables COPR `swayfx/swayfx`.
+Set `SWAYFX_COPR=<owner/project>` to override the default COPR source.
+When `swayosd` is unavailable in enabled repos, setup enables COPR `erikreider/swayosd`.
+Set `SWAYOSD_COPR=<owner/project>` to override the default SwayOSD COPR source.
 
 ## 3) Start Session
 - Login into SwayFX.

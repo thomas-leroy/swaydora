@@ -53,6 +53,8 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### dharmx/walls (optional source repository)
 - Purpose: curated wallpaper collection for picker/search.
 - Local setup: `scripts/80-wallpapers-sync.sh` keeps a clone in `~/.cache/walls-sync/dharmx-walls`, sparse-checkout `abstract` by default, then exports files into `~/.local/share/wallpapers/Wallpapers` without `.git`.
+- Runtime: `Super+Shift+W` opens a Wofi fuzzy picker using `dotfiles/scripts/wallpaper_picker.sh`; entries use the format `subfolder - file.ext`.
+- Options: set `WALLS_FULL=1` for a full clone, or change `WALLS_CATEGORIES` to sync other folders.
 - Docs: https://github.com/dharmx/walls
 
 ### grim + slurp
