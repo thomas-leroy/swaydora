@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/logging.sh"
 setup_logger themes
+WRITTEN_FILES=()
 
 # Write a minimal GTK settings.ini file to the target path.
 write_gtk_settings() {
@@ -17,6 +18,7 @@ gtk-icon-theme-name=Adwaita
 gtk-cursor-theme-name=Adwaita
 gtk-font-name=JetBrainsMono Nerd Font 11
 EOT
+  WRITTEN_FILES+=("$target")
 }
 
 main() {
@@ -33,7 +35,11 @@ THEME_PALETTE_DIR=$HOME/.config/themes/palettes
 THEME_PALETTE_DARK=$HOME/.config/themes/palettes/emberstone-dark.json
 THEME_PALETTE_EMBERSTONE_DARK=$HOME/.config/themes/palettes/emberstone-dark.json
 EOT
+  WRITTEN_FILES+=("$HOME/.config/environment.d/90-theme.conf")
 
+  log 'summary:'
+  log "files written: ${#WRITTEN_FILES[@]}"
+  printf '  - %s\n' "${WRITTEN_FILES[@]}"
   log_success 'applied minimal GTK/icon/cursor defaults'
 }
 

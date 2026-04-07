@@ -18,9 +18,15 @@ main() {
   require_cmd mkdir
 
   # Create base directories used by setup/runtime scripts.
-  log 'creating user config and cache directories'
-  mkdir -p "$HOME/.config" "$HOME/.local/share/fonts" "$HOME/.cache/dotfiles"
+  local -a created_dirs
+  created_dirs=("$HOME/.config" "$HOME/.local/share/fonts" "$HOME/.cache/dotfiles")
 
+  log 'creating user config and cache directories'
+  mkdir -p "${created_dirs[@]}"
+
+  log 'summary:'
+  log "directories ensured: ${#created_dirs[@]}"
+  printf '  - %s\n' "${created_dirs[@]}"
   log_success 'done'
 }
 

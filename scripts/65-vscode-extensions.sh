@@ -23,7 +23,9 @@ main() {
   }
 
   local extension
+  local -a installed_extensions
   local -i total=0
+  installed_extensions=()
 
   while IFS= read -r extension || [[ -n "$extension" ]]; do
     [[ -n "$extension" ]] || continue
@@ -31,8 +33,14 @@ main() {
     total+=1
     log "installing: $extension"
     "$CODE_BIN" --install-extension "$extension"
+    installed_extensions+=("$extension")
   done < "$EXTENSIONS_FILE"
 
+  log 'summary:'
+  log "extensions processed: $total"
+  if [[ "${#installed_extensions[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${installed_extensions[@]}"
+  fi
   log_success "done (${total} extension(s) processed)"
 }
 

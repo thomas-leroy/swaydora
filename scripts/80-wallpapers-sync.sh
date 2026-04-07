@@ -19,6 +19,8 @@ WALLS_DEST="${WALLS_DEST:-$HOME/.local/share/wallpapers/Wallpapers}"
 WALLS_WORKDIR="${WALLS_WORKDIR:-$HOME/.cache/walls-sync/dharmx-walls}"
 WALLS_FULL="${WALLS_FULL:-0}"
 WALLS_CATEGORIES="${WALLS_CATEGORIES:-abstract}"
+SYNC_ACTION=''
+EXPORT_ACTION=''
 
 ensure_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -43,6 +45,7 @@ clone_repo() {
   if [[ "$WALLS_FULL" == '1' ]]; then
     log 'cloning full wallpaper repository (this can be very large)'
     git clone "$WALLS_REPO_URL" "$WALLS_WORKDIR"
+    SYNC_ACTION='cloned full repository'
     return 0
   fi
 
@@ -50,6 +53,7 @@ clone_repo() {
   git clone --filter=blob:none --no-checkout "$WALLS_REPO_URL" "$WALLS_WORKDIR"
   setup_sparse_checkout
   git -C "$WALLS_WORKDIR" checkout main || git -C "$WALLS_WORKDIR" checkout master
+  SYNC_ACTION="cloned sparse repository (${WALLS_CATEGORIES})"
 }
 
 update_repo() {
@@ -57,12 +61,14 @@ update_repo() {
     log 'updating full wallpaper repository'
     git -C "$WALLS_WORKDIR" sparse-checkout disable >/dev/null 2>&1 || true
     git -C "$WALLS_WORKDIR" pull --ff-only
+    SYNC_ACTION='updated full repository'
     return 0
   fi
 
   setup_sparse_checkout
   log 'updating sparse wallpaper repository'
   git -C "$WALLS_WORKDIR" pull --ff-only
+  SYNC_ACTION="updated sparse repository (${WALLS_CATEGORIES})"
 }
 
 export_snapshot() {
@@ -76,6 +82,7 @@ export_snapshot() {
   fi
 
   rm -rf "$WALLS_DEST/.git"
+  EXPORT_ACTION="$WALLS_WORKDIR -> $WALLS_DEST"
 }
 
 main() {
@@ -88,6 +95,9 @@ main() {
   fi
 
   export_snapshot
+  log 'summary:'
+  log "sync action: $SYNC_ACTION"
+  log "exported wallpapers: $EXPORT_ACTION"
   log_success "done; wallpapers available under: $WALLS_DEST"
   log 'tip: run ~/.config/scripts/wallpaper_picker.sh to search/apply a wallpaper with Wofi'
 }

@@ -4,6 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/logging.sh"
 setup_logger services
+ENABLED_UNITS=()
+SKIPPED_UNITS=()
 
 # Run privileged commands with sudo when not root.
 run_as_root() {
@@ -25,8 +27,10 @@ enable_now() {
   if unit_exists "$unit"; then
     log "enabling and starting: $unit"
     run_as_root systemctl enable --now "$unit"
+    ENABLED_UNITS+=("$unit")
   else
     log_warn "unit not found, skipping: $unit"
+    SKIPPED_UNITS+=("$unit")
   fi
 }
 
@@ -40,6 +44,16 @@ main() {
   enable_now bluetooth.service
   enable_now docker.service
   enable_now sshd.service
+
+  log 'summary:'
+  log "services/timers enabled: ${#ENABLED_UNITS[@]}"
+  if [[ "${#ENABLED_UNITS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${ENABLED_UNITS[@]}"
+  fi
+  log "services/timers skipped: ${#SKIPPED_UNITS[@]}"
+  if [[ "${#SKIPPED_UNITS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${SKIPPED_UNITS[@]}"
+  fi
   log_success 'done'
 }
 

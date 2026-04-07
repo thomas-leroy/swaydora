@@ -17,6 +17,9 @@ KEEP_ZSHRC_OPT="${KEEP_ZSHRC:-1}"
 OH_MY_ZSH_REPO_URL="${OH_MY_ZSH_REPO_URL:-https://github.com/ohmyzsh/ohmyzsh.git}"
 OH_MY_ZSH_REF="${OH_MY_ZSH_REF:-master}"
 TEMP_DIR=''
+INSTALLED_PACKAGES=()
+WRITTEN_FILES=()
+SHELL_CHANGED=0
 
 cleanup_temp_dir() {
   if [[ -z "${TEMP_DIR:-}" ]]; then
@@ -47,6 +50,7 @@ ensure_package() {
   if dnf -q list --available "$pkg" >/dev/null 2>&1 || dnf -q list --installed "$pkg" >/dev/null 2>&1; then
     log "installing package: $pkg"
     run_as_root dnf install -y "$pkg"
+    INSTALLED_PACKAGES+=("$pkg")
     return 0
   fi
 
@@ -78,9 +82,11 @@ install_oh_my_zsh() {
   git -C "$clone_dir" checkout --detach FETCH_HEAD
   git -C "$clone_dir" rev-parse --verify HEAD >/dev/null
   mv "$clone_dir" "$install_dir"
+  WRITTEN_FILES+=("$install_dir")
 
   if [[ "$KEEP_ZSHRC_OPT" != '1' && -f "$install_dir/templates/zshrc.zsh-template" ]]; then
     cp "$install_dir/templates/zshrc.zsh-template" "$HOME/.zshrc"
+    WRITTEN_FILES+=("$HOME/.zshrc")
     log 'created ~/.zshrc from oh-my-zsh template'
   fi
 
@@ -109,6 +115,7 @@ set_default_shell_if_requested() {
 
   log "setting default shell to $zsh_path for user $USER (current: ${current_shell:-unknown})"
   run_as_root usermod -s "$zsh_path" "$USER"
+  SHELL_CHANGED=1
   log_success 'default shell updated; logout/login required'
 }
 
@@ -122,6 +129,17 @@ main() {
   ensure_package git
   install_oh_my_zsh
   set_default_shell_if_requested
+
+  log 'summary:'
+  log "packages installed: ${#INSTALLED_PACKAGES[@]}"
+  if [[ "${#INSTALLED_PACKAGES[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${INSTALLED_PACKAGES[@]}"
+  fi
+  log "files/directories written: ${#WRITTEN_FILES[@]}"
+  if [[ "${#WRITTEN_FILES[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${WRITTEN_FILES[@]}"
+  fi
+  log "default shell changed: $SHELL_CHANGED"
   log_success 'done'
 }
 

@@ -41,7 +41,7 @@ OH_MY_ZSH_REPO_URL="${OH_MY_ZSH_REPO_URL:-https://github.com/ohmyzsh/ohmyzsh.git
 OH_MY_ZSH_REF="${OH_MY_ZSH_REF:-master}"
 MIN_FEDORA_VERSION="${MIN_FEDORA_VERSION:-43}"
 MIN_DISK_KIB="${MIN_DISK_KIB:-8388608}"
-MIN_RAM_KIB="${MIN_RAM_KIB:-8388608}"
+MIN_RAM_KIB="${MIN_RAM_KIB:-4388608}"
 
 TEMP_DIR=''
 
@@ -253,6 +253,18 @@ record_group_modification() {
   GROUP_MODIFICATIONS+=("$1")
 }
 
+record_file_action() {
+  FILE_ACTIONS+=("$1")
+}
+
+record_service_action() {
+  SERVICE_ACTIONS+=("$1")
+}
+
+record_shell_action() {
+  SHELL_ACTIONS+=("$1")
+}
+
 install_pkg_now() {
   local pkg="$1"
 
@@ -363,6 +375,7 @@ enable_vscode_repo_if_needed() {
 
   log 'enabling Visual Studio Code repository'
   run_as_root rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  record_file_action "$VSCODE_REPO_FILE"
   run_as_root tee "$VSCODE_REPO_FILE" >/dev/null <<'EOT'
 [code]
 name=Visual Studio Code
@@ -390,6 +403,7 @@ enable_librewolf_repo_if_needed() {
 
   log 'enabling LibreWolf repository'
   run_as_root dnf config-manager addrepo --from-repofile "$LIBREWOLF_REPO_URL"
+  record_service_action "repo: librewolf"
 }
 
 # Ensure `dnf copr` command is available.
@@ -425,6 +439,7 @@ enable_swayfx_copr_if_needed() {
   log "swayfx not found in current repos, enabling COPR: ${SWAYFX_COPR}"
   ensure_copr_command
   run_as_root dnf -y copr enable "${SWAYFX_COPR}"
+  record_service_action "copr: ${SWAYFX_COPR}"
 }
 
 # Enable swayosd COPR when swayosd package is not available yet.
@@ -436,6 +451,7 @@ enable_swayosd_copr_if_needed() {
   log "swayosd not found in current repos, enabling COPR: ${SWAYOSD_COPR}"
   ensure_copr_command
   run_as_root dnf -y copr enable "${SWAYOSD_COPR}"
+  record_service_action "copr: ${SWAYOSD_COPR}"
 }
 
 # Verify whether current user can access brightness/video related devices.
@@ -507,6 +523,7 @@ ensure_pnpm_installed() {
   fi
 
   log 'installing pnpm globally via npm fallback'
+  record_direct_package_install 'npm:pnpm'
   run_as_root npm install -g pnpm
 }
 
@@ -558,6 +575,8 @@ ensure_obsidian_installed() {
   download_verified_sha256 "$OBSIDIAN_APPIMAGE_URL" "$OBSIDIAN_APPIMAGE_SHA256" "$appimage_path"
   run_cmd chmod +x "$appimage_path"
   run_cmd ln -sfn "$appimage_path" "$launcher_path"
+  record_file_action "$appimage_path"
+  record_file_action "$launcher_path -> $appimage_path"
 }
 
 # Install LocalSend using distro package when available, otherwise the official AppImage.
@@ -589,8 +608,11 @@ ensure_localsend_installed() {
   download_verified_sha256 "$LOCALSEND_APPIMAGE_URL" "$LOCALSEND_APPIMAGE_SHA256" "$appimage_path"
   run_cmd chmod +x "$appimage_path"
   run_cmd ln -sfn "$appimage_path" "$launcher_path"
+  record_file_action "$appimage_path"
+  record_file_action "$launcher_path -> $appimage_path"
   if is_dry_run; then
     log "DRY_RUN: would write desktop entry: $desktop_file"
+    record_file_action "$desktop_file"
     return 0
   fi
   cat > "$desktop_file" <<EOT
@@ -604,6 +626,7 @@ Terminal=false
 Categories=Network;FileTransfer;
 StartupNotify=true
 EOT
+  record_file_action "$desktop_file"
 }
 
 # Install Insomnia using distro package when available, otherwise the official AppImage.
@@ -645,8 +668,11 @@ ensure_insomnia_installed() {
   download_verified_sha256 "$INSOMNIA_APPIMAGE_URL" "$INSOMNIA_APPIMAGE_SHA256" "$appimage_path"
   run_cmd chmod +x "$appimage_path"
   run_cmd ln -sfn "$appimage_path" "$launcher_path"
+  record_file_action "$appimage_path"
+  record_file_action "$launcher_path -> $appimage_path"
   if is_dry_run; then
     log "DRY_RUN: would write desktop entry: $desktop_file"
+    record_file_action "$desktop_file"
     return 0
   fi
   cat > "$desktop_file" <<EOT
@@ -660,6 +686,7 @@ Terminal=false
 Categories=Development;Network;
 StartupNotify=true
 EOT
+  record_file_action "$desktop_file"
 }
 
 # Install Bluetuith using distro package when available, otherwise the official release archive.
@@ -700,6 +727,8 @@ ensure_bluetuith_installed() {
   run_cmd install -m 0755 "$tmp_dir/bluetuith" "$binary_path"
   run_cmd ln -sfn "$binary_path" "$launcher_path"
   run_cmd rm -rf "$tmp_dir"
+  record_file_action "$binary_path"
+  record_file_action "$launcher_path -> $binary_path"
 }
 
 # Install oh-my-zsh for the current user without executing a remote installer.
@@ -731,6 +760,7 @@ install_oh_my_zsh_if_needed() {
     run_cmd git -C "$clone_dir" checkout --detach FETCH_HEAD
     run_cmd git -C "$clone_dir" rev-parse --verify HEAD
     run_cmd mv "$clone_dir" "$install_dir"
+    record_file_action "$install_dir"
     return 0
   fi
 
@@ -740,6 +770,7 @@ install_oh_my_zsh_if_needed() {
   git -C "$clone_dir" checkout --detach FETCH_HEAD
   git -C "$clone_dir" rev-parse --verify HEAD >/dev/null
   mv "$clone_dir" "$install_dir"
+  record_file_action "$install_dir"
   log_success "oh-my-zsh installed at $install_dir ($(git -C "$install_dir" rev-parse --short HEAD))"
 }
 
@@ -763,6 +794,7 @@ EOT
       log "DRY_RUN: would replace existing dotfiles-zsh block in $zshrc"
     fi
     log "DRY_RUN: would append dotfiles-zsh block to $zshrc"
+    record_file_action "$zshrc"
     return 0
   fi
 
@@ -778,6 +810,7 @@ EOT
   fi
 
   printf '\n%s\n' "$block" >> "$zshrc"
+  record_file_action "$zshrc"
   log 'ensured ~/.zshrc sources ~/.config/zsh aliases and tools'
 }
 
@@ -806,6 +839,7 @@ ensure_default_shell_zsh() {
       run_as_root usermod -s "$zsh_path" "$USER"
     fi
     log 'DRY_RUN: default shell would be updated; logout/login would be required'
+    record_shell_action "$USER -> $zsh_path"
     return 0
   fi
 
@@ -813,12 +847,14 @@ ensure_default_shell_zsh() {
   if command -v chsh >/dev/null 2>&1; then
     if chsh -s "$zsh_path" "$USER" >/dev/null 2>&1; then
       log 'default shell changed using chsh'
+      record_shell_action "$USER -> $zsh_path"
       log 'default shell updated; logout/login is required to apply it everywhere'
       return 0
     fi
   fi
 
   run_as_root usermod -s "$zsh_path" "$USER"
+  record_shell_action "$USER -> $zsh_path"
   log 'default shell updated; logout/login is required to apply it everywhere'
 }
 
@@ -835,6 +871,9 @@ main() {
   SKIPPED=()
   DIRECT_PACKAGE_INSTALLS=()
   GROUP_MODIFICATIONS=()
+  FILE_ACTIONS=()
+  SERVICE_ACTIONS=()
+  SHELL_ACTIONS=()
 
   if is_dry_run; then
     log 'DRY_RUN=1 enabled; planned actions will be printed without changing the system'
@@ -1089,6 +1128,25 @@ main() {
     log "${planned_package_count} paquets seraient installés, ${planned_group_count} modifications de groupes"
   fi
 
+  log 'summary:'
+  log "packages handled: $((${#TO_INSTALL[@]} + ${#DIRECT_PACKAGE_INSTALLS[@]}))"
+  log "group modifications: ${#GROUP_MODIFICATIONS[@]}"
+  if [[ "${#GROUP_MODIFICATIONS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${GROUP_MODIFICATIONS[@]}"
+  fi
+  log "repo/service actions: ${#SERVICE_ACTIONS[@]}"
+  if [[ "${#SERVICE_ACTIONS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${SERVICE_ACTIONS[@]}"
+  fi
+  log "files written/linked: ${#FILE_ACTIONS[@]}"
+  if [[ "${#FILE_ACTIONS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${FILE_ACTIONS[@]}"
+  fi
+  log "shell modifications: ${#SHELL_ACTIONS[@]}"
+  if [[ "${#SHELL_ACTIONS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${SHELL_ACTIONS[@]}"
+  fi
+  log "packages skipped: ${#SKIPPED[@]}"
   log_success 'done'
 }
 

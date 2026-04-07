@@ -14,6 +14,7 @@ APPLICATIONS_DIR="$HOME/.local/share/applications"
 DESKTOP_FILE="$APPLICATIONS_DIR/code.desktop"
 CODE_USER_DIR="$HOME/.config/Code/User"
 SETTINGS_DST="$CODE_USER_DIR/settings.json"
+WRITTEN_FILES=()
 
 main() {
   [[ -x "$WRAPPER_SRC" ]] || {
@@ -29,6 +30,7 @@ main() {
 
   log "linking wrapper: $LOCAL_CODE -> $WRAPPER_SRC"
   ln -sfn "$WRAPPER_SRC" "$LOCAL_CODE"
+  WRITTEN_FILES+=("$LOCAL_CODE -> $WRAPPER_SRC")
 
   log "writing desktop override: $DESKTOP_FILE"
   cat > "$DESKTOP_FILE" <<EOT
@@ -51,10 +53,15 @@ Name=New Empty Window
 Exec=$LOCAL_CODE --new-window %F
 Icon=vscode
 EOT
+  WRITTEN_FILES+=("$DESKTOP_FILE")
 
   log "copying settings: $SETTINGS_DST"
   cp "$SETTINGS_SRC" "$SETTINGS_DST"
+  WRITTEN_FILES+=("$SETTINGS_DST")
 
+  log 'summary:'
+  log "files written/linked: ${#WRITTEN_FILES[@]}"
+  printf '  - %s\n' "${WRITTEN_FILES[@]}"
   log_success 'done'
 }
 

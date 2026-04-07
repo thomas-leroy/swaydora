@@ -11,6 +11,9 @@ NF_FALLBACK_VERSIONS="${NF_FALLBACK_VERSIONS:-3.2.1}"
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/fonts"
 FONT_DIR="$HOME/.local/share/fonts/JetBrainsMonoNerd"
 REQUIRED_CP_HEX="${REQUIRED_CP_HEX:-e7d9}"
+INSTALLED_PACKAGES=()
+FALLBACK_DOWNLOADS=()
+FONT_CACHE_REFRESHED=0
 
 # Run privileged commands with sudo when not root.
 run_as_root() {
@@ -41,6 +44,7 @@ try_install_pkg() {
   if pkg_is_available "$pkg"; then
     log "installing package: $pkg"
     run_as_root dnf install -y "$pkg"
+    INSTALLED_PACKAGES+=("$pkg")
     return 0
   fi
   return 1
@@ -107,6 +111,7 @@ download_nerd_font() {
   fi
 
   unzip -oq "$zip" -d "$FONT_DIR"
+  FALLBACK_DOWNLOADS+=("$zip -> $FONT_DIR")
 }
 
 # Return success when a font file contains the given Unicode codepoint.
@@ -190,6 +195,17 @@ main() {
 
   # Refresh fontconfig cache.
   fc-cache -f
+  FONT_CACHE_REFRESHED=1
+  log 'summary:'
+  log "font packages installed: ${#INSTALLED_PACKAGES[@]}"
+  if [[ "${#INSTALLED_PACKAGES[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${INSTALLED_PACKAGES[@]}"
+  fi
+  log "fallback font downloads/extractions: ${#FALLBACK_DOWNLOADS[@]}"
+  if [[ "${#FALLBACK_DOWNLOADS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${FALLBACK_DOWNLOADS[@]}"
+  fi
+  log "font cache refreshed: $FONT_CACHE_REFRESHED"
   log_success 'font cache refreshed'
 }
 

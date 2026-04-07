@@ -10,6 +10,11 @@ DOTFILES_SRC="${DOTFILES_SRC:-/mnt/dotfiles/dotfiles}"
 BACKUP_CONFIG_ROOT="${BACKUP_CONFIG_ROOT:-$HOME/.backup_configs}"
 MANAGED_CONFIGS=(sway waybar mako swaync wofi fuzzel kitty wlogout zsh fastfetch atuin environment.d scripts xdg-desktop-portal)
 MANAGED_CONFIG_FILES=(mimeapps.list)
+BACKUP_DIR_CREATED=''
+BACKUP_ITEMS=()
+LINKED_ITEMS=()
+LOCAL_OVERRIDES=()
+SKIPPED_ITEMS=()
 
 # Build a backup path, with timestamp when a backup already exists.
 backup_path() {
@@ -36,6 +41,7 @@ backup_config() {
     if [[ -e "$src" && ( -e "$dst" || -L "$dst" ) ]]; then
       log "backing up current config: $dst -> $backup_dir/.config/$item"
       cp -a "$dst" "$backup_dir/.config/"
+      BACKUP_ITEMS+=("$dst")
       backed_up=1
     fi
   done
@@ -46,6 +52,7 @@ backup_config() {
     if [[ -e "$src" && ( -e "$dst" || -L "$dst" ) ]]; then
       log "backing up current config file: $dst -> $backup_dir/.config/$item"
       cp -a "$dst" "$backup_dir/.config/"
+      BACKUP_ITEMS+=("$dst")
       backed_up=1
     fi
   done
@@ -56,6 +63,7 @@ backup_config() {
     return 0
   fi
 
+  BACKUP_DIR_CREATED="$backup_dir"
   log_success "backup created: $backup_dir"
 }
 
@@ -68,6 +76,7 @@ link_one() {
   # Skip missing source directories.
   if [[ ! -e "$src" ]]; then
     log_warn "source missing, skipping: $src"
+    SKIPPED_ITEMS+=("$src")
     return 0
   fi
 
@@ -82,6 +91,7 @@ link_one() {
   # Force-create/replace symlink target.
   log "linking: $dst -> $src"
   ln -sfn "$src" "$dst"
+  LINKED_ITEMS+=("$dst -> $src")
 }
 
 ensure_local_override() {
@@ -94,6 +104,7 @@ ensure_local_override() {
   fi
 
   touch "$path"
+  LOCAL_OVERRIDES+=("$path")
 }
 
 main() {
@@ -117,6 +128,7 @@ main() {
   if [[ -e "$DOTFILES_SRC/mimeapps.list" ]]; then
     log "linking: $HOME/.config/mimeapps.list -> $DOTFILES_SRC/mimeapps.list"
     ln -sfn "$DOTFILES_SRC/mimeapps.list" "$HOME/.config/mimeapps.list"
+    LINKED_ITEMS+=("$HOME/.config/mimeapps.list -> $DOTFILES_SRC/mimeapps.list")
   fi
 
   # Create local override files if missing.
@@ -126,6 +138,21 @@ main() {
   ensure_local_override "$HOME/.config/swaync/local.css"
   log 'ensured local override files exist (untracked by git)'
 
+  log 'summary:'
+  if [[ -n "$BACKUP_DIR_CREATED" ]]; then
+    log "backup created: $BACKUP_DIR_CREATED (${#BACKUP_ITEMS[@]} item(s))"
+  else
+    log 'backup created: none needed'
+  fi
+  log "configs linked: ${#LINKED_ITEMS[@]}"
+  if [[ "${#LINKED_ITEMS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${LINKED_ITEMS[@]}"
+  fi
+  log "local override files ensured: ${#LOCAL_OVERRIDES[@]}"
+  if [[ "${#LOCAL_OVERRIDES[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${LOCAL_OVERRIDES[@]}"
+  fi
+  log "sources skipped: ${#SKIPPED_ITEMS[@]}"
   log_success 'done'
 }
 
