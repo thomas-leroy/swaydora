@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Print consistent log messages for this script.
-log() {
-  printf '[waybar-reload-setup] %s\n' "$*"
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger waybar-reload-setup
 
 main() {
   # Source runtime helper from shared dotfiles location.
@@ -18,9 +17,9 @@ main() {
   if [[ -e "$src" ]]; then
     ln -sfn "$src" "$dst"
     chmod +x "$src"
-    log "installed helper symlink: $dst -> $src"
+    log_success "installed helper symlink: $dst -> $src"
   else
-    log "runtime script not found at $src, skipping"
+    log_warn "runtime script not found at $src, skipping"
   fi
 
   # Remind user how to bind this helper.

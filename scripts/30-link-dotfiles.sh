@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger link
+
 # Default source path for shared dotfiles mount inside VM.
 DOTFILES_SRC="${DOTFILES_SRC:-/mnt/dotfiles/dotfiles}"
 BACKUP_CONFIG_ROOT="${BACKUP_CONFIG_ROOT:-$HOME/.backup_configs}"
 MANAGED_CONFIGS=(sway waybar mako swaync wofi fuzzel kitty wlogout zsh fastfetch atuin environment.d scripts xdg-desktop-portal)
 MANAGED_CONFIG_FILES=(mimeapps.list)
-
-# Print consistent log messages for this script.
-log() {
-  printf '[link] %s\n' "$*"
-}
 
 # Build a backup path, with timestamp when a backup already exists.
 backup_path() {
@@ -53,11 +52,11 @@ backup_config() {
 
   if [[ "$backed_up" == '0' ]]; then
     rmdir "$backup_dir/.config" "$backup_dir"
-    log 'no existing managed configs to back up'
+    log_warn 'no existing managed configs to back up'
     return 0
   fi
 
-  log "backup created: $backup_dir"
+  log_success "backup created: $backup_dir"
 }
 
 # Link one config directory, preserving previous non-symlink config as backup.
@@ -68,7 +67,7 @@ link_one() {
 
   # Skip missing source directories.
   if [[ ! -e "$src" ]]; then
-    log "source missing, skipping: $src"
+    log_warn "source missing, skipping: $src"
     return 0
   fi
 
@@ -90,7 +89,7 @@ ensure_local_override() {
   local parent="${path%/*}"
 
   if [[ ! -d "$parent" ]]; then
-    log "override parent missing, skipping: $path"
+    log_warn "override parent missing, skipping: $path"
     return 0
   fi
 
@@ -103,7 +102,7 @@ main() {
 
   # Stop early if mount/source is unavailable.
   if [[ ! -d "$DOTFILES_SRC" ]]; then
-    printf '[link] dotfiles source directory not found: %s\n' "$DOTFILES_SRC" >&2
+    log_error "dotfiles source directory not found: $DOTFILES_SRC"
     exit 1
   fi
 
@@ -127,7 +126,7 @@ main() {
   ensure_local_override "$HOME/.config/swaync/local.css"
   log 'ensured local override files exist (untracked by git)'
 
-  log 'done'
+  log_success 'done'
 }
 
 # Entrypoint.

@@ -97,6 +97,8 @@ Set `SWAYOSD_COPR=<owner/project>` if you want to override the default SwayOSD C
 
 `scripts/10-packages.sh` also installs a development baseline:
 
+Before installing, it validates Fedora 43+, more than 8 GiB of free disk space, more than 8 GiB of RAM, and required commands (`dnf`, `curl`, `tar`, `gzip`). The full setup is provided as-is and has not been tested on other configurations; if your machine differs, prefer picking individual pieces from the dotfiles.
+
 - CLI/tools: `nano`, `openssh-server`, `btop`, `bat`, `fd`/`fd-find`, `ripgrep`, `fzf`, `duf`, `grep`, `gawk`, `sed`, `gcc`, `python3`, `git-extras`, `tig`, `jq`, `fastfetch` (or `neofetch` fallback)
 - Shell/dev: `zsh`, oh-my-zsh (unattended), `zoxide`, `atuin`, `nodejs`, `npm`, `pnpm`
 - Containers: `docker`, `docker-compose`

@@ -10,19 +10,19 @@ set -euo pipefail
 #   WALLS_FULL       (1=full clone, 0=sparse mode; default: 0)
 #   WALLS_CATEGORIES (space-separated dirs in sparse mode; default: abstract)
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger walls-sync
+
 WALLS_REPO_URL="${WALLS_REPO_URL:-https://github.com/dharmx/walls.git}"
 WALLS_DEST="${WALLS_DEST:-$HOME/.local/share/wallpapers/Wallpapers}"
 WALLS_WORKDIR="${WALLS_WORKDIR:-$HOME/.cache/walls-sync/dharmx-walls}"
 WALLS_FULL="${WALLS_FULL:-0}"
 WALLS_CATEGORIES="${WALLS_CATEGORIES:-abstract}"
 
-log() {
-  printf '[walls-sync] %s\n' "$*"
-}
-
 ensure_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
-    printf '[walls-sync] missing command: %s\n' "$1" >&2
+    log_error "missing command: $1"
     exit 1
   }
 }
@@ -71,7 +71,7 @@ export_snapshot() {
   if command -v rsync >/dev/null 2>&1; then
     rsync -a --delete --exclude '.git' "$WALLS_WORKDIR"/ "$WALLS_DEST"/
   else
-    log 'rsync not found; copying files without cleanup'
+    log_warn 'rsync not found; copying files without cleanup'
     cp -a "$WALLS_WORKDIR"/. "$WALLS_DEST"/
   fi
 
@@ -88,7 +88,7 @@ main() {
   fi
 
   export_snapshot
-  log "done; wallpapers available under: $WALLS_DEST"
+  log_success "done; wallpapers available under: $WALLS_DEST"
   log 'tip: run ~/.config/scripts/wallpaper_picker.sh to search/apply a wallpaper with Wofi'
 }
 

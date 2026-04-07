@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Print consistent log messages for this script.
-log() {
-  printf '[themes] %s\n' "$*"
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger themes
 
 # Write a minimal GTK settings.ini file to the target path.
 write_gtk_settings() {
@@ -35,7 +34,7 @@ THEME_PALETTE_DARK=$HOME/.config/themes/palettes/emberstone-dark.json
 THEME_PALETTE_EMBERSTONE_DARK=$HOME/.config/themes/palettes/emberstone-dark.json
 EOT
 
-  log 'applied minimal GTK/icon/cursor defaults'
+  log_success 'applied minimal GTK/icon/cursor defaults'
 }
 
 # Entrypoint.

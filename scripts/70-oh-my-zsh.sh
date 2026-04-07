@@ -6,12 +6,12 @@ set -euo pipefail
 #   SET_DEFAULT_SHELL=1   -> set zsh as default shell (default: 1)
 #   KEEP_ZSHRC=1          -> keep existing ~/.zshrc when installing (default: 1)
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger oh-my-zsh
+
 SET_DEFAULT_SHELL="${SET_DEFAULT_SHELL:-1}"
 KEEP_ZSHRC_OPT="${KEEP_ZSHRC:-1}"
-
-log() {
-  printf '[oh-my-zsh] %s\n' "$*"
-}
 
 run_as_root() {
   if [[ "${EUID}" -eq 0 ]]; then
@@ -24,7 +24,7 @@ run_as_root() {
 ensure_package() {
   local pkg="$1"
   if rpm -q "$pkg" >/dev/null 2>&1; then
-    log "already installed: $pkg"
+    log_success "already installed: $pkg"
     return 0
   fi
 
@@ -34,18 +34,18 @@ ensure_package() {
     return 0
   fi
 
-  printf '[oh-my-zsh] required package not available: %s\n' "$pkg" >&2
+  log_error "required package not available: $pkg"
   exit 1
 }
 
 install_oh_my_zsh() {
   if [[ -d "$HOME/.oh-my-zsh" ]]; then
-    log 'oh-my-zsh already installed'
+    log_success 'oh-my-zsh already installed'
     return 0
   fi
 
   if ! command -v curl >/dev/null 2>&1; then
-    printf '[oh-my-zsh] curl is required but not found\n' >&2
+    log_error 'curl is required but not found'
     exit 1
   fi
 
@@ -55,32 +55,32 @@ install_oh_my_zsh() {
 
 set_default_shell_if_requested() {
   [[ "$SET_DEFAULT_SHELL" == '1' ]] || {
-    log 'skipping default shell change (SET_DEFAULT_SHELL!=1)'
+    log_warn 'skipping default shell change (SET_DEFAULT_SHELL!=1)'
     return 0
   }
 
   local zsh_path
   zsh_path="$(command -v zsh || true)"
   if [[ -z "$zsh_path" ]]; then
-    printf '[oh-my-zsh] zsh not found, cannot set default shell\n' >&2
+    log_error 'zsh not found, cannot set default shell'
     return 1
   fi
 
   local current_shell
   current_shell="$(getent passwd "$USER" | cut -d: -f7 || true)"
   if [[ "$current_shell" == "$zsh_path" ]]; then
-    log "default shell already set to $zsh_path"
+    log_success "default shell already set to $zsh_path"
     return 0
   fi
 
   log "setting default shell to $zsh_path for user $USER (current: ${current_shell:-unknown})"
   run_as_root usermod -s "$zsh_path" "$USER"
-  log 'default shell updated; logout/login required'
+  log_success 'default shell updated; logout/login required'
 }
 
 main() {
   command -v dnf >/dev/null 2>&1 || {
-    printf '[oh-my-zsh] dnf not found\n' >&2
+    log_error 'dnf not found'
     exit 1
   }
 
@@ -88,7 +88,7 @@ main() {
   ensure_package curl
   install_oh_my_zsh
   set_default_shell_if_requested
-  log 'done'
+  log_success 'done'
 }
 
 main "$@"

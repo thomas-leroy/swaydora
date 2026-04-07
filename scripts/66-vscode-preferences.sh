@@ -3,6 +3,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger vscode-prefs
 VSCODE_DIR="${VSCODE_DIR:-$REPO_ROOT/dotfiles/vscode}"
 WRAPPER_SRC="$VSCODE_DIR/code"
 SETTINGS_SRC="$VSCODE_DIR/settings.json"
@@ -13,17 +15,13 @@ DESKTOP_FILE="$APPLICATIONS_DIR/code.desktop"
 CODE_USER_DIR="$HOME/.config/Code/User"
 SETTINGS_DST="$CODE_USER_DIR/settings.json"
 
-log() {
-  printf '[vscode-prefs] %s\n' "$*"
-}
-
 main() {
   [[ -x "$WRAPPER_SRC" ]] || {
-    printf '[vscode-prefs] wrapper not found or not executable: %s\n' "$WRAPPER_SRC" >&2
+    log_error "wrapper not found or not executable: $WRAPPER_SRC"
     exit 1
   }
   [[ -f "$SETTINGS_SRC" ]] || {
-    printf '[vscode-prefs] settings file not found: %s\n' "$SETTINGS_SRC" >&2
+    log_error "settings file not found: $SETTINGS_SRC"
     exit 1
   }
 
@@ -57,7 +55,7 @@ EOT
   log "copying settings: $SETTINGS_DST"
   cp "$SETTINGS_SRC" "$SETTINGS_DST"
 
-  log 'done'
+  log_success 'done'
 }
 
 main "$@"

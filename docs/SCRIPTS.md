@@ -15,6 +15,8 @@
 - `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
 
 `scripts/10-packages.sh` supports `DRY_RUN=1` to print planned package installs, downloads, repository changes, and group updates without applying them.
+It also validates Fedora 43+, disk/RAM requirements, and critical commands before applying system changes.
+Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh`.
 
 ## Runtime scripts (`dotfiles/scripts/`)
 - Notifications: `notify_test.sh`, `notify_updates.sh`, `notification_center_status.sh`, `notification_center_toggle.sh`

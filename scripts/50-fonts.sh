@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger fonts
+
 # Nerd Fonts release used by fallback download path.
 NF_VERSION="${NF_VERSION:-3.4.0}"
 NF_FALLBACK_VERSIONS="${NF_FALLBACK_VERSIONS:-3.2.1}"
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/fonts"
 FONT_DIR="$HOME/.local/share/fonts/JetBrainsMonoNerd"
 REQUIRED_CP_HEX="${REQUIRED_CP_HEX:-e7d9}"
-
-# Print consistent log messages for this script.
-log() {
-  printf '[fonts] %s\n' "$*"
-}
 
 # Run privileged commands with sudo when not root.
 run_as_root() {
@@ -36,7 +35,7 @@ pkg_is_installed() {
 try_install_pkg() {
   local pkg="$1"
   if pkg_is_installed "$pkg"; then
-    log "already installed: $pkg"
+    log_success "already installed: $pkg"
     return 0
   fi
   if pkg_is_available "$pkg"; then
@@ -72,7 +71,7 @@ download_nerd_font() {
       log "downloading Nerd Fonts JetBrainsMono v${version}"
     fi
     if ! curl -fsSL -o "$zip" "$base_url/JetBrainsMono.zip"; then
-      log "release asset not found for ${version}, trying next"
+      log_warn "release asset not found for ${version}, trying next"
       continue
     fi
     downloaded=1
@@ -92,18 +91,18 @@ download_nerd_font() {
         verified=1
         break
       fi
-      printf '[fonts] checksum mismatch for JetBrainsMono.zip (v%s)\n' "$version" >&2
+      log_error "checksum mismatch for JetBrainsMono.zip (v${version})"
       return 1
     done
 
     if [[ "$verified" -eq 0 ]]; then
-      log "checksum file not found/usable for ${version}; continuing without checksum verification"
+      log_warn "checksum file not found/usable for ${version}; continuing without checksum verification"
     fi
     break
   done
 
   if [[ "$downloaded" -eq 0 ]]; then
-    printf '[fonts] unable to download JetBrainsMono.zip from configured versions (%s %s)\n' "$NF_VERSION" "$NF_FALLBACK_VERSIONS" >&2
+    log_error "unable to download JetBrainsMono.zip from configured versions ($NF_VERSION $NF_FALLBACK_VERSIONS)"
     return 1
   fi
 
@@ -148,7 +147,7 @@ resolved_font_has_required_glyph() {
 main() {
   # Require Fedora package manager.
   command -v dnf >/dev/null 2>&1 || {
-    printf '[fonts] dnf not found\n' >&2
+    log_error 'dnf not found'
     exit 1
   }
 
@@ -164,11 +163,11 @@ main() {
   # If no nerd-font package exists, install from official release zip.
   if [[ "$has_nerd_pkg" -eq 0 ]]; then
     command -v curl >/dev/null 2>&1 || {
-      printf '[fonts] curl is required for Nerd Fonts fallback download\n' >&2
+      log_error 'curl is required for Nerd Fonts fallback download'
       exit 1
     }
     command -v unzip >/dev/null 2>&1 || {
-      printf '[fonts] unzip is required for Nerd Fonts fallback download\n' >&2
+      log_error 'unzip is required for Nerd Fonts fallback download'
       exit 1
     }
     download_nerd_font
@@ -179,11 +178,11 @@ main() {
   if ! resolved_font_has_required_glyph; then
     log "resolved JetBrainsMono Nerd Font misses U+${REQUIRED_CP_HEX^^}; installing fallback Nerd Fonts zip"
     command -v curl >/dev/null 2>&1 || {
-      printf '[fonts] curl is required for Nerd Fonts fallback download\n' >&2
+      log_error 'curl is required for Nerd Fonts fallback download'
       exit 1
     }
     command -v unzip >/dev/null 2>&1 || {
-      printf '[fonts] unzip is required for Nerd Fonts fallback download\n' >&2
+      log_error 'unzip is required for Nerd Fonts fallback download'
       exit 1
     }
     download_nerd_font
@@ -191,7 +190,7 @@ main() {
 
   # Refresh fontconfig cache.
   fc-cache -f
-  log 'font cache refreshed'
+  log_success 'font cache refreshed'
 }
 
 # Entrypoint.

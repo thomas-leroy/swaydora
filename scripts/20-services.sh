@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Print consistent log messages for this script.
-log() {
-  printf '[services] %s\n' "$*"
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logging.sh"
+setup_logger services
 
 # Run privileged commands with sudo when not root.
 run_as_root() {
@@ -27,7 +26,7 @@ enable_now() {
     log "enabling and starting: $unit"
     run_as_root systemctl enable --now "$unit"
   else
-    log "unit not found, skipping: $unit"
+    log_warn "unit not found, skipping: $unit"
   fi
 }
 
@@ -41,7 +40,7 @@ main() {
   enable_now bluetooth.service
   enable_now docker.service
   enable_now sshd.service
-  log 'done'
+  log_success 'done'
 }
 
 # Entrypoint.
