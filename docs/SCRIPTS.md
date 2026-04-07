@@ -14,6 +14,8 @@
 - `80-wallpapers-sync.sh`: sync wallpapers from `dharmx/walls` into `~/.local/share/wallpapers/Wallpapers` (exported without `.git`; sparse `abstract` by default).
 - `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
 
+`scripts/10-packages.sh` supports `DRY_RUN=1` to print planned package installs, downloads, repository changes, and group updates without applying them.
+
 ## Runtime scripts (`dotfiles/scripts/`)
 - Notifications: `notify_test.sh`, `notify_updates.sh`, `notification_center_status.sh`, `notification_center_toggle.sh`
 - Updates: `updates_check.sh`, `updates_apply.sh`

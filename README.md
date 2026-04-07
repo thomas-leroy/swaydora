@@ -86,6 +86,7 @@ Set `SWAYOSD_COPR=<owner/project>` if you want to override the default SwayOSD C
 
 ## Optional Flags
 
+- `DRY_RUN=1 scripts/10-packages.sh`: print planned package installs, downloads, repo changes, and group updates without applying them.
 - `WITH_VIRT=1 scripts/10-packages.sh`: install virtualization packages.
 - `AUTO_ADD_VIDEO_GROUP=1 scripts/10-packages.sh`: add current user to `video` group if missing.
 - `SWAYFX_COPR=<owner/project>`: override default COPR source used for `swayfx`.

@@ -3,6 +3,8 @@ set -euo pipefail
 
 # Optional flag: install virtualization stack when set to 1.
 WITH_VIRT="${WITH_VIRT:-0}"
+# Optional flag: print planned actions without changing the system.
+DRY_RUN="${DRY_RUN:-0}"
 # Optional flag: auto-add current user to video group when missing (enabled by default).
 AUTO_ADD_VIDEO_GROUP="${AUTO_ADD_VIDEO_GROUP:-1}"
 # Optional flag: fail if swayfx is unavailable (enabled by default).
@@ -36,6 +38,28 @@ log() {
   printf '[packages] %s\n' "$*"
 }
 
+is_dry_run() {
+  [[ "$DRY_RUN" == '1' ]]
+}
+
+print_command() {
+  local arg
+  printf '[packages] DRY_RUN: would run:'
+  for arg in "$@"; do
+    printf ' %q' "$arg"
+  done
+  printf '\n'
+}
+
+run_cmd() {
+  if is_dry_run; then
+    print_command "$@"
+    return 0
+  fi
+
+  "$@"
+}
+
 ensure_no_competing_pkg_manager() {
   local matches
 
@@ -58,6 +82,15 @@ ensure_no_competing_pkg_manager() {
 
 # Run privileged commands with sudo when not root.
 run_as_root() {
+  if is_dry_run; then
+    if [[ "${EUID}" -eq 0 ]]; then
+      print_command "$@"
+    else
+      print_command sudo "$@"
+    fi
+    return 0
+  fi
+
   if [[ "${EUID}" -eq 0 ]]; then
     "$@"
   else
@@ -99,7 +132,14 @@ download_verified_sha256() {
   fi
 
   tmp_path="${dest_path}.download"
-  rm -f "$tmp_path"
+  run_cmd rm -f "$tmp_path"
+
+  if is_dry_run; then
+    run_cmd curl -fsSL "$url" -o "$tmp_path"
+    log "DRY_RUN: would verify SHA256 for $tmp_path (expected: $expected_sha256)"
+    run_cmd mv "$tmp_path" "$dest_path"
+    return 0
+  fi
 
   if ! curl -fsSL "$url" -o "$tmp_path"; then
     printf '[packages] download failed: %s\n' "$url" >&2
@@ -119,6 +159,37 @@ download_verified_sha256() {
 
   mv "$tmp_path" "$dest_path"
   return 0
+}
+
+record_direct_package_install() {
+  DIRECT_PACKAGE_INSTALLS+=("$1")
+}
+
+record_group_modification() {
+  GROUP_MODIFICATIONS+=("$1")
+}
+
+install_pkg_now() {
+  local pkg="$1"
+
+  if pkg_is_installed "$pkg"; then
+    log "already installed: $pkg"
+    return 0
+  fi
+
+  if ! pkg_is_available "$pkg"; then
+    SKIPPED+=("$pkg")
+    log "not available in enabled repos: $pkg"
+    return 0
+  fi
+
+  record_direct_package_install "$pkg"
+  if is_dry_run; then
+    log "package would be installed: $pkg"
+  else
+    log "installing package: $pkg"
+  fi
+  run_as_root dnf install -y "$pkg"
 }
 
 # Return success when a package is already installed.
@@ -165,6 +236,9 @@ queue_pkg() {
   if pkg_is_available "$pkg"; then
     TO_INSTALL+=("$pkg")
     log "queued: $pkg"
+  elif is_dry_run; then
+    TO_INSTALL+=("$pkg")
+    log "DRY_RUN: would attempt package install even though not currently available in enabled repos: $pkg"
   else
     SKIPPED+=("$pkg")
     log "not available in enabled repos: $pkg"
@@ -177,7 +251,11 @@ install_queued() {
     log 'nothing to install'
     return 0
   fi
-  log "installing ${#TO_INSTALL[@]} package(s)"
+  if is_dry_run; then
+    log "${#TO_INSTALL[@]} package(s) would be installed"
+  else
+    log "installing ${#TO_INSTALL[@]} package(s)"
+  fi
   run_as_root dnf install -y "${TO_INSTALL[@]}"
 }
 
@@ -239,7 +317,13 @@ ensure_copr_command() {
   # Install plugin package when needed.
   if ! pkg_is_installed dnf-plugins-core && pkg_is_available dnf-plugins-core; then
     log 'installing dnf-plugins-core to enable COPR command support'
+    record_direct_package_install dnf-plugins-core
     run_as_root dnf install -y dnf-plugins-core
+  fi
+
+  if is_dry_run; then
+    log 'DRY_RUN: assuming dnf copr command would be available after planned setup'
+    return 0
   fi
 
   dnf -q copr list >/dev/null 2>&1 || {
@@ -283,9 +367,18 @@ check_video_group_membership() {
   fi
 
   if [[ "$AUTO_ADD_VIDEO_GROUP" == '1' ]]; then
-    log "adding $USER to group video (AUTO_ADD_VIDEO_GROUP=1)"
+    if is_dry_run; then
+      log "DRY_RUN: would add $USER to group video (AUTO_ADD_VIDEO_GROUP=1)"
+    else
+      log "adding $USER to group video (AUTO_ADD_VIDEO_GROUP=1)"
+    fi
+    record_group_modification "$USER -> video"
     run_as_root usermod -aG video "$USER"
-    log 'group updated; logout/login is required to apply new group membership'
+    if is_dry_run; then
+      log 'DRY_RUN: group membership would be updated; logout/login would be required'
+    else
+      log 'group updated; logout/login is required to apply new group membership'
+    fi
   else
     log "user $USER is not in group video; set AUTO_ADD_VIDEO_GROUP=1 to add automatically"
   fi
@@ -303,9 +396,18 @@ check_docker_group_membership() {
     return 0
   fi
 
-  log "adding $USER to group docker"
+  if is_dry_run; then
+    log "DRY_RUN: would add $USER to group docker"
+  else
+    log "adding $USER to group docker"
+  fi
+  record_group_modification "$USER -> docker"
   run_as_root usermod -aG docker "$USER"
-  log 'docker group updated; logout/login is required to apply new group membership'
+  if is_dry_run; then
+    log 'DRY_RUN: docker group membership would be updated; logout/login would be required'
+  else
+    log 'docker group updated; logout/login is required to apply new group membership'
+  fi
 }
 
 # Install pnpm globally when distro package is unavailable.
@@ -332,11 +434,16 @@ ensure_handy_installed() {
   fi
 
   if pkg_is_available handy; then
-    queue_pkg handy
+    install_pkg_now handy
     return 0
   fi
 
-  log "installing Handy from official RPM: ${HANDY_RPM_URL}"
+  if is_dry_run; then
+    log "DRY_RUN: would install Handy from official RPM: ${HANDY_RPM_URL}"
+  else
+    log "installing Handy from official RPM: ${HANDY_RPM_URL}"
+  fi
+  record_direct_package_install "$HANDY_RPM_URL"
   run_as_root dnf install -y "$HANDY_RPM_URL"
 }
 
@@ -350,7 +457,7 @@ ensure_obsidian_installed() {
   fi
 
   if pkg_is_available obsidian; then
-    queue_pkg obsidian
+    install_pkg_now obsidian
     return 0
   fi
 
@@ -358,11 +465,15 @@ ensure_obsidian_installed() {
   appimage_path="$install_dir/Obsidian.AppImage"
   launcher_path="$HOME/.local/bin/obsidian"
 
-  mkdir -p "$install_dir" "$HOME/.local/bin"
-  log "installing Obsidian from official AppImage: ${OBSIDIAN_APPIMAGE_URL}"
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin"
+  if is_dry_run; then
+    log "DRY_RUN: would install Obsidian from official AppImage: ${OBSIDIAN_APPIMAGE_URL}"
+  else
+    log "installing Obsidian from official AppImage: ${OBSIDIAN_APPIMAGE_URL}"
+  fi
   download_verified_sha256 "$OBSIDIAN_APPIMAGE_URL" "$OBSIDIAN_APPIMAGE_SHA256" "$appimage_path"
-  chmod +x "$appimage_path"
-  ln -sfn "$appimage_path" "$launcher_path"
+  run_cmd chmod +x "$appimage_path"
+  run_cmd ln -sfn "$appimage_path" "$launcher_path"
 }
 
 # Install LocalSend using distro package when available, otherwise the official AppImage.
@@ -375,7 +486,7 @@ ensure_localsend_installed() {
   fi
 
   if pkg_is_available localsend; then
-    queue_pkg localsend
+    install_pkg_now localsend
     return 0
   fi
 
@@ -385,11 +496,19 @@ ensure_localsend_installed() {
   desktop_dir="$HOME/.local/share/applications"
   desktop_file="$desktop_dir/org.localsend.localsend_app.desktop"
 
-  mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
-  log "installing LocalSend from official AppImage: ${LOCALSEND_APPIMAGE_URL}"
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  if is_dry_run; then
+    log "DRY_RUN: would install LocalSend from official AppImage: ${LOCALSEND_APPIMAGE_URL}"
+  else
+    log "installing LocalSend from official AppImage: ${LOCALSEND_APPIMAGE_URL}"
+  fi
   download_verified_sha256 "$LOCALSEND_APPIMAGE_URL" "$LOCALSEND_APPIMAGE_SHA256" "$appimage_path"
-  chmod +x "$appimage_path"
-  ln -sfn "$appimage_path" "$launcher_path"
+  run_cmd chmod +x "$appimage_path"
+  run_cmd ln -sfn "$appimage_path" "$launcher_path"
+  if is_dry_run; then
+    log "DRY_RUN: would write desktop entry: $desktop_file"
+    return 0
+  fi
   cat > "$desktop_file" <<EOT
 [Desktop Entry]
 Type=Application
@@ -416,7 +535,12 @@ ensure_insomnia_installed() {
     if pkg_is_installed insomnia; then
       log 'Insomnia already installed'
     else
-      log 'installing Insomnia from enabled repos'
+      record_direct_package_install insomnia
+      if is_dry_run; then
+        log 'DRY_RUN: would install Insomnia from enabled repos'
+      else
+        log 'installing Insomnia from enabled repos'
+      fi
       run_as_root dnf install -y insomnia
     fi
     return 0
@@ -428,11 +552,19 @@ ensure_insomnia_installed() {
   desktop_dir="$HOME/.local/share/applications"
   desktop_file="$desktop_dir/insomnia.desktop"
 
-  mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
-  log "installing Insomnia from official AppImage: ${INSOMNIA_APPIMAGE_URL}"
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  if is_dry_run; then
+    log "DRY_RUN: would install Insomnia from official AppImage: ${INSOMNIA_APPIMAGE_URL}"
+  else
+    log "installing Insomnia from official AppImage: ${INSOMNIA_APPIMAGE_URL}"
+  fi
   download_verified_sha256 "$INSOMNIA_APPIMAGE_URL" "$INSOMNIA_APPIMAGE_SHA256" "$appimage_path"
-  chmod +x "$appimage_path"
-  ln -sfn "$appimage_path" "$launcher_path"
+  run_cmd chmod +x "$appimage_path"
+  run_cmd ln -sfn "$appimage_path" "$launcher_path"
+  if is_dry_run; then
+    log "DRY_RUN: would write desktop entry: $desktop_file"
+    return 0
+  fi
   cat > "$desktop_file" <<EOT
 [Desktop Entry]
 Type=Application
@@ -456,7 +588,7 @@ ensure_bluetuith_installed() {
   fi
 
   if pkg_is_available bluetuith; then
-    queue_pkg bluetuith
+    install_pkg_now bluetuith
     return 0
   fi
 
@@ -466,15 +598,23 @@ ensure_bluetuith_installed() {
   archive_path="$install_dir/bluetuith.tar.gz"
   binary_path="$install_dir/bluetuith"
   launcher_path="$HOME/.local/bin/bluetuith"
-  tmp_dir="$(mktemp -d)"
+  if is_dry_run; then
+    tmp_dir="$install_dir/bluetuith.extract"
+  else
+    tmp_dir="$(mktemp -d)"
+  fi
 
-  mkdir -p "$install_dir" "$HOME/.local/bin"
-  log "installing Bluetuith from official release: ${BLUETUITH_ARCHIVE_URL}"
-  curl -fsSL "$BLUETUITH_ARCHIVE_URL" -o "$archive_path"
-  tar -xzf "$archive_path" -C "$tmp_dir"
-  install -m 0755 "$tmp_dir/bluetuith" "$binary_path"
-  ln -sfn "$binary_path" "$launcher_path"
-  rm -rf "$tmp_dir"
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin"
+  if is_dry_run; then
+    log "DRY_RUN: would install Bluetuith from official release: ${BLUETUITH_ARCHIVE_URL}"
+  else
+    log "installing Bluetuith from official release: ${BLUETUITH_ARCHIVE_URL}"
+  fi
+  run_cmd curl -fsSL "$BLUETUITH_ARCHIVE_URL" -o "$archive_path"
+  run_cmd tar -xzf "$archive_path" -C "$tmp_dir"
+  run_cmd install -m 0755 "$tmp_dir/bluetuith" "$binary_path"
+  run_cmd ln -sfn "$binary_path" "$launcher_path"
+  run_cmd rm -rf "$tmp_dir"
 }
 
 # Install oh-my-zsh for the current user in unattended mode.
@@ -495,6 +635,10 @@ install_oh_my_zsh_if_needed() {
   fi
 
   log 'installing oh-my-zsh in unattended mode'
+  if is_dry_run; then
+    log 'DRY_RUN: would run oh-my-zsh unattended installer from https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh'
+    return 0
+  fi
   RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 }
 
@@ -511,6 +655,15 @@ ensure_zsh_dotfiles_sourcing() {
 # <<< dotfiles-zsh <<<
 EOT
 )"
+
+  if is_dry_run; then
+    [[ -f "$zshrc" ]] || run_cmd touch "$zshrc"
+    if grep -Fq "$marker_start" "$zshrc" 2>/dev/null; then
+      log "DRY_RUN: would replace existing dotfiles-zsh block in $zshrc"
+    fi
+    log "DRY_RUN: would append dotfiles-zsh block to $zshrc"
+    return 0
+  fi
 
   [[ -f "$zshrc" ]] || touch "$zshrc"
 
@@ -545,6 +698,16 @@ ensure_default_shell_zsh() {
 
   log "setting default shell to $zsh_path for user $USER (current: ${passwd_shell:-unknown})"
 
+  if is_dry_run; then
+    if command -v chsh >/dev/null 2>&1; then
+      run_cmd chsh -s "$zsh_path" "$USER"
+    else
+      run_as_root usermod -s "$zsh_path" "$USER"
+    fi
+    log 'DRY_RUN: default shell would be updated; logout/login would be required'
+    return 0
+  fi
+
   # Prefer chsh for user account shell change, fallback to usermod when needed.
   if command -v chsh >/dev/null 2>&1; then
     if chsh -s "$zsh_path" "$USER" >/dev/null 2>&1; then
@@ -567,6 +730,12 @@ main() {
   # Arrays used to keep install summary.
   TO_INSTALL=()
   SKIPPED=()
+  DIRECT_PACKAGE_INSTALLS=()
+  GROUP_MODIFICATIONS=()
+
+  if is_dry_run; then
+    log 'DRY_RUN=1 enabled; planned actions will be printed without changing the system'
+  fi
 
   # Resolve distro-specific package names.
   log 'resolving package variants for swayfx, terminal, swaylock, wallpaper, clipboard, updates, and dev stack'
@@ -577,34 +746,58 @@ main() {
   enable_vscode_repo_if_needed
   enable_librewolf_repo_if_needed
   if ! pkg_is_available swayfx; then
-    if [[ "$REQUIRE_SWAYFX" == '1' ]]; then
-      printf '[packages] swayfx package is required but still unavailable after COPR enable (%s)\n' "$SWAYFX_COPR" >&2
+    if is_dry_run; then
+      log "DRY_RUN: swayfx is not currently available; assuming it would be available after enabling COPR: ${SWAYFX_COPR}"
+      sway_pkg='swayfx'
+    else
+      if [[ "$REQUIRE_SWAYFX" == '1' ]]; then
+        printf '[packages] swayfx package is required but still unavailable after COPR enable (%s)\n' "$SWAYFX_COPR" >&2
+        exit 1
+      fi
+      printf '[packages] swayfx package unavailable and REQUIRE_SWAYFX=0 is unsupported in this profile\n' >&2
       exit 1
     fi
-    printf '[packages] swayfx package unavailable and REQUIRE_SWAYFX=0 is unsupported in this profile\n' >&2
-    exit 1
+  else
+    sway_pkg='swayfx'
   fi
-  sway_pkg='swayfx'
   log 'using swayfx package'
-  terminal_pkg="$(resolve_pkg kitty wezterm alacritty)" || {
-    printf '[packages] no terminal package found (expected kitty, wezterm, or alacritty)\n' >&2
-    exit 1
-  }
+  terminal_pkg="$(resolve_pkg kitty wezterm alacritty || true)"
+  if [[ -z "$terminal_pkg" ]]; then
+    if is_dry_run; then
+      terminal_pkg='kitty'
+      log 'DRY_RUN: no terminal package currently found; planning first candidate: kitty'
+    else
+      printf '[packages] no terminal package found (expected kitty, wezterm, or alacritty)\n' >&2
+      exit 1
+    fi
+  fi
   # Keep currently installed swaylock variant to avoid COPR conflict churn.
   if pkg_is_installed swaylock; then
     swaylock_pkg='swaylock'
   elif pkg_is_installed swaylock-effects; then
     swaylock_pkg='swaylock-effects'
   else
-    swaylock_pkg="$(resolve_pkg swaylock swaylock-effects)" || {
-      printf '[packages] no swaylock package found (expected swaylock or swaylock-effects)\n' >&2
-      exit 1
-    }
+    swaylock_pkg="$(resolve_pkg swaylock swaylock-effects || true)"
+    if [[ -z "$swaylock_pkg" ]]; then
+      if is_dry_run; then
+        swaylock_pkg='swaylock'
+        log 'DRY_RUN: no swaylock package currently found; planning first candidate: swaylock'
+      else
+        printf '[packages] no swaylock package found (expected swaylock or swaylock-effects)\n' >&2
+        exit 1
+      fi
+    fi
   fi
-  wallpaper_pkg="$(resolve_pkg swww swaybg)" || {
-    printf '[packages] no wallpaper package found (expected swww or swaybg)\n' >&2
-    exit 1
-  }
+  wallpaper_pkg="$(resolve_pkg swww swaybg || true)"
+  if [[ -z "$wallpaper_pkg" ]]; then
+    if is_dry_run; then
+      wallpaper_pkg='swww'
+      log 'DRY_RUN: no wallpaper package currently found; planning first candidate: swww'
+    else
+      printf '[packages] no wallpaper package found (expected swww or swaybg)\n' >&2
+      exit 1
+    fi
+  fi
   clipboard_pkg="$(resolve_pkg cliphist clipman || true)"
   launcher_pkg="$(resolve_pkg fuzzel wofi rofi-wayland rofi || true)"
   automatic_pkg="$(resolve_pkg dnf5-plugin-automatic dnf-automatic || true)"
@@ -783,6 +976,13 @@ main() {
   if [[ "${#SKIPPED[@]}" -gt 0 ]]; then
     log 'some packages were skipped because unavailable in current repos:'
     printf '  - %s\n' "${SKIPPED[@]}"
+  fi
+
+  if is_dry_run; then
+    local planned_package_count planned_group_count
+    planned_package_count="$((${#TO_INSTALL[@]} + ${#DIRECT_PACKAGE_INSTALLS[@]}))"
+    planned_group_count="${#GROUP_MODIFICATIONS[@]}"
+    log "${planned_package_count} paquets seraient installés, ${planned_group_count} modifications de groupes"
   fi
 
   log 'done'
