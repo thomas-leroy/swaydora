@@ -32,4 +32,5 @@ scripts/60-waybar-reload.sh
 
 ## 5) Rollback
 - Restore VM snapshot.
-- Or restore `*.bak*` configs created by `scripts/30-link-dotfiles.sh`.
+- Or restore `~/.backup_configs/config_backup_YYYYMMDD_HHMMSS/` created by `scripts/30-link-dotfiles.sh`.
+- Per-config `*.bak*` files may also exist for configs replaced during linking.

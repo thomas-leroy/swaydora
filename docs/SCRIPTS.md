@@ -4,7 +4,7 @@
 - `00-bootstrap.sh`: create baseline folders.
 - `10-packages.sh`: install packages with Fedora-aware fallbacks and developer bootstrap.
 - `20-services.sh`: enable/start required systemd services/timers.
-- `30-link-dotfiles.sh`: backup old config and link dotfiles to `~/.config`.
+- `30-link-dotfiles.sh`: create a timestamped backup in `~/.backup_configs/`, then link dotfiles to `~/.config`.
 - `40-themes.sh`: apply minimal GTK/icon/cursor defaults.
 - `50-fonts.sh`: install JetBrains Mono Nerd Font.
 - `60-waybar-reload.sh`: install helper symlink for config reload.
