@@ -4,6 +4,8 @@
 
 Swaydora is a personal side project for bootstrapping a fresh Fedora + SwayFX workstation. It is provided as-is and is primarily tested against my own Fedora setup.
 
+It is intentionally distributed as plain scripts and dotfiles. It does not provide a custom ISO, a hidden installer, or obfuscated packages; the goal is to keep Fedora as the base system and make the setup faster while leaving users in control.
+
 I do not recommend running the full setup on a machine you already use daily. If your system differs from the documented target environment, prefer testing in a VM first or picking individual pieces from the dotfiles manually.
 
 ## Supported Environment
@@ -40,6 +42,8 @@ If you notice an unverified external download, a stale checksum, or an unexpecte
 
 ## Reporting a Security Issue
 
+Despite the care put into this repository, configuration weaknesses or security issues may still exist. If you identify one, please open an issue or propose a pull request so it can be reviewed and fixed transparently.
+
 If you find a security issue, please open a GitHub issue with:
 
 - The script or file involved
@@ -52,4 +56,4 @@ Avoid posting real secrets, private keys, tokens, hostnames, or personal paths i
 
 ## Non-Goals
 
-This repository is not a hardened workstation benchmark, an enterprise baseline, or a general-purpose installer for every Linux distribution. It is a curated dotfiles/setup project. Users who want only part of the setup are encouraged to copy or adapt the relevant dotfiles instead of running the full automation.
+This repository is not a hardened workstation benchmark, an enterprise baseline, a custom Fedora remix, an ISO distribution, or a general-purpose installer for every Linux distribution. It is a curated dotfiles/setup project. Users who want only part of the setup are encouraged to copy or adapt the relevant dotfiles instead of running the full automation.

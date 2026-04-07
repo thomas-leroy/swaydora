@@ -13,19 +13,27 @@ Swaydora is a Fedora + SwayFX desktop setup for bootstrapping a fresh developer 
 
 It is a side project built as a Fedora-flavored alternative to the excellent [Omarchy](https://omarchy.org/), adapted around SwayFX and my own workflow choices.
 
+Swaydora is intentionally not a custom ISO, a hidden package bundle, or a magic black box. It is a set of auditable scripts and dotfiles meant to save time while keeping Fedora as the base system and leaving users in control of their environment.
+
 > Status: **ALPHA** - **UNSTABLE**. Breaking changes and regressions are expected.
 > Use this on a fresh Fedora machine or a staging VM first. I do not recommend migrating a machine that is already used daily.
 
 ## Highlights
 
-- Fedora-first setup for SwayFX, Waybar, notifications, screenshots, clipboard, audio, devices, and developer tooling.
+- Fedora-first setup for SwayFX, Waybar, notifications, screenshots, clipThe automation can install packages, enable repositories/COPR sources, enable systemd services, change user groups, change the default shell, and link files into ~/.config.
+
+board, audio, devices, and developer tooling.
+
 - Reproducible setup scripts with `DRY_RUN=1`, SHA256-verified AppImage fallbacks where practical, and timestamped config backups.
+- No custom ISO or obfuscated package bundle: users keep standard Fedora and can inspect or run each script independently.
 - Modern shell/dev baseline: zsh, oh-my-zsh, bat, fd, ripgrep, fzf, duf, btop, zoxide, atuin, Node.js, pnpm, Docker, VS Code, and Insomnia.
 - Safety-focused defaults: Fedora 43+ requirement checks, disk/RAM checks, colored ISO8601 logs, and rollback docs.
 
 ## Safety
 
 The automation can install packages, enable repositories/COPR sources, enable systemd services, change user groups, change the default shell, and link files into `~/.config`.
+
+The goal is to accelerate initial setup, not to replace user judgment. You should be able to inspect what will happen, skip parts you do not want, and keep ownership of the overall Fedora installation.
 
 Before running the full setup:
 
@@ -36,6 +44,8 @@ Before running the full setup:
 - Use `~/.backup_configs/config_backup_YYYYMMDD_HHMMSS/` if you need to restore configs after linking.
 
 See [SECURITY.md](SECURITY.md) for the support scope and reporting guidance.
+
+Despite the care put into this setup, mistakes can happen. If you spot a weak configuration, unsafe default, or security issue, please open an issue or propose a pull request.
 
 ## Quick Start
 
