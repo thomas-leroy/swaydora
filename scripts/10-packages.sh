@@ -33,9 +33,41 @@ BLUETUITH_ARCHIVE_URL="${BLUETUITH_ARCHIVE_URL:-https://github.com/bluetuith-org
 # VS Code official repository file.
 VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 
-# Print consistent log messages for this script.
+TEMP_DIR=''
+LOG_COLOR_INFO=$'\033[34m'
+LOG_COLOR_WARN=$'\033[33m'
+LOG_COLOR_ERROR=$'\033[31m'
+LOG_COLOR_SUCCESS=$'\033[32m'
+LOG_COLOR_RESET=$'\033[0m'
+
+log_emit() {
+  local level="$1"
+  local color="$2"
+  local stream="$3"
+  shift 3
+
+  printf '%s[%s] [packages] [%s] %s%s\n' "$color" "$(date -Iseconds)" "$level" "$*" "$LOG_COLOR_RESET" >&"$stream"
+}
+
+log_info() {
+  log_emit INFO "$LOG_COLOR_INFO" 1 "$@"
+}
+
+log_warn() {
+  log_emit WARN "$LOG_COLOR_WARN" 1 "$@"
+}
+
+log_error() {
+  log_emit ERROR "$LOG_COLOR_ERROR" 2 "$@"
+}
+
+log_success() {
+  log_emit SUCCESS "$LOG_COLOR_SUCCESS" 1 "$@"
+}
+
+# Backward-compatible default logger for existing call sites.
 log() {
-  printf '[packages] %s\n' "$*"
+  log_info "$@"
 }
 
 is_dry_run() {
@@ -44,11 +76,11 @@ is_dry_run() {
 
 print_command() {
   local arg
-  printf '[packages] DRY_RUN: would run:'
+  printf '%s[%s] [packages] [INFO] DRY_RUN: would run:' "$LOG_COLOR_INFO" "$(date -Iseconds)"
   for arg in "$@"; do
     printf ' %q' "$arg"
   done
-  printf '\n'
+  printf '%s\n' "$LOG_COLOR_RESET"
 }
 
 run_cmd() {
@@ -59,6 +91,33 @@ run_cmd() {
 
   "$@"
 }
+
+init_temp_dir() {
+  if is_dry_run; then
+    TEMP_DIR="${TMPDIR:-/tmp}/swaydora-packages.dry-run.$$"
+    print_command mktemp -d "${TMPDIR:-/tmp}/swaydora-packages.XXXXXX"
+    log "DRY_RUN: would use temporary directory: $TEMP_DIR"
+    return 0
+  fi
+
+  TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/swaydora-packages.XXXXXX")"
+  log "temporary directory created: $TEMP_DIR"
+}
+
+cleanup_temp_dir() {
+  if [[ -z "${TEMP_DIR:-}" ]]; then
+    return 0
+  fi
+
+  log "cleaning up temporary directory: $TEMP_DIR"
+  if is_dry_run; then
+    print_command rm -rf "$TEMP_DIR"
+  else
+    rm -rf "$TEMP_DIR"
+  fi
+}
+
+trap cleanup_temp_dir EXIT
 
 ensure_no_competing_pkg_manager() {
   local matches
@@ -73,9 +132,9 @@ ensure_no_competing_pkg_manager() {
   ' || true)"
 
   if [[ -n "$matches" ]]; then
-    printf '[packages] another package-management process is already running; aborting to avoid freezes/conflicts\n' >&2
+    log_error 'another package-management process is already running; aborting to avoid freezes/conflicts'
     printf '%s\n' "$matches" >&2
-    printf '[packages] close/stop that process, then rerun 10-packages.sh\n' >&2
+    log_error 'close/stop that process, then rerun 10-packages.sh'
     exit 1
   fi
 }
@@ -101,7 +160,7 @@ run_as_root() {
 # Ensure required command is available.
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
-    printf '[packages] missing required command: %s\n' "$1" >&2
+    log_error "missing required command: $1"
     exit 1
   }
 }
@@ -109,29 +168,35 @@ require_cmd() {
 # Download a file and verify its SHA256 before moving it into place.
 download_verified_sha256() {
   if [[ "$#" -ne 3 ]]; then
-    printf '[packages] usage: download_verified_sha256 <url> <expected_sha256> <destination>\n' >&2
+    log_error 'usage: download_verified_sha256 <url> <expected_sha256> <destination>'
     return 1
   fi
 
   local url="$1"
   local expected_sha256="$2"
   local dest_path="$3"
-  local tmp_path actual_sha256
+  local tmp_name tmp_path actual_sha256
 
   require_cmd curl
   require_cmd sha256sum
 
   expected_sha256="${expected_sha256#sha256:}"
   if [[ -z "$expected_sha256" ]]; then
-    printf '[packages] missing expected SHA256 for %s\n' "$url" >&2
+    log_error "missing expected SHA256 for $url"
     return 1
   fi
   if [[ -z "$url" || -z "$dest_path" ]]; then
-    printf '[packages] missing download URL or destination for SHA256-verified download\n' >&2
+    log_error 'missing download URL or destination for SHA256-verified download'
     return 1
   fi
 
-  tmp_path="${dest_path}.download"
+  if [[ -z "${TEMP_DIR:-}" ]]; then
+    log_error 'temporary directory is not initialized'
+    return 1
+  fi
+
+  tmp_name="$(basename "$dest_path").download"
+  tmp_path="$TEMP_DIR/$tmp_name"
   run_cmd rm -f "$tmp_path"
 
   if is_dry_run; then
@@ -142,17 +207,17 @@ download_verified_sha256() {
   fi
 
   if ! curl -fsSL "$url" -o "$tmp_path"; then
-    printf '[packages] download failed: %s\n' "$url" >&2
+    log_error "download failed: $url"
     rm -f "$tmp_path"
     return 1
   fi
 
   actual_sha256="$(sha256sum "$tmp_path" | awk '{print $1}')"
   if [[ "$actual_sha256" != "$expected_sha256" ]]; then
-    printf '[packages] SHA256 mismatch for %s\n' "$url" >&2
-    printf '[packages] expected: %s\n' "$expected_sha256" >&2
-    printf '[packages] actual:   %s\n' "$actual_sha256" >&2
-    printf '[packages] deleting corrupted download: %s\n' "$tmp_path" >&2
+    log_error "SHA256 mismatch for $url"
+    log_error "expected: $expected_sha256"
+    log_error "actual:   $actual_sha256"
+    log_error "deleting corrupted download: $tmp_path"
     rm -f "$tmp_path"
     return 1
   fi
@@ -173,13 +238,13 @@ install_pkg_now() {
   local pkg="$1"
 
   if pkg_is_installed "$pkg"; then
-    log "already installed: $pkg"
+    log_success "already installed: $pkg"
     return 0
   fi
 
   if ! pkg_is_available "$pkg"; then
     SKIPPED+=("$pkg")
-    log "not available in enabled repos: $pkg"
+    log_warn "not available in enabled repos: $pkg"
     return 0
   fi
 
@@ -230,7 +295,7 @@ resolve_pkg() {
 queue_pkg() {
   local pkg="$1"
   if pkg_is_installed "$pkg"; then
-    log "already installed: $pkg"
+    log_success "already installed: $pkg"
     return 0
   fi
   if pkg_is_available "$pkg"; then
@@ -241,7 +306,7 @@ queue_pkg() {
     log "DRY_RUN: would attempt package install even though not currently available in enabled repos: $pkg"
   else
     SKIPPED+=("$pkg")
-    log "not available in enabled repos: $pkg"
+    log_warn "not available in enabled repos: $pkg"
   fi
 }
 
@@ -327,7 +392,7 @@ ensure_copr_command() {
   fi
 
   dnf -q copr list >/dev/null 2>&1 || {
-    printf '[packages] dnf copr command is not available on this system\n' >&2
+    log_error 'dnf copr command is not available on this system'
     exit 1
   }
 }
@@ -357,12 +422,12 @@ enable_swayosd_copr_if_needed() {
 # Verify whether current user can access brightness/video related devices.
 check_video_group_membership() {
   if ! getent group video >/dev/null 2>&1; then
-    log 'group "video" does not exist on this system, skipping group check'
+    log_warn 'group "video" does not exist on this system, skipping group check'
     return 0
   fi
 
   if id -nG "$USER" | grep -qw video; then
-    log "user $USER is already in group: video"
+    log_success "user $USER is already in group: video"
     return 0
   fi
 
@@ -380,19 +445,19 @@ check_video_group_membership() {
       log 'group updated; logout/login is required to apply new group membership'
     fi
   else
-    log "user $USER is not in group video; set AUTO_ADD_VIDEO_GROUP=1 to add automatically"
+    log_warn "user $USER is not in group video; set AUTO_ADD_VIDEO_GROUP=1 to add automatically"
   fi
 }
 
 # Ensure current user can use Docker without sudo.
 check_docker_group_membership() {
   if ! getent group docker >/dev/null 2>&1; then
-    log 'group "docker" does not exist yet, skipping docker group update'
+    log_warn 'group "docker" does not exist yet, skipping docker group update'
     return 0
   fi
 
   if id -nG "$USER" | grep -qw docker; then
-    log "user $USER is already in group: docker"
+    log_success "user $USER is already in group: docker"
     return 0
   fi
 
@@ -413,12 +478,12 @@ check_docker_group_membership() {
 # Install pnpm globally when distro package is unavailable.
 ensure_pnpm_installed() {
   if command -v pnpm >/dev/null 2>&1; then
-    log 'pnpm already installed'
+    log_success 'pnpm already installed'
     return 0
   fi
 
   if ! command -v npm >/dev/null 2>&1; then
-    log 'npm not found, skipping pnpm fallback install'
+    log_warn 'npm not found, skipping pnpm fallback install'
     return 0
   fi
 
@@ -429,7 +494,7 @@ ensure_pnpm_installed() {
 # Install Handy from its official RPM when it is not available in repos yet.
 ensure_handy_installed() {
   if command -v handy >/dev/null 2>&1; then
-    log 'Handy already installed'
+    log_success 'Handy already installed'
     return 0
   fi
 
@@ -452,7 +517,7 @@ ensure_obsidian_installed() {
   local install_dir appimage_path launcher_path
 
   if command -v obsidian >/dev/null 2>&1; then
-    log 'Obsidian already installed'
+    log_success 'Obsidian already installed'
     return 0
   fi
 
@@ -481,7 +546,7 @@ ensure_localsend_installed() {
   local install_dir appimage_path launcher_path desktop_dir desktop_file
 
   if command -v localsend >/dev/null 2>&1 || command -v localsend_app >/dev/null 2>&1; then
-    log 'LocalSend already installed'
+    log_success 'LocalSend already installed'
     return 0
   fi
 
@@ -527,13 +592,13 @@ ensure_insomnia_installed() {
   local install_dir appimage_path launcher_path desktop_dir desktop_file
 
   if command -v insomnia >/dev/null 2>&1; then
-    log 'Insomnia already installed'
+    log_success 'Insomnia already installed'
     return 0
   fi
 
   if pkg_is_available insomnia; then
     if pkg_is_installed insomnia; then
-      log 'Insomnia already installed'
+      log_success 'Insomnia already installed'
     else
       record_direct_package_install insomnia
       if is_dry_run; then
@@ -583,7 +648,7 @@ ensure_bluetuith_installed() {
   local install_dir archive_path binary_path launcher_path tmp_dir
 
   if command -v bluetuith >/dev/null 2>&1; then
-    log 'Bluetuith already installed'
+    log_success 'Bluetuith already installed'
     return 0
   fi
 
@@ -595,16 +660,17 @@ ensure_bluetuith_installed() {
   require_cmd curl
   require_cmd tar
   install_dir="$HOME/.local/opt/bluetuith"
-  archive_path="$install_dir/bluetuith.tar.gz"
-  binary_path="$install_dir/bluetuith"
-  launcher_path="$HOME/.local/bin/bluetuith"
-  if is_dry_run; then
-    tmp_dir="$install_dir/bluetuith.extract"
-  else
-    tmp_dir="$(mktemp -d)"
+  if [[ -z "${TEMP_DIR:-}" ]]; then
+    log_error 'temporary directory is not initialized'
+    return 1
   fi
 
-  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin"
+  archive_path="$TEMP_DIR/bluetuith.tar.gz"
+  binary_path="$install_dir/bluetuith"
+  launcher_path="$HOME/.local/bin/bluetuith"
+  tmp_dir="$TEMP_DIR/bluetuith.extract"
+
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$tmp_dir"
   if is_dry_run; then
     log "DRY_RUN: would install Bluetuith from official release: ${BLUETUITH_ARCHIVE_URL}"
   else
@@ -620,17 +686,17 @@ ensure_bluetuith_installed() {
 # Install oh-my-zsh for the current user in unattended mode.
 install_oh_my_zsh_if_needed() {
   if [[ -d "$HOME/.oh-my-zsh" ]]; then
-    log 'oh-my-zsh already installed'
+    log_success 'oh-my-zsh already installed'
     return 0
   fi
 
   if ! command -v zsh >/dev/null 2>&1; then
-    log 'zsh not found, skipping oh-my-zsh install'
+    log_warn 'zsh not found, skipping oh-my-zsh install'
     return 0
   fi
 
   if ! command -v curl >/dev/null 2>&1; then
-    log 'curl not found, skipping oh-my-zsh install'
+    log_warn 'curl not found, skipping oh-my-zsh install'
     return 0
   fi
 
@@ -685,14 +751,14 @@ ensure_default_shell_zsh() {
   local zsh_path
   zsh_path="$(command -v zsh || true)"
   if [[ -z "$zsh_path" ]]; then
-    log 'zsh not found, cannot set default shell'
+    log_warn 'zsh not found, cannot set default shell'
     return 0
   fi
 
   local passwd_shell
   passwd_shell="$(getent passwd "$USER" | cut -d: -f7 || true)"
   if [[ "$passwd_shell" == "$zsh_path" ]]; then
-    log "default shell already set to $zsh_path"
+    log_success "default shell already set to $zsh_path"
     return 0
   fi
 
@@ -722,6 +788,8 @@ ensure_default_shell_zsh() {
 }
 
 main() {
+  init_temp_dir
+
   # Validate package manager commands.
   require_cmd dnf
   require_cmd rpm
@@ -751,10 +819,10 @@ main() {
       sway_pkg='swayfx'
     else
       if [[ "$REQUIRE_SWAYFX" == '1' ]]; then
-        printf '[packages] swayfx package is required but still unavailable after COPR enable (%s)\n' "$SWAYFX_COPR" >&2
+        log_error "swayfx package is required but still unavailable after COPR enable ($SWAYFX_COPR)"
         exit 1
       fi
-      printf '[packages] swayfx package unavailable and REQUIRE_SWAYFX=0 is unsupported in this profile\n' >&2
+      log_error 'swayfx package unavailable and REQUIRE_SWAYFX=0 is unsupported in this profile'
       exit 1
     fi
   else
@@ -767,7 +835,7 @@ main() {
       terminal_pkg='kitty'
       log 'DRY_RUN: no terminal package currently found; planning first candidate: kitty'
     else
-      printf '[packages] no terminal package found (expected kitty, wezterm, or alacritty)\n' >&2
+      log_error 'no terminal package found (expected kitty, wezterm, or alacritty)'
       exit 1
     fi
   fi
@@ -783,7 +851,7 @@ main() {
         swaylock_pkg='swaylock'
         log 'DRY_RUN: no swaylock package currently found; planning first candidate: swaylock'
       else
-        printf '[packages] no swaylock package found (expected swaylock or swaylock-effects)\n' >&2
+        log_error 'no swaylock package found (expected swaylock or swaylock-effects)'
         exit 1
       fi
     fi
@@ -794,7 +862,7 @@ main() {
       wallpaper_pkg='swww'
       log 'DRY_RUN: no wallpaper package currently found; planning first candidate: swww'
     else
-      printf '[packages] no wallpaper package found (expected swww or swaybg)\n' >&2
+      log_error 'no wallpaper package found (expected swww or swaybg)'
       exit 1
     fi
   fi
@@ -818,18 +886,18 @@ main() {
   if [[ -n "$launcher_pkg" ]]; then
     queue_pkg "$launcher_pkg"
   else
-    log 'launcher package not found (expected fuzzel/wofi/rofi), continuing without it'
+    log_warn 'launcher package not found (expected fuzzel/wofi/rofi), continuing without it'
   fi
   queue_pkg mako
   if [[ -n "$notify_center_pkg" ]]; then
     queue_pkg "$notify_center_pkg"
   else
-    log 'notification center package not found (expected swaync or swaynotificationcenter), continuing without it'
+    log_warn 'notification center package not found (expected swaync or swaynotificationcenter), continuing without it'
   fi
   if [[ -n "$swayosd_pkg" ]]; then
     queue_pkg "$swayosd_pkg"
   else
-    log 'swayosd package not found, continuing without it'
+    log_warn 'swayosd package not found, continuing without it'
   fi
   queue_pkg wlogout
   queue_pkg brightnessctl
@@ -853,7 +921,7 @@ main() {
   if [[ -n "$clipboard_pkg" ]]; then
     queue_pkg "$clipboard_pkg"
   else
-    log 'clipboard history package not found (expected cliphist or clipman), continuing without it'
+    log_warn 'clipboard history package not found (expected cliphist or clipman), continuing without it'
   fi
   queue_pkg curl
   queue_pkg unzip
@@ -879,23 +947,23 @@ main() {
   if [[ -n "$sysinfo_pkg" ]]; then
     queue_pkg "$sysinfo_pkg"
   else
-    log 'system info package not found (expected fastfetch or neofetch), continuing without it'
+    log_warn 'system info package not found (expected fastfetch or neofetch), continuing without it'
   fi
   if [[ -n "$fd_pkg" ]]; then
     queue_pkg "$fd_pkg"
   else
-    log 'fd package not found (expected fd or fd-find), continuing without it'
+    log_warn 'fd package not found (expected fd or fd-find), continuing without it'
   fi
   queue_pkg zsh
   if [[ -n "$node_pkg" ]]; then
     queue_pkg "$node_pkg"
   else
-    log 'nodejs package not found in enabled repos'
+    log_warn 'nodejs package not found in enabled repos'
   fi
   if [[ -n "$npm_pkg" ]]; then
     queue_pkg "$npm_pkg"
   else
-    log 'npm package not found as standalone package (will rely on nodejs-provided npm if available)'
+    log_warn 'npm package not found as standalone package (will rely on nodejs-provided npm if available)'
   fi
   if pkg_is_available pnpm; then
     queue_pkg pnpm
@@ -903,12 +971,12 @@ main() {
   if [[ -n "$docker_pkg" ]]; then
     queue_pkg "$docker_pkg"
   else
-    log 'docker engine package not found (expected docker, moby-engine, or docker-ce)'
+    log_warn 'docker engine package not found (expected docker, moby-engine, or docker-ce)'
   fi
   if [[ -n "$docker_compose_pkg" ]]; then
     queue_pkg "$docker_compose_pkg"
   else
-    log 'docker compose package not found (expected docker-compose or docker-compose-plugin)'
+    log_warn 'docker compose package not found (expected docker-compose or docker-compose-plugin)'
   fi
   queue_pkg librewolf
   queue_pkg code
@@ -940,7 +1008,7 @@ main() {
   if [[ -n "$automatic_pkg" ]]; then
     queue_pkg "$automatic_pkg"
   else
-    log 'automatic updates package not found (expected dnf5-plugin-automatic or dnf-automatic)'
+    log_warn 'automatic updates package not found (expected dnf5-plugin-automatic or dnf-automatic)'
   fi
   queue_pkg fwupd
   queue_pkg firewalld
@@ -974,7 +1042,7 @@ main() {
 
   # Print skipped package summary.
   if [[ "${#SKIPPED[@]}" -gt 0 ]]; then
-    log 'some packages were skipped because unavailable in current repos:'
+    log_warn 'some packages were skipped because unavailable in current repos:'
     printf '  - %s\n' "${SKIPPED[@]}"
   fi
 
@@ -985,7 +1053,7 @@ main() {
     log "${planned_package_count} paquets seraient installés, ${planned_group_count} modifications de groupes"
   fi
 
-  log 'done'
+  log_success 'done'
 }
 
 # Entrypoint.
