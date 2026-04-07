@@ -18,11 +18,14 @@ LIBREWOLF_GPG_KEY_URL="${LIBREWOLF_GPG_KEY_URL:-https://repo.librewolf.net/pubke
 HANDY_RPM_URL="${HANDY_RPM_URL:-https://github.com/cjpais/Handy/releases/download/v0.8.1/Handy-0.8.1-1.x86_64.rpm}"
 # Obsidian official AppImage used when no distro package is available.
 OBSIDIAN_APPIMAGE_URL="${OBSIDIAN_APPIMAGE_URL:-https://github.com/obsidianmd/obsidian-releases/releases/download/v1.10.6/Obsidian-1.10.6.AppImage}"
+OBSIDIAN_APPIMAGE_SHA256="${OBSIDIAN_APPIMAGE_SHA256:-162d753076d0610e4dccfdccf391c13af5fcb557ba7574b77f0e90ac3c522b1c}"
 # Insomnia official AppImage used when no distro package is available.
 INSOMNIA_VERSION="${INSOMNIA_VERSION:-12.5.0}"
 INSOMNIA_APPIMAGE_URL="${INSOMNIA_APPIMAGE_URL:-https://github.com/Kong/insomnia/releases/download/core@${INSOMNIA_VERSION}/Insomnia.Core-${INSOMNIA_VERSION}.AppImage}"
+INSOMNIA_APPIMAGE_SHA256="${INSOMNIA_APPIMAGE_SHA256:-458373397f5644fa8f50c85b1bf01be08a76e629ae74d1a51d7d643cbcee43e5}"
 # LocalSend official AppImage used when no distro package is available.
 LOCALSEND_APPIMAGE_URL="${LOCALSEND_APPIMAGE_URL:-https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-linux-x86-64.AppImage}"
+LOCALSEND_APPIMAGE_SHA256="${LOCALSEND_APPIMAGE_SHA256:-c1a1e7bc7bb7eebdf6c365a30cef0d4ba3e6bb79961c3b94edf918920f8e36f0}"
 # Bluetuith official release archive used when no distro package is available.
 BLUETUITH_ARCHIVE_URL="${BLUETUITH_ARCHIVE_URL:-https://github.com/bluetuith-org/bluetuith/releases/download/v0.2.6/bluetuith_0.2.6_Linux_x86_64.tar.gz}"
 # VS Code official repository file.
@@ -68,6 +71,54 @@ require_cmd() {
     printf '[packages] missing required command: %s\n' "$1" >&2
     exit 1
   }
+}
+
+# Download a file and verify its SHA256 before moving it into place.
+download_verified_sha256() {
+  if [[ "$#" -ne 3 ]]; then
+    printf '[packages] usage: download_verified_sha256 <url> <expected_sha256> <destination>\n' >&2
+    return 1
+  fi
+
+  local url="$1"
+  local expected_sha256="$2"
+  local dest_path="$3"
+  local tmp_path actual_sha256
+
+  require_cmd curl
+  require_cmd sha256sum
+
+  expected_sha256="${expected_sha256#sha256:}"
+  if [[ -z "$expected_sha256" ]]; then
+    printf '[packages] missing expected SHA256 for %s\n' "$url" >&2
+    return 1
+  fi
+  if [[ -z "$url" || -z "$dest_path" ]]; then
+    printf '[packages] missing download URL or destination for SHA256-verified download\n' >&2
+    return 1
+  fi
+
+  tmp_path="${dest_path}.download"
+  rm -f "$tmp_path"
+
+  if ! curl -fsSL "$url" -o "$tmp_path"; then
+    printf '[packages] download failed: %s\n' "$url" >&2
+    rm -f "$tmp_path"
+    return 1
+  fi
+
+  actual_sha256="$(sha256sum "$tmp_path" | awk '{print $1}')"
+  if [[ "$actual_sha256" != "$expected_sha256" ]]; then
+    printf '[packages] SHA256 mismatch for %s\n' "$url" >&2
+    printf '[packages] expected: %s\n' "$expected_sha256" >&2
+    printf '[packages] actual:   %s\n' "$actual_sha256" >&2
+    printf '[packages] deleting corrupted download: %s\n' "$tmp_path" >&2
+    rm -f "$tmp_path"
+    return 1
+  fi
+
+  mv "$tmp_path" "$dest_path"
+  return 0
 }
 
 # Return success when a package is already installed.
@@ -303,14 +354,13 @@ ensure_obsidian_installed() {
     return 0
   fi
 
-  require_cmd curl
   install_dir="$HOME/.local/opt/obsidian"
   appimage_path="$install_dir/Obsidian.AppImage"
   launcher_path="$HOME/.local/bin/obsidian"
 
   mkdir -p "$install_dir" "$HOME/.local/bin"
   log "installing Obsidian from official AppImage: ${OBSIDIAN_APPIMAGE_URL}"
-  curl -fsSL "$OBSIDIAN_APPIMAGE_URL" -o "$appimage_path"
+  download_verified_sha256 "$OBSIDIAN_APPIMAGE_URL" "$OBSIDIAN_APPIMAGE_SHA256" "$appimage_path"
   chmod +x "$appimage_path"
   ln -sfn "$appimage_path" "$launcher_path"
 }
@@ -329,7 +379,6 @@ ensure_localsend_installed() {
     return 0
   fi
 
-  require_cmd curl
   install_dir="$HOME/.local/opt/localsend"
   appimage_path="$install_dir/LocalSend.AppImage"
   launcher_path="$HOME/.local/bin/localsend"
@@ -338,7 +387,7 @@ ensure_localsend_installed() {
 
   mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
   log "installing LocalSend from official AppImage: ${LOCALSEND_APPIMAGE_URL}"
-  curl -fsSL "$LOCALSEND_APPIMAGE_URL" -o "$appimage_path"
+  download_verified_sha256 "$LOCALSEND_APPIMAGE_URL" "$LOCALSEND_APPIMAGE_SHA256" "$appimage_path"
   chmod +x "$appimage_path"
   ln -sfn "$appimage_path" "$launcher_path"
   cat > "$desktop_file" <<EOT
@@ -373,7 +422,6 @@ ensure_insomnia_installed() {
     return 0
   fi
 
-  require_cmd curl
   install_dir="$HOME/.local/opt/insomnia"
   appimage_path="$install_dir/Insomnia.AppImage"
   launcher_path="$HOME/.local/bin/insomnia"
@@ -382,7 +430,7 @@ ensure_insomnia_installed() {
 
   mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
   log "installing Insomnia from official AppImage: ${INSOMNIA_APPIMAGE_URL}"
-  curl -fsSL "$INSOMNIA_APPIMAGE_URL" -o "$appimage_path"
+  download_verified_sha256 "$INSOMNIA_APPIMAGE_URL" "$INSOMNIA_APPIMAGE_SHA256" "$appimage_path"
   chmod +x "$appimage_path"
   ln -sfn "$appimage_path" "$launcher_path"
   cat > "$desktop_file" <<EOT

@@ -158,5 +158,5 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 
 ### Insomnia
 - Purpose: API client for designing, testing, and debugging HTTP/gRPC/GraphQL requests.
-- Local setup: setup script installs `insomnia` from enabled repos when available, otherwise falls back to the official AppImage in `~/.local/opt/insomnia`.
+- Local setup: setup script installs `insomnia` from enabled repos when available, otherwise falls back to the official SHA256-verified AppImage in `~/.local/opt/insomnia`.
 - Docs: https://insomnia.rest/
