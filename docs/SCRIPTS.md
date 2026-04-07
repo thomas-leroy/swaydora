@@ -16,7 +16,7 @@
 - `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
 
 `scripts/10-packages.sh` supports `DRY_RUN=1` to print planned package installs, downloads, repository changes, and group updates without applying them.
-It also validates Fedora 43+, disk/RAM requirements, and critical commands before applying system changes.
+It also validates Fedora 43+, more than 8 GiB of disk space, more than 4 GiB of RAM, and critical commands before applying system changes.
 Oh My Zsh is installed with a direct Git checkout; set `OH_MY_ZSH_REF=<branch-tag-or-commit>` to pin the upstream ref.
 Setup scripts print a final summary of relevant actions, such as packages handled, files written, backups created, links installed, or services enabled.
 Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh`.

@@ -13,7 +13,7 @@ The full setup is intended for:
 - Fedora 43 or newer
 - A fresh machine or staging VM
 - More than 8 GiB of available disk space
-- More than 8 GiB of available RAM
+- More than 4 GiB of available RAM
 - Standard Fedora tooling such as `dnf`, `curl`, `tar`, and `gzip`
 
 Other distributions, older Fedora versions, and heavily customized machines are not considered supported unless explicitly documented.
