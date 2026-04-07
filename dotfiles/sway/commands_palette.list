@@ -48,11 +48,10 @@ Meta+Shift+[&,é,",',(,-,è,_,ç]|Send focused window to workspace 1..9 and foll
 Meta+KP_[1..9]|Switch to workspace using numpad|
 Meta+Shift+KP_[1..9]|Send focused window to numpad workspace and follow it|
 
-Meta+Shift+r|Reload Sway configuration|swaymsg reload
+Meta+Shift+r|Reload Sway and restart Waybar|~/.config/scripts/reload_env.sh
 Meta+Shift+x|Exit Sway session|swaymsg exit
 Meta+l|Lock current session|swaylock -f -c 000000
 Ctrl+Alt+Delete|Open power screen|~/.config/scripts/power_screen.sh
-Waybar Bluetooth icon|Open Bluetuith in floating terminal|~/.config/scripts/bluetooth_tui.sh
 Meta+Ctrl+c|Open capture menu|~/.config/scripts/capture_menu.sh
 Print|Take a screenshot|~/.config/scripts/screenshot_capture.sh
 Meta+Print|Take a screenshot of the active window|~/.config/scripts/screenshot_active_window.sh
