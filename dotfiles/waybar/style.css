@@ -1,243 +1,229 @@
+@define-color fg #F8EDDC;
+@define-color fg_alt #ECD2AB;
+@define-color fg_soft #A7A9A1;
+
+@define-color bg rgba(21, 23, 34, 0.84);
+@define-color bg_alt transparent;
+@define-color bg_soft rgba(36, 40, 53, 0.9);
+
+@define-color tooltip_bg #151722;
+@define-color hover rgba(0, 132, 154, 0.24);
+
+@define-color workspace_inactive #A7A9A1;
+@define-color workspace_active rgba(161, 122, 181, 0.42);
+@define-color workspace_hover rgba(0, 132, 154, 0.24);
+
+@define-color urgent #C84C53;
+@define-color active #00849A;
+@define-color good #9BBA51;
+@define-color warn #ECDA9C;
+
 * {
   font-family: "JetBrainsMono Nerd Font", "JetBrainsMono Nerd Font Mono", "Symbols Nerd Font", monospace;
-  font-size: 13px;
-  min-height: 0;
+  font-size: 11px;
+  font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
+  min-height: 24px;
+  padding: 0px 5px 0px 5px;
+  color: @fg;
 }
 
 window#waybar {
-  background: rgba(21, 23, 34, 0.84);
-  color: #f8eddc;
+  background-color: @bg;
   border-bottom: 1px solid rgba(161, 122, 181, 0.5);
-  transition: background-color 120ms ease;
 }
 
-#workspaces button,
-#window,
-#clock,
-#custom-audio,
-#custom-brightness,
-#network,
-#cpu,
-#custom-updates,
-#custom-disks,
-#custom-bluetooth,
-#custom-cam,
-#custom-mic,
-#custom-layout,
-#custom-protonvpn,
-#custom-notification_center,
-#custom-power,
-#custom-tray_toggle {
-  padding: 0 12px;
-  margin: 5px 0;
-  border-radius: 12px;
-  background: rgba(36, 40, 53, 0.9);
-  border: 1px solid rgba(161, 122, 181, 0.35);
-  transition: all 120ms ease;
-}
-
-#clock {
-  background: transparent;
-  border: none;
-}
-
-/* Workspace readability */
-#workspaces {
-  margin-left: 6px;
-}
-
-#workspaces button {
-  color: transparent;
-  min-width: 10px;
-  padding: 0 7px;
-  border-radius: 10px;
-  border: 1px solid rgba(138, 217, 233, 0.85);
-  background: transparent;
-  transition: all 140ms ease;
-  margin-left: 7px;
-}
-
-#workspaces button.focused,
-#workspaces button.visible,
-#workspaces button.active {
-  color: transparent;
-  background: rgba(161, 122, 181, 0.42);
-  border: 1px solid rgba(161, 122, 181, 0.95);
-  font-weight: 700;
-}
-
-#workspaces button:hover {
-  color: transparent;
-  background: transparent;
-}
-
-#workspaces button.urgent {
-  color: #f8eddc;
-  background: rgba(200, 76, 83, 0.32);
-  border: 1px solid rgba(237, 183, 191, 0.9);
-}
-
-/* Running apps for current output (click icon to focus). */
-#taskbar {
-  margin-left: 6px;
-  min-width: 18px;
-}
-
-#taskbar button {
-  color: inherit;
-  padding: 0 8px;
-  margin: 5px 0 5px 6px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: transparent;
-  transition: all 120ms ease;
-}
-
-#taskbar button.active {
-  color: #151722;
-  background: rgba(161, 122, 181, 0.42);
-  border-color: rgba(161, 122, 181, 0.95);
-}
-
-#taskbar button:hover {
-  color: #ffffff;
-  background: transparent;
-  border-color: transparent;
-}
-
-#taskbar button.active:hover {
-  color: #151722;
-  background: rgba(161, 122, 181, 0.42);
-  border-color: rgba(161, 122, 181, 0.95);
-}
-
-#workspaces button:hover,
-#custom-audio:hover,
-#custom-mic:hover,
-#custom-brightness:hover,
-#network:hover,
-#cpu:hover,
-#custom-updates:hover,
-#custom-disks:hover,
-#custom-bluetooth:hover,
-#custom-layout:hover,
-#custom-protonvpn:hover,
-#custom-notification_center:hover,
-#custom-power:hover,
-#custom-tray_toggle:hover {
-  background: rgba(0, 132, 154, 0.24);
-  border-color: rgba(138, 217, 233, 0.65);
-}
-
-#custom-tray_toggle {
-  color: #ecda9c;
-  padding: 0 10px;
-}
-
-#group-quick_tray {
-  margin-right: 6px;
-}
-
-/* Quick tray visual grouping */
-#group-quick_tray .tray-item {
-  margin-left: 4px;
-}
-
-#group-quick_tray #custom-tray_toggle,
-#group-quick_tray #custom-bluetooth,
-#group-quick_tray #custom-protonvpn,
-#group-quick_tray #custom-disks,
-#group-quick_tray #custom-power {
-  background: rgba(236, 218, 156, 0.08);
-  border-color: rgba(236, 218, 156, 0.45);
-}
-
-#custom-updates.warn,
-#custom-mic.warn {
-  color: #ecda9c;
-}
-
-#custom-cam.on {
-  color: #c84c53;
-}
-
-#custom-cam.hidden {
-  color: transparent;
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-  min-width: 0;
-  font-size: 0;
-}
-
-#custom-audio.muted {
-  color: #c84c53;
-}
-
-#custom-audio.low {
-  color: #8ad9e9;
-}
-
-#custom-audio.medium {
-  color: #f8eddc;
-}
-
-#custom-audio.high {
-  color: #9bba51;
-}
-
-#custom-brightness.low {
-  color: #8ad9e9;
-}
-
-#custom-brightness.medium {
-  color: #f8eddc;
-}
-
-#custom-brightness.high {
-  color: #ecda9c;
-}
-
-#custom-brightness.warn {
-  color: #c84c53;
+window#waybar.empty #window {
+  background-color: transparent;
 }
 
 #window {
-  color: #e3e3e3;
-  min-width: 260px;
+  background-color: transparent;
+  color: @fg_soft;
+  margin: 0px 2px 0px 2px;
 }
 
-#custom-protonvpn.on {
-  color: #9bba51;
+tooltip * {
+  background-color: @tooltip_bg;
+  padding: 2px 3px 2px 3px;
+  border-radius: 6px;
+  color: @fg;
 }
 
-#custom-protonvpn.off {
-  color: #a7a9a1;
+#workspaces button {
+  background: transparent;
+  border-radius: 0px;
+  color: @workspace_inactive;
+  padding: 0px;
+  margin: 0px;
+}
+
+#workspaces button.active {
+  background: transparent;
+  border-radius: 0px;
+  color: @fg_alt;
+  padding: 0px;
+  margin: 0px;
+}
+
+#workspaces button.focused {
+  background-color: @workspace_active;
+}
+
+#workspaces button.urgent {
+  color: @urgent;
+}
+
+#custom-logo {
+  background-color: @bg_alt;
+  font-family: "JetBrainsMono Nerd Font Propo";
+  font-size: 12px;
+  color: @fg;
+  padding: 0px 10px 0px 10px;
+}
+
+#custom-expand {
+  background-color: @bg_alt;
+  color: @fg;
+  padding: 0px 4px 0px 4px;
 }
 
 #cpu {
-  color: #f8eddc;
+  border-radius: 20px;
+  background-color: transparent;
+  color: @fg;
+  padding: 0px 8px 0px 0px;
+  margin: 0px 0px 0px 2px;
 }
 
-#cpu.warning {
-  color: #ffb347;
+#memory {
+  background-color: transparent;
+  color: @fg;
+  padding: 0px 5px 0px 5px;
 }
 
+#disk {
+  background-color: transparent;
+  color: @fg;
+  padding: 0px 5px 0px 0px;
+}
+
+#temperature {
+  background-color: transparent;
+  color: @fg;
+  padding: 0px 5px 0px 0px;
+}
+
+#battery {
+  background-color: @bg_alt;
+  color: @fg;
+  padding: 0px 0px 0px 5px;
+  margin: 0px 0px 0px 4px;
+}
+
+#battery.charging {
+  background-color: @bg_alt;
+  color: @fg;
+  padding: 0px 10px 0px 5px;
+}
+
+#battery.plugged {
+  background-color: @bg_alt;
+  color: @fg;
+  padding: 0px 10px 0px 5px;
+}
+
+#language {
+  background-color: transparent;
+  color: @fg;
+  padding: 0px 5px 0px 5px;
+  margin: 0px 6px 0px 0px;
+}
+
+#backlight {
+  border-radius: 0px 0px 0px 10px;
+  background-color: @bg_alt;
+  color: @fg;
+  padding: 0px 5px 0px 10px;
+  margin: 0px 0px 0px 4px;
+}
+
+#pulseaudio {
+  background-color: @bg_alt;
+  color: @fg;
+  padding: 0px 5px 0px 5px;
+}
+
+#clock {
+  background-color: transparent;
+  color: @fg;
+  padding: 0px 8px 0px 8px;
+  margin: 0px 0px 0px 5px;
+}
+
+#workspaces button:hover {
+  background: @workspace_hover;
+}
+
+#taskbar button:hover,
+#custom-logo:hover,
+#clock:hover,
+#custom-expand:hover,
+#group-expand:hover,
+#language:hover,
+#tray > .passive:hover,
+#tray > .active:hover,
+#tray > widget:hover,
+#custom-bluetooth:hover,
+#custom-protonvpn:hover,
+#custom-disks:hover,
+#custom-layout:hover,
+#custom-updates:hover,
+#custom-brightness:hover,
+#custom-cam:hover,
+#custom-mic:hover,
+#custom-audio:hover,
+#network:hover,
+#cpu:hover,
+#custom-notification_center:hover {
+  background-color: @hover;
+  border-radius: 8px;
+}
+
+#group-expand .expand-item {
+  margin-left: 4px;
+}
+
+#custom-updates.warn,
+#custom-mic.warn,
+#custom-brightness.warn {
+  color: @warn;
+}
+
+#custom-cam.on,
+#custom-audio.muted,
 #cpu.critical {
-  color: #c84c53;
+  color: @urgent;
 }
 
-#custom-power {
-  color: #c84c53;
-}
-
-#custom-layout.fr {
-  color: #9bba51;
-}
-
+#custom-audio.low,
+#custom-brightness.low,
 #custom-layout.us {
-  color: #8ad9e9;
+  color: #8AD9E9;
 }
 
-@import "local.css";
+#custom-audio.high,
+#custom-brightness.high,
+#custom-protonvpn.on,
+#custom-layout.fr {
+  color: @good;
+}
+
+#custom-protonvpn.off {
+  color: @fg_soft;
+}
+
+#backlight:hover,
+#pulseaudio:hover,
+#network:hover {
+  color: @fg_soft;
+}

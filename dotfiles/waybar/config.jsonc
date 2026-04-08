@@ -4,31 +4,24 @@
   "height": 30,
   "spacing": 8,
 
-  "modules-left": ["sway/workspaces", "wlr/taskbar"],
+  "modules-left": ["custom/logo", "sway/workspaces", "wlr/taskbar"],
   "modules-center": ["clock"],
   "modules-right": [
-    "group/quick_tray",
+    "group/expand",
     "custom/updates",
     "custom/brightness",
     "custom/cam",
     "custom/mic",
     "custom/audio",
     "network",
-    "cpu",
-    "custom/notification_center",
-    "custom/power"
+    "custom/notification_center"
   ],
 
   "sway/workspaces": {
     "on-click": "activate",
-    "disable-scroll": true,
+    "disable-scroll": false,
     "all-outputs": true,
-    "format": "",
-    "format-icons": {
-      "default": "",
-      "active": "",
-      "urgent": ""
-    },
+    "format": "{icon}",
     "persistent-workspaces": {
       "1": [],
       "2": [],
@@ -134,6 +127,18 @@
     "on-click": "~/.config/scripts/cpu_popup.sh"
   },
 
+  "memory": {
+    "interval": 5,
+    "format": "󰘚"
+  },
+
+  "temperature": {
+    "interval": 5,
+    "critical-threshold": 80,
+    "format": "󰔏",
+    "format-critical": "󱃂"
+  },
+
   "custom/layout": {
     "exec": "~/.config/scripts/layout_status.sh",
     "interval": 2,
@@ -156,11 +161,16 @@
     "return-type": "json"
   },
 
-  "custom/power": {
-    "exec": "printf '{\"text\":\"\",\"tooltip\":\"Power menu\"}'",
-    "interval": 3600,
-    "on-click": "~/.config/scripts/power_screen.sh",
-    "return-type": "json"
+  "custom/logo": {
+    "format": "\uf30b",
+    "tooltip": true,
+    "tooltip-format": "Power Options",
+    "on-click": "~/.config/scripts/power_screen.sh"
+  },
+
+  "custom/expand": {
+    "format": "",
+    "tooltip": false
   },
 
   "custom/mic": {
@@ -192,12 +202,6 @@
     "return-type": "json"
   },
 
-  "custom/tray_toggle": {
-    "exec": "printf '{\"text\":\"\\udb84\\ude96\",\"tooltip\":\"Quick tray (hover to reveal)\"}'",
-    "interval": 3600,
-    "return-type": "json"
-  },
-
   "custom/bluetooth": {
     "exec": "printf '{\"text\":\"\",\"tooltip\":\"Bluetooth\"}'",
     "interval": 3600,
@@ -205,19 +209,30 @@
     "return-type": "json"
   },
 
-  "group/quick_tray": {
-    "orientation": "inherit",
+  "tray": {
+    "format": "{icon}",
+    "tooltip": true,
+    "icon-size": 12,
+    "spacing": 0
+  },
+
+  "group/expand": {
+    "orientation": "horizontal",
     "drawer": {
-      "transition-duration": 280,
-      "children-class": "tray-item",
+      "transition-duration": 600,
+      "children-class": "expand-item",
       "transition-left-to-right": false
     },
     "modules": [
-      "custom/tray_toggle",
+      "custom/expand",
+      "tray",
       "custom/bluetooth",
       "custom/protonvpn",
       "custom/disks",
-      "custom/layout"
+      "custom/layout",
+      "memory",
+      "temperature",
+      "cpu"
     ]
   }
 }
