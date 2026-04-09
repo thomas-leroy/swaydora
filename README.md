@@ -21,9 +21,6 @@ Swaydora is intentionally not a custom ISO, a hidden package bundle, or a magic 
 ## Highlights
 
 - Fedora-first setup for SwayFX, Waybar, notifications, screenshots, clipThe automation can install packages, enable repositories/COPR sources, enable systemd services, change user groups, change the default shell, and link files into ~/.config.
-
-board, audio, devices, and developer tooling.
-
 - Reproducible setup scripts with `DRY_RUN=1`, SHA256-verified AppImage fallbacks where practical, and timestamped config backups.
 - No custom ISO or obfuscated package bundle: users keep standard Fedora and can inspect or run each script independently.
 - Modern shell/dev baseline: zsh, oh-my-zsh, bat, fd, ripgrep, fzf, duf, btop, zoxide, atuin, Node.js, pnpm, Docker, VS Code, and Insomnia.
@@ -52,7 +49,6 @@ Despite the care put into this setup, mistakes can happen. If you spot a weak co
 Run from the repo root inside a Fedora 43 VM or fresh machine:
 
 ```bash
-scripts/10-packages.sh
 scripts/00-bootstrap.sh
 scripts/10-packages.sh
 scripts/20-services.sh
