@@ -1,101 +1,295 @@
 /* Emberstone theme for swaync notifications + control center. */
+
+@define-color ember_bg #242835;
+@define-color ember_bg_deep #151722;
+@define-color ember_bg_soft rgba(36, 40, 53, 0.72);
+@define-color ember_fg #F8EDDC;
+@define-color ember_fg_soft rgba(248, 237, 220, 0.78);
+@define-color ember_muted #A7A9A1;
+@define-color ember_ocean #00849A;
+@define-color ember_ocean_soft rgba(0, 132, 154, 0.18);
+@define-color ember_mauve #A17AB5;
+@define-color ember_mauve_soft rgba(161, 122, 181, 0.18);
+@define-color ember_rose #C84C53;
+@define-color ember_rose_soft rgba(200, 76, 83, 0.18);
+@define-color ember_gold #ECDA9C;
+@define-color ember_gold_soft rgba(236, 218, 156, 0.16);
+@define-color ember_olive #9BBA51;
+
 * {
+  all: unset;
   font-family: "JetBrainsMono Nerd Font", monospace;
   font-size: 12px;
+  transition: 200ms;
 }
 
-/* Shared palette */
-@define-color ember_bg rgba(36, 40, 53, 0.95);
-@define-color ember_bg_deep rgba(21, 23, 34, 0.98);
-@define-color ember_fg #f8eddc;
-@define-color ember_muted #a7a9a1;
-@define-color ember_ocean #00849a;
-@define-color ember_mauve #a17ab5;
-@define-color ember_rose #c84c53;
-@define-color ember_gold #ecda9c;
-
-/* Notification popups */
 .notification-row {
-  margin: 0;
+  outline: none;
+}
+
+.notification-background {
+  border-radius: 8px;
+  margin: 8px;
+  color: @ember_fg;
+  padding: 0;
+}
+
+.notification-background .close-button {
+  margin: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  color: @ember_bg_deep;
+  background-color: @ember_rose_soft;
+}
+
+.notification-background .close-button:hover,
+.notification-background .close-button:active {
+  background-color: rgba(237, 183, 191, 0.55);
+  color: @ember_bg_deep;
 }
 
 .notification {
-  background: transparent;
-  border-radius: 12px;
-  margin: 15px 15px 0 15px;
-}
-
-.notification-content,
-.notification-default-action {
-  background: @ember_bg;
+  padding: 5px 7px;
+  border-radius: 8px;
+  border: 1px solid rgba(161, 122, 181, 0.24);
+  background-color: @ember_bg_soft;
   color: @ember_fg;
-  border: 2px solid @ember_mauve;
-  border-radius: 12px;
-  padding: 12px;
 }
 
-.notification-default-action:hover {
-  background: rgba(0, 132, 154, 0.26);
-  border-color: @ember_ocean;
+.notification-content {
+  margin: 5px;
+  background-color: transparent;
 }
 
-.summary {
+.notification-content .image {
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 7px;
+  margin-right: 7px;
+  transform-origin: top;
+  -gtk-icon-size: 48px;
+}
+
+.notification-content .app-icon {
+  margin-bottom: -2px;
+  margin-right: 5px;
+}
+
+.notification-content .summary {
   color: @ember_fg;
+  margin-bottom: 5px;
   font-weight: 700;
 }
 
-.body {
+.notification-content .time {
+  color: @ember_gold;
+  font-size: 10px;
+}
+
+.notification-content .body {
+  color: @ember_fg_soft;
+  font-size: 12px;
+}
+
+.notification .notification-action {
+  border-radius: 7px;
+  color: @ember_fg;
+  background-color: @ember_ocean_soft;
+  border: 1px solid rgba(0, 132, 154, 0.18);
+  margin: 7px;
+  padding: 4px;
+}
+
+.notification .notification-action:hover,
+.notification .notification-action:active {
+  background-color: rgba(0, 132, 154, 0.32);
+  color: @ember_fg;
+}
+
+.notification-default-action .time {
+  font-size: 10px;
+}
+
+.notification-default-action progressbar {
+  margin-top: 4px;
+  background-color: @ember_gold;
+}
+
+.notification-default-action .body-image {
+  margin-top: 4px;
+  background-color: @ember_fg;
+  border-radius: 7px;
+}
+
+.notification-default-action .inline-reply {
+  margin-top: 4px;
+}
+
+.inline-reply .inline-reply-entry {
+  background: rgba(248, 237, 220, 0.04);
+  color: @ember_fg_soft;
+  caret-color: @ember_fg;
+  border: 1px solid rgba(161, 122, 181, 0.18);
+  border-radius: 7px;
+}
+
+.inline-reply .inline-reply-button {
+  margin-left: 4px;
+  background: @ember_mauve_soft;
+  border: 1px solid rgba(161, 122, 181, 0.18);
+  border-radius: 7px;
+  color: @ember_fg;
+}
+
+.inline-reply .inline-reply-button:disabled {
+  background: rgba(248, 237, 220, 0.04);
+  color: rgba(248, 237, 220, 0.45);
+}
+
+.inline-reply .inline-reply-button:hover {
+  background-color: rgba(161, 122, 181, 0.32);
+}
+
+.notification.critical {
+  border: 1px solid rgba(200, 76, 83, 0.28);
+  background-image: linear-gradient(
+    135deg,
+    rgba(200, 76, 83, 0.35) -200%,
+    rgba(36, 40, 53, 0.78) 70%
+  );
+}
+
+.notification.critical progressbar {
+  background-color: @ember_gold;
+}
+
+.control-center {
+  border-radius: 8px;
+  margin: 0;
+  background-color: rgba(21, 23, 34, 0.92);
+  color: @ember_fg;
+  padding: 10px;
+  border: 1px solid rgba(161, 122, 181, 0.26);
+}
+
+.control-center .notification-background {
+  border-radius: 8px;
+  color: @ember_fg;
+  background-color: @ember_bg_deep;
+  box-shadow: inset 0 0 0 1px rgba(10, 10, 14, 0.45);
+  margin-top: 5px;
+}
+
+.control-center .notification {
+  padding: 7px;
+  border-radius: 8px;
+  background-color: rgba(248, 237, 220, 0.03);
+  border: 1px solid rgba(161, 122, 181, 0.14);
+}
+
+.control-center .notification.critical {
+  background-image: linear-gradient(
+    135deg,
+    rgba(200, 76, 83, 0.2) -200%,
+    rgba(248, 237, 220, 0.03) 70%
+  );
+}
+
+.control-center .notification-action {
+  border-radius: 7px;
+  color: @ember_fg;
+  background-color: rgba(0, 132, 154, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(10, 10, 14, 0.25);
+  margin: 7px;
+}
+
+.control-center .notification-action:hover,
+.control-center .notification-action:active {
+  background-color: rgba(0, 132, 154, 0.34);
+  color: @ember_fg;
+}
+
+.control-center .notification-background:hover,
+.control-center .notification-background:active {
+  box-shadow: inset 0 0 0 1px rgba(161, 122, 181, 0.26);
+  color: @ember_fg;
+}
+
+.control-center .notification-background:hover .notification,
+.control-center .notification-background:active .notification {
+  background-color: rgba(0, 132, 154, 0.08);
+  border: 1px solid rgba(0, 132, 154, 0.18);
+}
+
+.widget-title > label {
+  color: @ember_fg;
+  font-size: 1em;
+}
+
+.widget-title button {
+  border-radius: 8px;
+  color: @ember_fg;
+  background-color: rgba(0, 132, 154, 0.12);
+  border: 1px solid rgba(0, 132, 154, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(10, 10, 14, 0.22);
+  padding: 5px 10px;
+}
+
+.widget-title button:hover {
+  background-color: rgba(0, 132, 154, 0.22);
+}
+
+.widget-title button:active {
+  background-color: rgba(236, 218, 156, 0.32);
+  color: @ember_bg_deep;
+}
+
+.widget-mpris .widget-mpris-player {
+  margin: 5px;
+  min-height: 100px;
+  background-color: rgba(21, 23, 34, 0.82);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(10, 10, 14, 0.45);
+}
+
+.widget-mpris .widget-mpris-player .mpris-background {
+  filter: blur(10px) brightness(0.32);
+}
+
+.widget-mpris .widget-mpris-player .widget-mpris-album-art {
+  -gtk-icon-size: 80px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(10, 10, 14, 0.4);
+  min-width: 80px;
+  min-height: 80px;
+  background-size: cover;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.widget-mpris .widget-mpris-player .widget-mpris-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 10px;
+  color: @ember_fg;
+}
+
+.widget-mpris .widget-mpris-player .widget-mpris-subtitle {
+  font-size: 0.8rem;
+  margin-right: 10px;
   color: @ember_muted;
 }
 
-.time {
-  color: @ember_gold;
-}
-
-.close-button {
-  background: @ember_rose;
-  color: @ember_fg;
-  border-radius: 999px;
-}
-
-.close-button:hover {
-  background: #edb7bf;
-  color: #151722;
-}
-
-/* Notification center */
-.control-center {
-  background: @ember_bg_deep;
-  color: @ember_fg;
-  border: 2px solid @ember_mauve;
-  border-radius: 12px;
-  margin: 15px;
-  padding: 12px;
-}
-
-.control-center .notification-row .notification {
-  margin: 0 0 12px 0;
-}
-
-.control-center .notification-row .notification-content,
-.control-center .notification-row .notification-default-action {
-  background: @ember_bg;
-}
-
-.widget-title,
-.widget-title > label {
+.widget-mpris .widget-mpris-player button {
+  background-color: rgba(36, 40, 53, 0.65);
+  padding: 5px;
+  border-radius: 7px;
+  margin-bottom: 5px;
   color: @ember_fg;
 }
 
-.widget-title > button {
-  background: rgba(0, 132, 154, 0.2);
-  border: 1px solid @ember_ocean;
-  border-radius: 10px;
-  color: @ember_fg;
-}
-
-.widget-title > button:hover {
-  background: rgba(0, 132, 154, 0.35);
+.widget-mpris .widget-mpris-player button:hover {
+  background-color: rgba(0, 132, 154, 0.28);
 }
 
 @import "local.css";
