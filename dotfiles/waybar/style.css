@@ -174,7 +174,6 @@ tooltip * {
 #tray > .active:hover,
 #tray > widget:hover,
 #custom-bluetooth:hover,
-#custom-protonvpn:hover,
 #custom-disks:hover,
 #custom-layout:hover,
 #custom-updates:hover,
@@ -213,13 +212,8 @@ tooltip * {
 
 #custom-audio.high,
 #custom-brightness.high,
-#custom-protonvpn.on,
 #custom-layout.fr {
   color: @good;
-}
-
-#custom-protonvpn.off {
-  color: @fg_soft;
 }
 
 #backlight:hover,

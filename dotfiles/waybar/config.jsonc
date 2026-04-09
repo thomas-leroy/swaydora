@@ -153,14 +153,6 @@
     "return-type": "json"
   },
 
-  "custom/protonvpn": {
-    "exec": "~/.config/scripts/protonvpn_status.sh",
-    "interval": 6,
-    "on-click": "~/.config/scripts/protonvpn_toggle_window.sh",
-    "on-click-right": "~/.config/scripts/session_menu.sh",
-    "return-type": "json"
-  },
-
   "custom/logo": {
     "format": "\uf30b",
     "tooltip": true,
@@ -227,7 +219,6 @@
       "custom/expand",
       "tray",
       "custom/bluetooth",
-      "custom/protonvpn",
       "custom/disks",
       "custom/layout",
       "memory",
