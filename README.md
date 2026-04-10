@@ -11,19 +11,19 @@
 
 Swaydora is a Fedora + SwayFX desktop setup for bootstrapping a fresh developer workstation with opinionated Wayland defaults, useful tooling, and a polished daily workflow.
 
-It is a side project built as a Fedora-flavored alternative to the excellent [Omarchy](https://omarchy.org/), adapted around SwayFX and my own workflow choices.
+It is a side project inspired by the excellent [Omarchy](https://omarchy.org/) and adapted around Fedora, SwayFX, and my own workflow choices. Fedora has been my home distro for years, and this repository is simply a flexible way to share the setup I use daily.
 
-Swaydora is intentionally not a custom ISO, a hidden package bundle, or a magic black box. It is a set of auditable scripts and dotfiles meant to save time while keeping Fedora as the base system and leaving users in control of their environment.
+Swaydora is a set of auditable scripts and dotfiles meant to save time, stay easy to inspect, and let people reuse only the parts that fit their own Fedora setup.
 
 > Status: **ALPHA** - **UNSTABLE**. Breaking changes and regressions are expected.
 > Use this on a fresh Fedora machine or a staging VM first. I do not recommend migrating a machine that is already used daily.
 
 ## Highlights
 
-- Fedora-first setup for SwayFX, Waybar, notifications, screenshots, clipThe automation can install packages, enable repositories/COPR sources, enable systemd services, change user groups, change the default shell, and link files into ~/.config.
+- Fedora-first setup for SwayFX, Waybar, notifications, screenshots, clipboard tooling, and a daily-driver developer workflow built on the distro I have called home for years.
 - Reproducible setup scripts with `DRY_RUN=1`, SHA256-verified AppImage fallbacks where practical, and timestamped config backups.
-- No custom ISO or obfuscated package bundle: users keep standard Fedora and can inspect or run each script independently.
-- Modern shell/dev baseline: zsh, oh-my-zsh, bat, fd, ripgrep, fzf, duf, btop, zoxide, atuin, Node.js, pnpm, Docker, VS Code, and Insomnia.
+- Auditable and modular setup: users can inspect each script, run them independently, and adapt only the pieces they want.
+- Modern shell/dev baseline: zsh, oh-my-zsh, bat, fd, ripgrep, fzf, duf, btop, zoxide, atuin, Node.js, pnpm, Docker, LibreWolf, Thunderbird, VS Code, Handy, Bluetuith, LocalSend, and Insomnia.
 - Safety-focused defaults: Fedora 43+ requirement checks, disk/RAM checks, colored ISO8601 logs, and rollback docs.
 
 ## Safety

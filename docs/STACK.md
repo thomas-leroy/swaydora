@@ -28,6 +28,12 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh`, and `dotfiles/scripts/app_launcher.sh` can fallback to Wofi.
 - Docs: https://hg.sr.ht/~scoopta/wofi
 
+### Kitty
+
+- Purpose: primary terminal emulator for the desktop session.
+- Local setup: resolved as the preferred terminal package in `scripts/10-packages.sh`; launcher paths and Sway keybindings use whichever supported terminal is installed, with `kitty` as first choice.
+- Docs: https://sw.kovidgoyal.net/kitty/
+
 ## Session / Notifications
 
 ### wlogout
@@ -73,13 +79,17 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://github.com/emersion/grim
 - Docs: https://github.com/emersion/slurp
 
-### wl-clipboard + cliphist/clipman
+### hyprpicker
 
-- Purpose: Wayland clipboard access/history.
-- Local setup: installed by package script with distro-aware fallback (`cliphist` -> `clipman`).
+- Purpose: Wayland color picker for grabbing on-screen colors.
+- Local setup: installed by `scripts/10-packages.sh`; exposed through `dotfiles/scripts/color_picker.sh` and the `Meta+Shift+C` binding in `dotfiles/sway/config`.
+- Docs: https://github.com/hyprwm/hyprpicker
+
+### wl-clipboard
+
+- Purpose: Wayland clipboard access.
+- Local setup: installed by `scripts/10-packages.sh`; `dotfiles/scripts/color_picker.sh` falls back to `wl-paste` when needed.
 - Docs: https://github.com/bugaevc/wl-clipboard
-- Docs: https://github.com/sentriz/cliphist
-- Docs: https://github.com/chmouel/clipman
 
 ## Audio / Video / Devices
 
@@ -102,6 +112,18 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Local setup: `udiskie --tray` autostart, disk menu script `dotfiles/scripts/disks_menu.sh`.
 - Docs: https://github.com/storaged-project/udisks
 - Docs: https://github.com/coldfix/udiskie
+
+### Bluetuith
+
+- Purpose: Bluetooth device management from the terminal.
+- Local setup: `scripts/10-packages.sh` installs Bluetooth support and ensures `bluetuith` is present from repos or upstream release archive; `dotfiles/scripts/bluetooth_tui.sh` opens it from Waybar/Sway helpers.
+- Docs: https://github.com/darkhz/bluetuith
+
+### NetworkManager-tui (`nmtui`)
+
+- Purpose: terminal UI for network management and quick connection fixes.
+- Local setup: installed by `scripts/10-packages.sh`; `dotfiles/scripts/network_tui.sh` launches it in Kitty and focuses the existing window when already open.
+- Docs: https://networkmanager.dev/
 
 ### v4l-utils
 
@@ -134,6 +156,12 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Purpose: remote SSH access to the machine.
 - Local setup: `sshd.service` enabled by `scripts/20-services.sh`.
 - Docs: https://www.openssh.com/
+
+### gnome-keyring
+
+- Purpose: secret storage and keyring integration for the session.
+- Local setup: installed by `scripts/10-packages.sh`; `dotfiles/scripts/keyring_start.sh` is started from the Sway session.
+- Docs: https://wiki.gnome.org/Projects/GnomeKeyring
 
 ### Docker + Compose
 
@@ -168,6 +196,12 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://github.com/atuinsh/atuin
 - Docs: https://github.com/fastfetch-cli/fastfetch
 
+### git
+
+- Purpose: source control for the repo and bootstrap scripts.
+- Local setup: installed by `scripts/10-packages.sh`; setup helpers also rely on `git` for clone/fetch operations such as `oh-my-zsh`.
+- Docs: https://git-scm.com/
+
 ### Node.js / npm / pnpm
 
 - Purpose: JavaScript runtime + package managers.
@@ -181,6 +215,42 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Purpose: code editor/IDE.
 - Local setup: setup script enables Microsoft RPM repo when needed, then installs `code`.
 - Docs: https://code.visualstudio.com/docs
+
+### LibreWolf
+
+- Purpose: privacy-focused browser for general web use and testing.
+- Local setup: `scripts/10-packages.sh` enables the LibreWolf RPM repository when needed, then installs `librewolf`.
+- Docs: https://librewolf.net/
+
+### Thunderbird
+
+- Purpose: desktop mail client.
+- Local setup: installed directly by `scripts/10-packages.sh`.
+- Docs: https://www.thunderbird.net/
+
+### Handy
+
+- Purpose: terminal-based Swiss-army knife for local machine workflows.
+- Local setup: installed from distro repos when available, otherwise from the official RPM in `scripts/10-packages.sh`; launcher helper lives in `dotfiles/scripts/handy_launch.sh`.
+- Docs: https://github.com/thomas-leroy/handy
+
+### LocalSend
+
+- Purpose: open source local-network file sharing between nearby devices.
+- Local setup: installed from distro repos when available, otherwise from the official AppImage in `~/.local/opt/localsend`; launcher helper lives in `dotfiles/scripts/localsend_launch.sh`.
+- Docs: https://github.com/localsend/localsend
+
+### Celluloid
+
+- Purpose: GTK video player for local media playback.
+- Local setup: installed directly by `scripts/10-packages.sh` as the default lightweight video player.
+- Docs: https://github.com/celluloid-player/celluloid
+
+### plasma-discover
+
+- Purpose: graphical package/update browser when a GUI package manager is useful.
+- Local setup: installed by `scripts/10-packages.sh` alongside automatic update timers and `fwupd`.
+- Docs: https://apps.kde.org/discover/
 
 ### Insomnia
 
