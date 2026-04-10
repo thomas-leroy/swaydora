@@ -16,9 +16,12 @@ button {
   border: 2px solid rgba(161, 122, 181, 0.75);
   border-radius: 12px;
   margin: 15px;
-  padding: 12px;
   min-width: 180px;
   min-height: 120px;
+  background-repeat: no-repeat;
+  background-position: 50% 15px;
+  background-size: 72px 72px;
+  font-weight: 600;
 }
 
 button:hover {
@@ -28,16 +31,20 @@ button:hover {
 
 #lock {
   border-color: rgba(0, 132, 154, 0.90);
+  background-image: url("icons/lock.svg");
 }
 
 #logout {
   border-color: rgba(216, 131, 73, 0.85);
+  background-image: url("icons/logout.svg");
 }
 
 #reboot {
   border-color: rgba(202, 165, 62, 0.90);
+  background-image: url("icons/reboot.svg");
 }
 
 #shutdown {
   border-color: rgba(200, 76, 83, 0.90);
+  background-image: url("icons/shutdown.svg");
 }

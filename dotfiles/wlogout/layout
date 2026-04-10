@@ -1,24 +1,24 @@
 {
   "label": "lock",
   "action": "swaylock -f -c 000000",
-  "text": "  Lock",
+  "text": "Lock",
   "keybind": "l"
 }
 {
   "label": "logout",
   "action": "swaymsg exit",
-  "text": "  Logout",
+  "text": "Logout",
   "keybind": "e"
 }
 {
   "label": "reboot",
   "action": "systemctl reboot",
-  "text": "  Reboot",
+  "text": "Reboot",
   "keybind": "r"
 }
 {
   "label": "shutdown",
   "action": "systemctl poweroff",
-  "text": "  Shutdown",
+  "text": "Shutdown",
   "keybind": "s"
 }
