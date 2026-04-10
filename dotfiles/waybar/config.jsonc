@@ -9,11 +9,11 @@
   "modules-right": [
     "group/expand",
     "custom/updates",
-    "custom/brightness",
     "custom/cam",
     "custom/mic",
     "custom/audio",
     "network",
+    "custom/layout",
     "custom/notification_center"
   ],
 
@@ -220,7 +220,7 @@
       "tray",
       "custom/bluetooth",
       "custom/disks",
-      "custom/layout",
+      "custom/brightness",
       "memory",
       "temperature",
       "cpu"

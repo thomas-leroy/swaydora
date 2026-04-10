@@ -229,14 +229,14 @@ tooltip * {
 #tray > widget:hover,
 #custom-bluetooth:hover,
 #custom-disks:hover,
-#custom-layout:hover,
-#custom-notification_center:hover,
-#custom-updates:hover,
 #custom-brightness:hover,
+#custom-updates:hover,
 #custom-cam:hover,
 #custom-mic:hover,
 #custom-audio:hover,
 #network:hover,
+#custom-layout:hover,
+#custom-notification_center:hover,
 #memory:hover,
 #cpu:hover {
   background-color: @hover;
