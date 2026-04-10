@@ -49,20 +49,28 @@ tooltip * {
   color: @fg;
 }
 
-#workspaces button {
+#custom-logo {
+  background-color: @bg_alt;
+  font-family: "JetBrainsMono Nerd Font Propo";
+  font-size: 12px;
+  color: @fg;
+  padding: 0px 10px;
+}
+
+#workspaces button,
+#workspaces button.active {
   background: transparent;
   border-radius: 0px;
-  color: @workspace_inactive;
   padding: 0px;
   margin: 0px;
 }
 
+#workspaces button {
+  color: @workspace_inactive;
+}
+
 #workspaces button.active {
-  background: transparent;
-  border-radius: 0px;
   color: @fg_alt;
-  padding: 0px;
-  margin: 0px;
 }
 
 #workspaces button.focused {
@@ -73,18 +81,44 @@ tooltip * {
   color: @urgent;
 }
 
-#custom-logo {
-  background-color: @bg_alt;
-  font-family: "JetBrainsMono Nerd Font Propo";
-  font-size: 12px;
+#clock {
+  background-color: transparent;
   color: @fg;
-  padding: 0px 10px 0px 10px;
+  padding: 0px 8px;
+  margin: 0px 0px 0px 5px;
+}
+
+#group-expand .expand-item {
+  margin-left: 4px;
 }
 
 #custom-expand {
   background-color: @bg_alt;
   color: @fg;
-  padding: 0px 4px 0px 4px;
+  padding: 0px 12px 0px 8px;
+}
+
+#tray > .passive,
+#tray > .active,
+#tray > widget,
+#custom-bluetooth,
+#custom-disks,
+#memory,
+#network,
+#custom-notification_center {
+  padding: 0px 12px 0px 8px;
+  margin: 0px;
+}
+
+#memory {
+  background-color: transparent;
+  color: @fg;
+}
+
+#temperature {
+  background-color: transparent;
+  color: @fg;
+  padding: 0px 5px 0px 0px;
 }
 
 #cpu {
@@ -95,107 +129,44 @@ tooltip * {
   margin: 0px 0px 0px 2px;
 }
 
-#memory {
-  background-color: transparent;
-  color: @fg;
-  padding: 0px 5px 0px 5px;
-}
-
-#disk {
-  background-color: transparent;
-  color: @fg;
-  padding: 0px 5px 0px 0px;
-}
-
-#temperature {
-  background-color: transparent;
-  color: @fg;
-  padding: 0px 5px 0px 0px;
-}
-
-#battery {
-  background-color: @bg_alt;
-  color: @fg;
-  padding: 0px 0px 0px 5px;
-  margin: 0px 0px 0px 4px;
-}
-
-#battery.charging {
-  background-color: @bg_alt;
-  color: @fg;
-  padding: 0px 10px 0px 5px;
-}
-
-#battery.plugged {
-  background-color: @bg_alt;
-  color: @fg;
-  padding: 0px 10px 0px 5px;
-}
-
-#language {
-  background-color: transparent;
-  color: @fg;
-  padding: 0px 5px 0px 5px;
-  margin: 0px 6px 0px 0px;
-}
-
-#backlight {
-  border-radius: 0px 0px 0px 10px;
-  background-color: @bg_alt;
-  color: @fg;
-  padding: 0px 5px 0px 10px;
-  margin: 0px 0px 0px 4px;
-}
-
-#pulseaudio {
-  background-color: @bg_alt;
-  color: @fg;
-  padding: 0px 5px 0px 5px;
-}
-
-#clock {
-  background-color: transparent;
-  color: @fg;
-  padding: 0px 8px 0px 8px;
-  margin: 0px 0px 0px 5px;
-}
-
 #workspaces button:hover {
   background: @workspace_hover;
 }
 
-#taskbar button:hover,
 #custom-logo:hover,
+#taskbar button:hover,
 #clock:hover,
-#custom-expand:hover,
 #group-expand:hover,
-#language:hover,
+#custom-expand:hover,
 #tray > .passive:hover,
 #tray > .active:hover,
 #tray > widget:hover,
 #custom-bluetooth:hover,
 #custom-disks:hover,
 #custom-layout:hover,
+#custom-notification_center:hover,
 #custom-updates:hover,
 #custom-brightness:hover,
 #custom-cam:hover,
 #custom-mic:hover,
 #custom-audio:hover,
 #network:hover,
-#cpu:hover,
-#custom-notification_center:hover {
+#memory:hover,
+#cpu:hover {
   background-color: @hover;
   border-radius: 8px;
 }
 
-#group-expand .expand-item {
-  margin-left: 4px;
+#custom-updates.warn,
+#custom-brightness.warn,
+#custom-mic.warn {
+  color: @warn;
 }
 
-#custom-updates.warn,
-#custom-mic.warn,
-#custom-brightness.warn {
-  color: @warn;
+#custom-brightness.low,
+#custom-audio.low,
+#custom-layout.us {
+  color: #8AD9E9;
 }
 
 #custom-cam.on,
@@ -204,20 +175,8 @@ tooltip * {
   color: @urgent;
 }
 
-#custom-audio.low,
-#custom-brightness.low,
-#custom-layout.us {
-  color: #8AD9E9;
-}
-
 #custom-audio.high,
 #custom-brightness.high,
 #custom-layout.fr {
   color: @good;
-}
-
-#backlight:hover,
-#pulseaudio:hover,
-#network:hover {
-  color: @fg_soft;
 }
