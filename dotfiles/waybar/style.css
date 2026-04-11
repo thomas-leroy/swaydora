@@ -14,7 +14,7 @@
 @define-color ember_ocean #00849A;
 @define-color ember_ocean_intense #005278;
 @define-color ember_ocean_dark #142734;
-@define-color ember_ocean_soft rgba(0, 132, 154, 0.24);
+@define-color ember_ocean_soft rgba(0, 132, 154, 0.10);
 
 @define-color ember_mauve_faded #D7C0E4;
 @define-color ember_mauve #A17AB5;
@@ -108,23 +108,31 @@ tooltip * {
 }
 
 #workspaces button,
-#workspaces button.active {
-  background: transparent;
+#workspaces button.focused {
+  border: none;
   border-radius: 0px;
-  padding: 0px;
+  padding: 0px 12px 0px 10px;
   margin: 0px;
+  background-color: transparent;
+}
+
+#workspaces button:hover {
+  background-color: @ember_ocean_soft;
+  background-image: none;
+  box-shadow: none;
+  color: @workspace_inactive;
+  border: none;
 }
 
 #workspaces button {
   color: @workspace_inactive;
 }
 
-#workspaces button.active {
-  color: @fg_alt;
-}
-
-#workspaces button.focused {
-  background-color: @workspace_active;
+#workspaces button.focused, #workspaces button.focused:hover {
+  background-color: @ember_gold_intense;
+  background-image: none;
+  box-shadow: none;
+  border: none;
 }
 
 #workspaces button.urgent {
@@ -176,6 +184,14 @@ tooltip * {
   padding-left: 10px;
 }
 
+#custom-bluetooth {
+  padding-left: 12px;
+}
+
+#network {
+  padding-right: 14px;
+}
+
 #memory {
   background-color: transparent;
   color: @ember_mauve_faded;
@@ -213,10 +229,6 @@ tooltip * {
   color: @ember_mauve_faded;
   padding: 0px 12px 0px 10px;
   margin: 0px 0px 0px 2px;
-}
-
-#workspaces button:hover {
-  background: @workspace_hover;
 }
 
 #custom-logo:hover,
