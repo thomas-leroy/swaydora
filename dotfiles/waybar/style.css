@@ -129,7 +129,7 @@ tooltip * {
 }
 
 #workspaces button.focused, #workspaces button.focused:hover {
-  background-color: @ember_gold_intense;
+  background-color: @ember_gold_dark;
   background-image: none;
   box-shadow: none;
   border: none;
