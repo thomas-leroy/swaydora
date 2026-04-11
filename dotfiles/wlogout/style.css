@@ -3,7 +3,7 @@
   box-shadow: none;
   font-family: "JetBrainsMono Nerd Font", "JetBrainsMono Nerd Font Mono", "Symbols Nerd Font";
   font-size: 20px;
-  transition: 120ms ease;
+  transition: 150ms ease;
 }
 
 window {
@@ -13,7 +13,7 @@ window {
 button {
   color: #f8eddc;
   background-color: rgba(36, 40, 53, 0.92);
-  border: 2px solid rgba(161, 122, 181, 0.75);
+  border: 2px solid transparent;
   border-radius: 12px;
   margin: 15px;
   min-width: 180px;
@@ -26,25 +26,32 @@ button {
 
 button:hover {
   background-color: rgba(0, 132, 154, 0.30);
-  border-color: rgba(138, 217, 233, 0.98);
 }
 
 #lock {
-  border-color: rgba(0, 132, 154, 0.90);
   background-image: url("icons/lock.svg");
+}
+#lock:hover{
+  border-color: rgba(0, 132, 154, 0.80);
 }
 
 #logout {
-  border-color: rgba(216, 131, 73, 0.85);
   background-image: url("icons/logout.svg");
+}
+#logout:hover {
+  border-color: rgba(216, 131, 73, 0.80);
 }
 
 #reboot {
-  border-color: rgba(202, 165, 62, 0.90);
   background-image: url("icons/reboot.svg");
+}
+#reboot:hover {
+  border-color: rgba(202, 165, 62, 0.90);
 }
 
 #shutdown {
-  border-color: rgba(200, 76, 83, 0.90);
   background-image: url("icons/shutdown.svg");
+}
+#shutdown:hover {
+  border-color: rgba(200, 76, 83, 0.80);
 }
