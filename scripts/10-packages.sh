@@ -39,9 +39,6 @@ VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 # Oh My Zsh official repository used for manual installation.
 OH_MY_ZSH_REPO_URL="${OH_MY_ZSH_REPO_URL:-https://github.com/ohmyzsh/ohmyzsh.git}"
 OH_MY_ZSH_REF="${OH_MY_ZSH_REF:-master}"
-MIN_FEDORA_VERSION="${MIN_FEDORA_VERSION:-43}"
-MIN_DISK_KIB="${MIN_DISK_KIB:-8388608}"
-MIN_RAM_KIB="${MIN_RAM_KIB:-4194304}"
 
 TEMP_DIR=''
 
@@ -89,26 +86,6 @@ cleanup_temp_dir() {
 
 trap cleanup_temp_dir EXIT
 
-ensure_no_competing_pkg_manager() {
-  local matches
-
-  matches="$(ps -eo pid=,comm=,args= | awk -v self="$$" '
-    {
-      pid=$1
-      comm=$2
-      if (pid == self) next
-      if (comm == "dnf" || comm == "dnf5" || comm == "packagekitd" || comm == "pkcon" || comm == "rpm") print
-    }
-  ' || true)"
-
-  if [[ -n "$matches" ]]; then
-    log_error 'another package-management process is already running; aborting to avoid freezes/conflicts'
-    printf '%s\n' "$matches" >&2
-    log_error 'close/stop that process, then rerun 10-packages.sh'
-    exit 1
-  fi
-}
-
 # Run privileged commands with sudo when not root.
 run_as_root() {
   if is_dry_run; then
@@ -133,55 +110,6 @@ require_cmd() {
     log_error "missing required command: $1"
     exit 1
   }
-}
-
-fail_requirement() {
-  log_error "$1"
-  log_error 'This setup script is provided as-is and has not been tested on other configurations.'
-  log_error 'If your machine does not match these requirements, I recommend picking individual pieces from the dotfiles instead of running the full setup.'
-  exit 1
-}
-
-check_system_requirements() {
-  local fedora_id fedora_version disk_available_kib ram_available_kib cmd
-  local -a critical_commands
-
-  log 'checking system requirements'
-
-  if [[ ! -r /etc/os-release ]]; then
-    fail_requirement '/etc/os-release not found; cannot verify Fedora version.'
-  fi
-
-  # shellcheck disable=SC1091
-  source /etc/os-release
-  fedora_id="${ID:-}"
-  fedora_version="${VERSION_ID:-0}"
-
-  if [[ "$fedora_id" != 'fedora' ]]; then
-    fail_requirement "unsupported distribution: ${fedora_id:-unknown}; Fedora ${MIN_FEDORA_VERSION}+ is required."
-  fi
-  if [[ ! "$fedora_version" =~ ^[0-9]+$ || "$fedora_version" -lt "$MIN_FEDORA_VERSION" ]]; then
-    fail_requirement "unsupported Fedora version: ${fedora_version:-unknown}; Fedora ${MIN_FEDORA_VERSION}+ is required."
-  fi
-
-  disk_available_kib="$(df -Pk "$HOME" | awk 'NR == 2 {print $4}')"
-  if [[ ! "$disk_available_kib" =~ ^[0-9]+$ || "$disk_available_kib" -le "$MIN_DISK_KIB" ]]; then
-    fail_requirement "not enough free disk space under $HOME: ${disk_available_kib:-unknown} KiB available; more than $MIN_DISK_KIB KiB is required."
-  fi
-
-  ram_available_kib="$(awk '/^MemAvailable:/ {print $2; exit}' /proc/meminfo)"
-  if [[ ! "$ram_available_kib" =~ ^[0-9]+$ || "$ram_available_kib" -le "$MIN_RAM_KIB" ]]; then
-    fail_requirement "not enough available RAM: ${ram_available_kib:-unknown} KiB available; more than $MIN_RAM_KIB KiB is required."
-  fi
-
-  critical_commands=(dnf curl tar gzip)
-  for cmd in "${critical_commands[@]}"; do
-    if ! command -v "$cmd" >/dev/null 2>&1; then
-      fail_requirement "missing critical command: $cmd"
-    fi
-  done
-
-  log_success "system requirements satisfied: Fedora $fedora_version, disk/RAM thresholds met, critical commands present"
 }
 
 # Download a file and verify its SHA256 before moving it into place.
@@ -861,10 +789,7 @@ ensure_default_shell_zsh() {
 main() {
   init_temp_dir
 
-  # Validate host compatibility before making system changes.
-  check_system_requirements
   require_cmd rpm
-  ensure_no_competing_pkg_manager
 
   # Arrays used to keep install summary.
   TO_INSTALL=()

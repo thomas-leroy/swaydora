@@ -2,7 +2,7 @@
 
 ## Setup scripts (`scripts/`)
 
-- `00-bootstrap.sh`: create baseline folders.
+- `00-bootstrap.sh`: create baseline folders and print a non-blocking system requirements report.
 - `10-packages.sh`: install packages with Fedora-aware fallbacks and developer bootstrap.
 - `20-services.sh`: enable/start required systemd services/timers.
 - `30-link-dotfiles.sh`: create a timestamped backup in `~/.backup_configs/`, then link dotfiles to `~/.config`.
@@ -16,7 +16,7 @@
 - `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
 
 `scripts/10-packages.sh` supports `DRY_RUN=1` to print planned package installs, downloads, repository changes, and group updates without applying them.
-It also validates Fedora 43+, more than 8 GiB of disk space, more than 4 GiB of RAM, and critical commands before applying system changes.
+`scripts/00-bootstrap.sh` reports Fedora 43+, disk/RAM thresholds, and critical command availability as informational warnings before the rest of the setup runs.
 Oh My Zsh is installed with a direct Git checkout; set `OH_MY_ZSH_REF=<branch-tag-or-commit>` to pin the upstream ref.
 Setup scripts print a final summary of relevant actions, such as packages handled, files written, backups created, links installed, or services enabled.
 Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh`.
