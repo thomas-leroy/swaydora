@@ -38,8 +38,14 @@ ensure_bluetuith_installed() {
   launcher_path="$HOME/.local/bin/bluetuith"
   tmp_dir="$TEMP_DIR/bluetuith.extract"
 
+  if [[ -x "$binary_path" && -L "$launcher_path" ]]; then
+    packages_info 'Bluetuith release install already present'
+    return 0
+  fi
+
   run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$tmp_dir"
   packages_info "installing Bluetuith from release archive: ${BLUETUITH_ARCHIVE_URL}"
+  record_install_action 'archive:bluetuith'
   download_file "$BLUETUITH_ARCHIVE_URL" "$archive_path"
   run_cmd tar -xzf "$archive_path" -C "$tmp_dir"
   run_cmd install -m 0755 "$tmp_dir/bluetuith" "$binary_path"

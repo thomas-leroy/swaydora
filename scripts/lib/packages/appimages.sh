@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 
+appimage_is_installed() {
+  local appimage_path="$1"
+  local launcher_path="$2"
+
+  [[ -x "$appimage_path" && -L "$launcher_path" ]]
+}
+
+ensure_desktop_entry() {
+  local desktop_file="$1"
+  local desktop_content="$2"
+
+  if is_dry_run; then
+    packages_info "DRY_RUN: would write desktop entry: $desktop_file"
+    record_file_action "$desktop_file"
+    return 0
+  fi
+
+  printf '%s\n' "$desktop_content" > "$desktop_file"
+  record_file_action "$desktop_file"
+}
+
 ensure_obsidian_installed() {
   local install_dir appimage_path launcher_path
 
@@ -17,8 +38,14 @@ ensure_obsidian_installed() {
   appimage_path="$install_dir/Obsidian.AppImage"
   launcher_path="$HOME/.local/bin/obsidian"
 
+  if appimage_is_installed "$appimage_path" "$launcher_path"; then
+    packages_info 'Obsidian AppImage already installed'
+    return 0
+  fi
+
   run_cmd mkdir -p "$install_dir" "$HOME/.local/bin"
   packages_info "installing Obsidian from AppImage: ${OBSIDIAN_APPIMAGE_URL}"
+  record_install_action 'appimage:obsidian'
   download_verified_sha256 "$OBSIDIAN_APPIMAGE_URL" "$OBSIDIAN_APPIMAGE_SHA256" "$appimage_path"
   run_cmd chmod +x "$appimage_path"
   run_cmd ln -sfn "$appimage_path" "$launcher_path"
@@ -45,21 +72,23 @@ ensure_localsend_installed() {
   desktop_dir="$HOME/.local/share/applications"
   desktop_file="$desktop_dir/org.localsend.localsend_app.desktop"
 
-  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
-  packages_info "installing LocalSend from AppImage: ${LOCALSEND_APPIMAGE_URL}"
-  download_verified_sha256 "$LOCALSEND_APPIMAGE_URL" "$LOCALSEND_APPIMAGE_SHA256" "$appimage_path"
-  run_cmd chmod +x "$appimage_path"
-  run_cmd ln -sfn "$appimage_path" "$launcher_path"
-  record_file_action "$appimage_path"
-  record_file_action "$launcher_path -> $appimage_path"
-
-  if is_dry_run; then
-    packages_info "DRY_RUN: would write desktop entry: $desktop_file"
-    record_file_action "$desktop_file"
+  if appimage_is_installed "$appimage_path" "$launcher_path" && [[ -f "$desktop_file" ]]; then
+    packages_info 'LocalSend AppImage already installed'
     return 0
   fi
 
-  cat > "$desktop_file" <<EOT
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  if [[ ! -x "$appimage_path" || ! -L "$launcher_path" ]]; then
+    packages_info "installing LocalSend from AppImage: ${LOCALSEND_APPIMAGE_URL}"
+    record_install_action 'appimage:localsend'
+    download_verified_sha256 "$LOCALSEND_APPIMAGE_URL" "$LOCALSEND_APPIMAGE_SHA256" "$appimage_path"
+    run_cmd chmod +x "$appimage_path"
+    run_cmd ln -sfn "$appimage_path" "$launcher_path"
+    record_file_action "$appimage_path"
+    record_file_action "$launcher_path -> $appimage_path"
+  fi
+
+  ensure_desktop_entry "$desktop_file" "$(cat <<EOT
 [Desktop Entry]
 Type=Application
 Name=LocalSend
@@ -70,7 +99,7 @@ Terminal=false
 Categories=Network;FileTransfer;
 StartupNotify=true
 EOT
-  record_file_action "$desktop_file"
+)"
 }
 
 ensure_normcap_installed() {
@@ -92,21 +121,23 @@ ensure_normcap_installed() {
   desktop_dir="$HOME/.local/share/applications"
   desktop_file="$desktop_dir/normcap.desktop"
 
-  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
-  packages_info "installing NormCap from AppImage: ${NORMCAP_APPIMAGE_URL}"
-  download_file "$NORMCAP_APPIMAGE_URL" "$appimage_path"
-  run_cmd chmod +x "$appimage_path"
-  run_cmd ln -sfn "$appimage_path" "$launcher_path"
-  record_file_action "$appimage_path"
-  record_file_action "$launcher_path -> $appimage_path"
-
-  if is_dry_run; then
-    packages_info "DRY_RUN: would write desktop entry: $desktop_file"
-    record_file_action "$desktop_file"
+  if appimage_is_installed "$appimage_path" "$launcher_path" && [[ -f "$desktop_file" ]]; then
+    packages_info 'NormCap AppImage already installed'
     return 0
   fi
 
-  cat > "$desktop_file" <<EOT
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  if [[ ! -x "$appimage_path" || ! -L "$launcher_path" ]]; then
+    packages_info "installing NormCap from AppImage: ${NORMCAP_APPIMAGE_URL}"
+    record_install_action 'appimage:normcap'
+    download_file "$NORMCAP_APPIMAGE_URL" "$appimage_path"
+    run_cmd chmod +x "$appimage_path"
+    run_cmd ln -sfn "$appimage_path" "$launcher_path"
+    record_file_action "$appimage_path"
+    record_file_action "$launcher_path -> $appimage_path"
+  fi
+
+  ensure_desktop_entry "$desktop_file" "$(cat <<EOT
 [Desktop Entry]
 Type=Application
 Name=NormCap
@@ -117,7 +148,7 @@ Terminal=false
 Categories=Graphics;Utility;
 StartupNotify=true
 EOT
-  record_file_action "$desktop_file"
+)"
 }
 
 ensure_insomnia_installed() {
@@ -139,21 +170,23 @@ ensure_insomnia_installed() {
   desktop_dir="$HOME/.local/share/applications"
   desktop_file="$desktop_dir/insomnia.desktop"
 
-  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
-  packages_info "installing Insomnia from AppImage: ${INSOMNIA_APPIMAGE_URL}"
-  download_verified_sha256 "$INSOMNIA_APPIMAGE_URL" "$INSOMNIA_APPIMAGE_SHA256" "$appimage_path"
-  run_cmd chmod +x "$appimage_path"
-  run_cmd ln -sfn "$appimage_path" "$launcher_path"
-  record_file_action "$appimage_path"
-  record_file_action "$launcher_path -> $appimage_path"
-
-  if is_dry_run; then
-    packages_info "DRY_RUN: would write desktop entry: $desktop_file"
-    record_file_action "$desktop_file"
+  if appimage_is_installed "$appimage_path" "$launcher_path" && [[ -f "$desktop_file" ]]; then
+    packages_info 'Insomnia AppImage already installed'
     return 0
   fi
 
-  cat > "$desktop_file" <<EOT
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  if [[ ! -x "$appimage_path" || ! -L "$launcher_path" ]]; then
+    packages_info "installing Insomnia from AppImage: ${INSOMNIA_APPIMAGE_URL}"
+    record_install_action 'appimage:insomnia'
+    download_verified_sha256 "$INSOMNIA_APPIMAGE_URL" "$INSOMNIA_APPIMAGE_SHA256" "$appimage_path"
+    run_cmd chmod +x "$appimage_path"
+    run_cmd ln -sfn "$appimage_path" "$launcher_path"
+    record_file_action "$appimage_path"
+    record_file_action "$launcher_path -> $appimage_path"
+  fi
+
+  ensure_desktop_entry "$desktop_file" "$(cat <<EOT
 [Desktop Entry]
 Type=Application
 Name=Insomnia
@@ -164,7 +197,7 @@ Terminal=false
 Categories=Development;Network;
 StartupNotify=true
 EOT
-  record_file_action "$desktop_file"
+)"
 }
 
 install_appimage_apps() {

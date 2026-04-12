@@ -194,3 +194,7 @@ record_service_action() {
 record_shell_action() {
   SHELL_ACTIONS+=("$1")
 }
+
+record_install_action() {
+  INSTALL_ACTIONS+=("$1")
+}

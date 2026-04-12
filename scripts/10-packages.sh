@@ -241,7 +241,11 @@ print_summary() {
   fi
 
   printf '\n[packages] Summary\n'
-  printf '  packages handled: %s\n' "$(( ${#TO_INSTALL[@]} + ${#DIRECT_PACKAGE_INSTALLS[@]} ))"
+  printf '  dnf installs planned/performed: %s\n' "$(( ${#TO_INSTALL[@]} + ${#DIRECT_PACKAGE_INSTALLS[@]} ))"
+  printf '  extra installs performed: %s\n' "${#INSTALL_ACTIONS[@]}"
+  if [[ "${#INSTALL_ACTIONS[@]}" -gt 0 ]]; then
+    printf '  - %s\n' "${INSTALL_ACTIONS[@]}"
+  fi
   printf '  group modifications: %s\n' "${#GROUP_MODIFICATIONS[@]}"
   printf '  repo/service actions: %s\n' "${#SERVICE_ACTIONS[@]}"
   printf '  files written/linked: %s\n' "${#FILE_ACTIONS[@]}"
@@ -256,6 +260,7 @@ main() {
   TO_INSTALL=()
   SKIPPED=()
   DIRECT_PACKAGE_INSTALLS=()
+  INSTALL_ACTIONS=()
   GROUP_MODIFICATIONS=()
   FILE_ACTIONS=()
   SERVICE_ACTIONS=()
