@@ -2,7 +2,7 @@
   "layer": "top",
   "position": "top",
   "height": 30,
-  "spacing": 8,
+  "spacing": 6,
 
   "modules-left": ["custom/logo", "sway/workspaces", "wlr/taskbar"],
   "modules-center": ["clock"],

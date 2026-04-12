@@ -57,11 +57,7 @@
 @define-color bg_soft @ember_bg_soft;
 
 @define-color tooltip_bg @ember_bg_deep;
-@define-color hover @ember_ocean_soft;
-
 @define-color workspace_inactive @ember_fg_soft;
-@define-color workspace_active @ember_mauve_soft;
-@define-color workspace_hover @ember_ocean_soft;
 
 @define-color urgent @ember_rose;
 @define-color active @ember_ocean;
@@ -104,12 +100,38 @@ tooltip * {
   font-family: "JetBrainsMono Nerd Font Propo";
   font-size: 12px;
   color: @ember_ocean;
-  padding: 0px 10px;
+  padding: 0px 8px;
+}
+
+#custom-logo,
+#workspaces button,
+#workspaces button.focused,
+#taskbar button,
+#clock,
+#group-expand,
+#custom-expand,
+#tray > .passive,
+#tray > .active,
+#tray > widget,
+#custom-bluetooth,
+#custom-disks,
+#custom-brightness,
+#custom-updates,
+#custom-cam,
+#custom-mic,
+#custom-audio,
+#network,
+#custom-layout,
+#custom-notification_center,
+#memory,
+#cpu {
+  border: 1px solid transparent;
+  box-shadow: none;
+  outline: none;
 }
 
 #workspaces button,
 #workspaces button.focused {
-  border: none;
   border-radius: 0px;
   padding: 0px 12px 0px 10px;
   margin: 0px;
@@ -117,11 +139,9 @@ tooltip * {
 }
 
 #workspaces button:hover {
-  background-color: @ember_ocean_soft;
+  background-color: @ember_bg_deep;
   background-image: none;
-  box-shadow: none;
   color: @workspace_inactive;
-  border: none;
 }
 
 #workspaces button {
@@ -131,12 +151,15 @@ tooltip * {
 #workspaces button.focused, #workspaces button.focused:hover {
   background-color: @ember_gold_dark;
   background-image: none;
-  box-shadow: none;
-  border: none;
 }
 
 #workspaces button.urgent {
   color: @urgent;
+}
+
+#taskbar button {
+  padding: 0px 10px 0px 4px;
+  margin: 0px;
 }
 
 #clock {
@@ -153,15 +176,11 @@ tooltip * {
 #custom-expand {
   background-color: @bg_alt;
   color: @fg;
-  padding: 0px 12px 0px 8px;
+  padding: 0px 11px 0px 9px;
 }
 
 #custom-bluetooth {
   color: @ember_ocean_faded;
-}
-
-#custom-disks {
-  color: @ember_mauve_faded;
 }
 
 #tray > .passive,
@@ -184,17 +203,18 @@ tooltip * {
   padding-left: 10px;
 }
 
-#custom-bluetooth {
-  padding-left: 12px;
+#custom-disks,
+#memory,
+#network {
+  color: @ember_mauve_faded;
 }
 
 #network {
-  padding-right: 14px;
+  padding-right: 12px;
 }
 
 #memory {
   background-color: transparent;
-  color: @ember_mauve_faded;
 }
 
 #custom-notification_center {
@@ -205,16 +225,12 @@ tooltip * {
   color: @ember_pistachio_intense;
 }
 
-#custom-mic {
+#custom-mic,
+#custom-audio,
+#custom-audio.low,
+#custom-audio.high,
+#custom-audio.muted {
   color: @ember_gold;
-}
-
-#custom-audio {
-  color: @ember_gold;
-}
-
-#network {
-  color: @ember_mauve_faded;
 }
 
 #temperature {
@@ -227,8 +243,12 @@ tooltip * {
   border-radius: 20px;
   background-color: transparent;
   color: @ember_mauve_faded;
-  padding: 0px 12px 0px 10px;
+  padding: 0px 11px 0px 9px;
   margin: 0px 0px 0px 2px;
+}
+
+#custom-disks {
+  padding: 0px 11px 0px 9px;
 }
 
 #custom-logo:hover,
@@ -251,7 +271,8 @@ tooltip * {
 #custom-notification_center:hover,
 #memory:hover,
 #cpu:hover {
-  background-color: @hover;
+  background-color: @ember_bg_deep;
+  background-image: none;
   border-radius: 8px;
 }
 
@@ -274,10 +295,4 @@ tooltip * {
 #custom-brightness.high,
 #custom-layout.fr {
   color: @good;
-}
-
-#custom-audio.low,
-#custom-audio.high,
-#custom-audio.muted {
-  color: @ember_gold;
 }
