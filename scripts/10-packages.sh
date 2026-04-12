@@ -39,6 +39,8 @@ VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 # Oh My Zsh official repository used for manual installation.
 OH_MY_ZSH_REPO_URL="${OH_MY_ZSH_REPO_URL:-https://github.com/ohmyzsh/ohmyzsh.git}"
 OH_MY_ZSH_REF="${OH_MY_ZSH_REF:-master}"
+CURL_TIMEOUT_SEC="${CURL_TIMEOUT_SEC:-60}"
+GIT_TIMEOUT_SEC="${GIT_TIMEOUT_SEC:-120}"
 
 TEMP_DIR=''
 
@@ -112,6 +114,42 @@ require_cmd() {
   }
 }
 
+stop_blocking_package_managers() {
+  local proc
+  local -a user_processes=(pkcon packagekitd dnfdragora plasma-discover)
+
+  log 'stopping package manager processes that may block dnf'
+
+  if is_dry_run; then
+    log 'DRY_RUN: would stop packagekit.service if active'
+    for proc in "${user_processes[@]}"; do
+      log "DRY_RUN: would kill process if running: $proc"
+    done
+    return 0
+  fi
+
+  run_as_root systemctl stop packagekit.service >/dev/null 2>&1 || true
+  run_as_root systemctl stop packagekit-offline-update.service >/dev/null 2>&1 || true
+
+  for proc in "${user_processes[@]}"; do
+    pkill -x "$proc" >/dev/null 2>&1 || true
+  done
+
+  sleep 1
+}
+
+download_file() {
+  local url="$1"
+  local destination="$2"
+
+  if ! timeout --foreground "$CURL_TIMEOUT_SEC" curl -fsSL "$url" -o "$destination"; then
+    log_error "download failed or timed out after ${CURL_TIMEOUT_SEC}s: $url"
+    return 1
+  fi
+
+  return 0
+}
+
 # Download a file and verify its SHA256 before moving it into place.
 download_verified_sha256() {
   if [[ "$#" -ne 3 ]]; then
@@ -147,14 +185,13 @@ download_verified_sha256() {
   run_cmd rm -f "$tmp_path"
 
   if is_dry_run; then
-    run_cmd curl -fsSL "$url" -o "$tmp_path"
+    run_cmd timeout --foreground "$CURL_TIMEOUT_SEC" curl -fsSL "$url" -o "$tmp_path"
     log "DRY_RUN: would verify SHA256 for $tmp_path (expected: $expected_sha256)"
     run_cmd mv "$tmp_path" "$dest_path"
     return 0
   fi
 
-  if ! curl -fsSL "$url" -o "$tmp_path"; then
-    log_error "download failed: $url"
+  if ! download_file "$url" "$tmp_path"; then
     rm -f "$tmp_path"
     return 1
   fi
@@ -650,7 +687,11 @@ ensure_bluetuith_installed() {
   else
     log "installing Bluetuith from official release: ${BLUETUITH_ARCHIVE_URL}"
   fi
-  run_cmd curl -fsSL "$BLUETUITH_ARCHIVE_URL" -o "$archive_path"
+  if is_dry_run; then
+    run_cmd timeout --foreground "$CURL_TIMEOUT_SEC" curl -fsSL "$BLUETUITH_ARCHIVE_URL" -o "$archive_path"
+  else
+    download_file "$BLUETUITH_ARCHIVE_URL" "$archive_path"
+  fi
   run_cmd tar -xzf "$archive_path" -C "$tmp_dir"
   run_cmd install -m 0755 "$tmp_dir/bluetuith" "$binary_path"
   run_cmd ln -sfn "$binary_path" "$launcher_path"
@@ -694,7 +735,7 @@ install_oh_my_zsh_if_needed() {
 
   git init "$clone_dir"
   git -C "$clone_dir" remote add origin "$OH_MY_ZSH_REPO_URL"
-  git -C "$clone_dir" fetch --depth=1 origin "$OH_MY_ZSH_REF"
+  timeout --foreground "$GIT_TIMEOUT_SEC" git -C "$clone_dir" fetch --depth=1 origin "$OH_MY_ZSH_REF"
   git -C "$clone_dir" checkout --detach FETCH_HEAD
   git -C "$clone_dir" rev-parse --verify HEAD >/dev/null
   mv "$clone_dir" "$install_dir"
@@ -761,24 +802,10 @@ ensure_default_shell_zsh() {
   log "setting default shell to $zsh_path for user $USER (current: ${passwd_shell:-unknown})"
 
   if is_dry_run; then
-    if command -v chsh >/dev/null 2>&1; then
-      run_cmd chsh -s "$zsh_path" "$USER"
-    else
-      run_as_root usermod -s "$zsh_path" "$USER"
-    fi
+    run_as_root usermod -s "$zsh_path" "$USER"
     log 'DRY_RUN: default shell would be updated; logout/login would be required'
     record_shell_action "$USER -> $zsh_path"
     return 0
-  fi
-
-  # Prefer chsh for user account shell change, fallback to usermod when needed.
-  if command -v chsh >/dev/null 2>&1; then
-    if chsh -s "$zsh_path" "$USER" >/dev/null 2>&1; then
-      log 'default shell changed using chsh'
-      record_shell_action "$USER -> $zsh_path"
-      log 'default shell updated; logout/login is required to apply it everywhere'
-      return 0
-    fi
   fi
 
   run_as_root usermod -s "$zsh_path" "$USER"
@@ -790,6 +817,7 @@ main() {
   init_temp_dir
 
   require_cmd rpm
+  stop_blocking_package_managers
 
   # Arrays used to keep install summary.
   TO_INSTALL=()
