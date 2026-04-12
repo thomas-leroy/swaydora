@@ -135,8 +135,8 @@
   "temperature": {
     "interval": 5,
     "critical-threshold": 80,
-    "format": "󰔏",
-    "format-critical": "󱃂"
+    "format": "󰔏 {temperatureC}°",
+    "format-critical": "󱃂 {temperatureC}°"
   },
 
   "custom/layout": {

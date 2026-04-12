@@ -75,7 +75,6 @@
 
 window#waybar {
   background-color: @bg;
-  border-bottom: 1px solid rgba(161, 122, 181, 0.5);
 }
 
 window#waybar.empty #window {
@@ -124,6 +123,7 @@ tooltip * {
 #custom-layout,
 #custom-notification_center,
 #memory,
+#temperature,
 #cpu {
   border: 1px solid transparent;
   box-shadow: none;
@@ -189,6 +189,7 @@ tooltip * {
 #custom-bluetooth,
 #custom-disks,
 #memory,
+#temperature,
 #network,
 #custom-notification_center {
   padding: 0px 12px 0px 8px;
@@ -198,6 +199,7 @@ tooltip * {
 #custom-bluetooth,
 #custom-disks,
 #memory,
+#temperature,
 #network,
 #custom-notification_center {
   padding-left: 10px;
@@ -235,8 +237,7 @@ tooltip * {
 
 #temperature {
   background-color: transparent;
-  color: @fg;
-  padding: 0px 5px 0px 0px;
+  color: @ember_pistachio;
 }
 
 #cpu {
@@ -270,6 +271,7 @@ tooltip * {
 #custom-layout:hover,
 #custom-notification_center:hover,
 #memory:hover,
+#temperature:hover,
 #cpu:hover {
   background-color: @ember_bg_deep;
   background-image: none;
@@ -289,6 +291,10 @@ tooltip * {
 
 #custom-cam.on,
 #cpu.critical {
+  color: @urgent;
+}
+
+#temperature.critical {
   color: @urgent;
 }
 
