@@ -12,6 +12,7 @@ set -euo pipefail
 #   WALLS_PROMPT     (1=prompt in interactive shells, 0=skip prompt; default: 1)
 #   WALLS_THUMBNAILS_DIR (default: ~/.cache/wallpaper-picker/thumbnails)
 #   WALLS_THUMBNAIL_SIZE (default: 160x90)
+#   WALLS_PICKER_MANIFEST (default: ~/.cache/wallpaper-picker/manifest.tsv)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/logging.sh"
@@ -25,6 +26,7 @@ WALLS_CATEGORIES="${WALLS_CATEGORIES:-abstract}"
 WALLS_PROMPT="${WALLS_PROMPT:-1}"
 WALLS_THUMBNAILS_DIR="${WALLS_THUMBNAILS_DIR:-$HOME/.cache/wallpaper-picker/thumbnails}"
 WALLS_THUMBNAIL_SIZE="${WALLS_THUMBNAIL_SIZE:-160x90}"
+WALLS_PICKER_MANIFEST="${WALLS_PICKER_MANIFEST:-$HOME/.cache/wallpaper-picker/manifest.tsv}"
 SYNC_ACTION=''
 EXPORT_ACTION=''
 AVAILABLE_CATEGORIES=(
@@ -368,6 +370,45 @@ generate_thumbnails() {
   log "thumbnail summary: generated=$generated_count reused=$reused_count"
 }
 
+generate_picker_manifest() {
+  local -a candidates=()
+  local cache_dir tmp_manifest image rel dir file label thumbnail icon_path entry_count=0
+
+  cache_dir="$(dirname "$WALLS_PICKER_MANIFEST")"
+  mkdir -p "$cache_dir"
+  tmp_manifest="$(mktemp "$cache_dir/manifest.tsv.XXXXXX")"
+
+  log "writing wallpaper picker manifest: $WALLS_PICKER_MANIFEST"
+
+  if command -v fd >/dev/null 2>&1 && command -v sort >/dev/null 2>&1; then
+    mapfile -d '' -t candidates < <(fd -HI -t f -0 . "$WALLS_DEST" | sort -z)
+  elif command -v fd >/dev/null 2>&1; then
+    mapfile -d '' -t candidates < <(fd -HI -t f -0 . "$WALLS_DEST")
+  elif command -v sort >/dev/null 2>&1; then
+    mapfile -d '' -t candidates < <(find "$WALLS_DEST" -type f -print0 | sort -z)
+  else
+    mapfile -d '' -t candidates < <(find "$WALLS_DEST" -type f -print0)
+  fi
+
+  : > "$tmp_manifest"
+  for image in "${candidates[@]}"; do
+    is_supported_image "$image" || continue
+    rel="${image#"$WALLS_DEST/"}"
+    file="${rel##*/}"
+    dir="${rel%/*}"
+    [[ "$dir" == "$rel" ]] && dir='.'
+    label="$dir - $file"
+    thumbnail="$WALLS_THUMBNAILS_DIR/$(thumbnail_name_for "$image").png"
+    icon_path="$image"
+    [[ -f "$thumbnail" ]] && icon_path="$thumbnail"
+    printf '%s\t%s\t%s\n' "$label" "$image" "$icon_path" >> "$tmp_manifest"
+    ((entry_count += 1))
+  done
+
+  mv "$tmp_manifest" "$WALLS_PICKER_MANIFEST"
+  log "picker manifest entries: $entry_count"
+}
+
 main() {
   ensure_cmd git
   configure_sync_scope
@@ -380,6 +421,7 @@ main() {
 
   export_snapshot
   generate_thumbnails
+  generate_picker_manifest
   log 'summary:'
   log "sync action: $SYNC_ACTION"
   log "exported wallpapers: $EXPORT_ACTION"
