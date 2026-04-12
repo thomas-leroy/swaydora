@@ -5,8 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/logging.sh"
 setup_logger link
 
-# Default source path for shared dotfiles mount inside VM.
-DOTFILES_SRC="${DOTFILES_SRC:-/mnt/dotfiles/dotfiles}"
+# Default source path is resolved from this repository.
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DOTFILES_SRC="${DOTFILES_SRC:-$REPO_ROOT/dotfiles}"
 BACKUP_CONFIG_ROOT="${BACKUP_CONFIG_ROOT:-$HOME/.backup_configs}"
 MANAGED_CONFIGS=(sway waybar mako swaync wofi fuzzel kitty wlogout zsh fastfetch atuin environment.d scripts xdg-desktop-portal)
 MANAGED_CONFIG_FILES=(mimeapps.list)

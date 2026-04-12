@@ -4,12 +4,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/logging.sh"
 setup_logger waybar-reload-setup
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DOTFILES_SRC="${DOTFILES_SRC:-$REPO_ROOT/dotfiles}"
 INSTALLED_LINKS=()
 SKIPPED_ITEMS=()
 
 main() {
-  # Source runtime helper from shared dotfiles location.
-  local src="${DOTFILES_SRC:-/mnt/dotfiles/dotfiles}/scripts/reload_env.sh"
+  # Source runtime helper from the current repository dotfiles tree.
+  local src="$DOTFILES_SRC/scripts/reload_env.sh"
   local dst="$HOME/.local/bin/reload-waybar"
 
   # Ensure local bin directory exists.
