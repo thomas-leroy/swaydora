@@ -240,6 +240,12 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Local setup: installed from distro repos when available, otherwise from the official AppImage in `~/.local/opt/localsend`; launcher helper lives in `dotfiles/scripts/localsend_launch.sh`.
 - Docs: https://github.com/localsend/localsend
 
+### NormCap
+
+- Purpose: screenshot OCR tool for grabbing text from the screen.
+- Local setup: installed from the official AppImage in `~/.local/opt/normcap` with a launcher symlink at `~/.local/bin/normcap`.
+- Docs: https://github.com/dynobo/normcap
+
 ### Celluloid
 
 - Purpose: GTK video player for local media playback.

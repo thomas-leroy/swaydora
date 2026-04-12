@@ -73,6 +73,53 @@ EOT
   record_file_action "$desktop_file"
 }
 
+ensure_normcap_installed() {
+  local install_dir appimage_path launcher_path desktop_dir desktop_file
+
+  if command -v normcap >/dev/null 2>&1; then
+    packages_info 'NormCap already installed'
+    return 0
+  fi
+
+  if pkg_is_available normcap; then
+    install_pkg_now normcap
+    return 0
+  fi
+
+  install_dir="$HOME/.local/opt/normcap"
+  appimage_path="$install_dir/NormCap.AppImage"
+  launcher_path="$HOME/.local/bin/normcap"
+  desktop_dir="$HOME/.local/share/applications"
+  desktop_file="$desktop_dir/normcap.desktop"
+
+  run_cmd mkdir -p "$install_dir" "$HOME/.local/bin" "$desktop_dir"
+  packages_info "installing NormCap from AppImage: ${NORMCAP_APPIMAGE_URL}"
+  download_file "$NORMCAP_APPIMAGE_URL" "$appimage_path"
+  run_cmd chmod +x "$appimage_path"
+  run_cmd ln -sfn "$appimage_path" "$launcher_path"
+  record_file_action "$appimage_path"
+  record_file_action "$launcher_path -> $appimage_path"
+
+  if is_dry_run; then
+    packages_info "DRY_RUN: would write desktop entry: $desktop_file"
+    record_file_action "$desktop_file"
+    return 0
+  fi
+
+  cat > "$desktop_file" <<EOT
+[Desktop Entry]
+Type=Application
+Name=NormCap
+Comment=OCR capture tool
+Exec=$launcher_path
+Icon=normcap
+Terminal=false
+Categories=Graphics;Utility;
+StartupNotify=true
+EOT
+  record_file_action "$desktop_file"
+}
+
 ensure_insomnia_installed() {
   local install_dir appimage_path launcher_path desktop_dir desktop_file
 
@@ -125,4 +172,5 @@ install_appimage_apps() {
   ensure_obsidian_installed
   ensure_insomnia_installed
   ensure_localsend_installed
+  ensure_normcap_installed
 }

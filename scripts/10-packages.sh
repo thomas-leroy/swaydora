@@ -30,6 +30,8 @@ INSOMNIA_APPIMAGE_SHA256="${INSOMNIA_APPIMAGE_SHA256:-458373397f5644fa8f50c85b1b
 # LocalSend official AppImage used when no distro package is available.
 LOCALSEND_APPIMAGE_URL="${LOCALSEND_APPIMAGE_URL:-https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-linux-x86-64.AppImage}"
 LOCALSEND_APPIMAGE_SHA256="${LOCALSEND_APPIMAGE_SHA256:-c1a1e7bc7bb7eebdf6c365a30cef0d4ba3e6bb79961c3b94edf918920f8e36f0}"
+# NormCap official AppImage used as the preferred lightweight install path.
+NORMCAP_APPIMAGE_URL="${NORMCAP_APPIMAGE_URL:-https://github.com/dynobo/normcap/releases/download/v0.6.0/NormCap-0.6.0-x86_64.AppImage}"
 # Bluetuith official release archive used when no distro package is available.
 BLUETUITH_ARCHIVE_URL="${BLUETUITH_ARCHIVE_URL:-https://github.com/bluetuith-org/bluetuith/releases/download/v0.2.6/bluetuith_0.2.6_Linux_x86_64.tar.gz}"
 # VS Code official repository file.
