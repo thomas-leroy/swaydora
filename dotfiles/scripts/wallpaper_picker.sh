@@ -4,6 +4,7 @@ set -euo pipefail
 # Fuzzy wallpaper picker (fuzzel-only, for performance testing).
 WALLPAPERS_DIR="${WALLPAPERS_DIR:-${NOCTAX_WALLS_DIR:-$HOME/.local/share/wallpapers/Wallpapers}}"
 STATE_FILE="${STATE_FILE:-$HOME/.config/sway/.current_wallpaper}"
+THUMBNAILS_DIR="${THUMBNAILS_DIR:-$HOME/.cache/wallpaper-picker/thumbnails}"
 
 log_err() {
   notify-send "Wallpaper" "$1"
@@ -17,6 +18,20 @@ is_supported_image() {
       ;;
   esac
   return 1
+}
+
+thumbnail_name_for() {
+  local image="$1"
+  local stat_data
+  stat_data="$(stat -Lc '%n:%Y:%s' "$image" 2>/dev/null || stat -f '%N:%m:%z' "$image")"
+  printf '%s' "$stat_data" | sha256sum | cut -d' ' -f1
+}
+
+thumbnail_path_for() {
+  local image="$1"
+  local thumb_name
+  thumb_name="$(thumbnail_name_for "$image")"
+  printf '%s/%s.png\n' "$THUMBNAILS_DIR" "$thumb_name"
 }
 
 apply_wallpaper() {
@@ -56,8 +71,8 @@ main() {
     exit 1
   }
 
-  local -a candidates=() items=() item_paths=()
-  local entry selected selected_path rel dir file label
+  local -a candidates=() items=() item_paths=() item_icons=()
+  local entry selected selected_path rel dir file label icon_path
   declare -A path_by_label
 
   if command -v fd >/dev/null 2>&1 && command -v sort >/dev/null 2>&1; then
@@ -77,8 +92,11 @@ main() {
     dir="${rel%/*}"
     [[ "$dir" == "$rel" ]] && dir='.'
     label="$dir - $file"
+    icon_path="$(thumbnail_path_for "$entry")"
+    [[ -f "$icon_path" ]] || icon_path="$entry"
     items+=("$label")
     item_paths+=("$entry")
+    item_icons+=("$icon_path")
     path_by_label["$label"]="$entry"
   done
 
@@ -92,10 +110,17 @@ main() {
     {
       local i
       for i in "${!items[@]}"; do
-        # dmenu row with icon metadata. If unsupported, fuzzel ignores it.
-        printf '%s\0icon\x1f%s\n' "${items[$i]}" "${item_paths[$i]}"
+        printf '%s\0icon\x1f%s\n' "${items[$i]}" "${item_icons[$i]}"
       done
-    } | fuzzel --dmenu --prompt 'Wallpaper > '
+    } | fuzzel \
+      --dmenu \
+      --prompt 'Wallpaper > ' \
+      --lines 5 \
+      --width 72 \
+      --line-height 80 \
+      --horizontal-pad 20 \
+      --vertical-pad 16 \
+      --inner-pad 10
   )"
 
   [[ -n "${selected:-}" ]] || exit 0
