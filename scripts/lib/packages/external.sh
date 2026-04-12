@@ -103,10 +103,18 @@ ensure_zsh_dotfiles_sourcing() {
   local marker_end='# <<< dotfiles-zsh <<<'
   local block
 
-  block="$(cat <<'EOT'
+  block="$(cat <<EOT
 # >>> dotfiles-zsh >>>
-[[ -f "$HOME/.config/zsh/aliases.zsh" ]] && source "$HOME/.config/zsh/aliases.zsh"
-[[ -f "$HOME/.config/zsh/tools.zsh" ]] && source "$HOME/.config/zsh/tools.zsh"
+export ZSH="\${ZSH:-$HOME/.oh-my-zsh}"
+: "\${ZSH_THEME:=${OH_MY_ZSH_THEME:-robbyrussell}}"
+
+if ! (( \${+plugins} )); then
+  plugins=(git)
+fi
+
+[[ -f "\$ZSH/oh-my-zsh.sh" ]] && source "\$ZSH/oh-my-zsh.sh"
+[[ -f "\$HOME/.config/zsh/aliases.zsh" ]] && source "\$HOME/.config/zsh/aliases.zsh"
+[[ -f "\$HOME/.config/zsh/tools.zsh" ]] && source "\$HOME/.config/zsh/tools.zsh"
 # <<< dotfiles-zsh <<<
 EOT
 )"
@@ -119,6 +127,7 @@ EOT
   fi
 
   [[ -f "$zshrc" ]] || touch "$zshrc"
+  packages_info "ensuring oh-my-zsh bootstrap block in $zshrc"
   if grep -Fq "$marker_start" "$zshrc"; then
     awk -v start="$marker_start" -v end="$marker_end" '
       $0 == start {skip=1; next}

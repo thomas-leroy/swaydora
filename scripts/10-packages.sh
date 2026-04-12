@@ -39,6 +39,7 @@ VSCODE_REPO_FILE='/etc/yum.repos.d/vscode.repo'
 # Oh My Zsh official repository used for manual installation.
 OH_MY_ZSH_REPO_URL="${OH_MY_ZSH_REPO_URL:-https://github.com/ohmyzsh/ohmyzsh.git}"
 OH_MY_ZSH_REF="${OH_MY_ZSH_REF:-master}"
+OH_MY_ZSH_THEME="${OH_MY_ZSH_THEME:-robbyrussell}"
 CURL_TIMEOUT_SEC="${CURL_TIMEOUT_SEC:-60}"
 GIT_TIMEOUT_SEC="${GIT_TIMEOUT_SEC:-120}"
 DNF_QUERY_TIMEOUT_SEC="${DNF_QUERY_TIMEOUT_SEC:-45}"
