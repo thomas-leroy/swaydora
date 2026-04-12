@@ -28,7 +28,7 @@ if command -v swww >/dev/null 2>&1 && command -v swww-daemon >/dev/null 2>&1; th
   done
 
   if [[ -f "$WALLPAPER" ]]; then
-    if swww img "$WALLPAPER" --transition-type simple --transition-duration 0.4 >/dev/null 2>&1; then
+    if swww img "$WALLPAPER" --transition-type wipe --transition-duration 0.4 >/dev/null 2>&1; then
       exit 0
     fi
   fi

@@ -22,7 +22,7 @@ apply_wallpaper() {
       sleep 0.1
     done
 
-    if swww img "$image" --transition-type simple --transition-duration 0.4 >/dev/null 2>&1; then
+    if swww img "$image" --transition-type wipe --transition-duration 0.4 >/dev/null 2>&1; then
       return 0
     fi
   fi
