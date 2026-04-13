@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
+declare -gA PKG_AVAILABLE_CACHE=()
+declare -g DNF_METADATA_READY=0
+
 pkg_is_installed() {
   rpm -q "$1" >/dev/null 2>&1
+}
+
+invalidate_dnf_metadata() {
+  DNF_METADATA_READY=0
+  PKG_AVAILABLE_CACHE=()
 }
 
 dnf_capture() {
@@ -17,17 +25,48 @@ dnf_capture() {
   return 0
 }
 
+refresh_dnf_metadata_if_needed() {
+  if [[ "${DNF_METADATA_READY:-0}" == '1' ]]; then
+    return 0
+  fi
+
+  packages_info 'refreshing dnf metadata cache'
+  if ! timeout --foreground "$DNF_METADATA_TIMEOUT_SEC" dnf -q makecache --refresh >/dev/null 2>&1; then
+    packages_warn "dnf metadata refresh failed or timed out after ${DNF_METADATA_TIMEOUT_SEC}s"
+    return 1
+  fi
+
+  DNF_METADATA_READY=1
+  return 0
+}
+
 pkg_is_available() {
   local pkg="$1"
   local out
 
-  out="$(dnf_capture "list --installed $pkg" list --installed "$pkg" || true)"
-  if awk -v p="$pkg" '$1 ~ ("^" p "(\\.|$)") {found=1} END{exit(found ? 0 : 1)}' <<<"$out"; then
+  if pkg_is_installed "$pkg"; then
+    PKG_AVAILABLE_CACHE["$pkg"]=1
     return 0
   fi
 
-  out="$(dnf_capture "list --available $pkg" list --available "$pkg" || true)"
-  awk -v p="$pkg" '$1 ~ ("^" p "(\\.|$)") {found=1} END{exit(found ? 0 : 1)}' <<<"$out"
+  if [[ -n "${PKG_AVAILABLE_CACHE[$pkg]+x}" ]]; then
+    [[ "${PKG_AVAILABLE_CACHE[$pkg]}" == '1' ]]
+    return $?
+  fi
+
+  if ! refresh_dnf_metadata_if_needed; then
+    PKG_AVAILABLE_CACHE["$pkg"]=0
+    return 1
+  fi
+
+  out="$(dnf_capture "list --available $pkg" -C list --available "$pkg" || true)"
+  if awk -v p="$pkg" '$1 ~ ("^" p "(\\.|$)") {found=1} END{exit(found ? 0 : 1)}' <<<"$out"; then
+    PKG_AVAILABLE_CACHE["$pkg"]=1
+    return 0
+  fi
+
+  PKG_AVAILABLE_CACHE["$pkg"]=0
+  return 1
 }
 
 resolve_pkg() {
@@ -63,7 +102,7 @@ install_pkg_now() {
 
   record_direct_package_install "$pkg"
   packages_info "installing package via dnf: $pkg"
-  run_as_root dnf install -y "$pkg"
+  run_as_root_noninteractive dnf install -y "$pkg"
 }
 
 queue_pkg() {
@@ -94,7 +133,7 @@ install_queued() {
 
   packages_step 'Install DNF Packages'
   packages_info "packages to install: ${TO_INSTALL[*]}"
-  run_as_root dnf install -y "${TO_INSTALL[@]}"
+  run_as_root_noninteractive dnf install -y "${TO_INSTALL[@]}"
 }
 
 ensure_swayfx_installed_without_conflict() {
@@ -104,7 +143,7 @@ ensure_swayfx_installed_without_conflict() {
 
   if pkg_is_installed sway; then
     packages_info 'detected installed sway package, swapping to swayfx'
-    run_as_root dnf swap -y --allowerasing sway swayfx
+    run_as_root_noninteractive dnf swap -y --allowerasing sway swayfx
   fi
 }
 
@@ -114,7 +153,7 @@ enable_vscode_repo_if_needed() {
   fi
 
   packages_info 'enabling Visual Studio Code repository'
-  run_as_root rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  run_as_root_noninteractive rpm --import https://packages.microsoft.com/keys/microsoft.asc
   record_file_action "$VSCODE_REPO_FILE"
   run_as_root tee "$VSCODE_REPO_FILE" >/dev/null <<'EOT'
 [code]
@@ -124,6 +163,7 @@ enabled=1
 gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc
 EOT
+  invalidate_dnf_metadata
 }
 
 enable_librewolf_repo_if_needed() {
@@ -132,7 +172,7 @@ enable_librewolf_repo_if_needed() {
   fi
 
   packages_info 'importing LibreWolf GPG key'
-  run_as_root rpm --import "$LIBREWOLF_GPG_KEY_URL"
+  run_as_root_noninteractive rpm --import "$LIBREWOLF_GPG_KEY_URL"
 
   if dnf -q repolist --all 2>/dev/null | awk 'NR > 1 && $1 == "librewolf" {found=1} END{exit(found ? 0 : 1)}'; then
     packages_info 'LibreWolf repository already configured'
@@ -140,8 +180,9 @@ enable_librewolf_repo_if_needed() {
   fi
 
   packages_info 'enabling LibreWolf repository'
-  run_as_root dnf config-manager addrepo --from-repofile "$LIBREWOLF_REPO_URL"
+  run_as_root_noninteractive dnf config-manager addrepo --from-repofile "$LIBREWOLF_REPO_URL"
   record_service_action 'repo: librewolf'
+  invalidate_dnf_metadata
 }
 
 ensure_copr_command() {
@@ -152,7 +193,7 @@ ensure_copr_command() {
   if ! pkg_is_installed dnf-plugins-core && pkg_is_available dnf-plugins-core; then
     packages_info 'installing dnf-plugins-core to enable COPR support'
     record_direct_package_install dnf-plugins-core
-    run_as_root dnf install -y dnf-plugins-core
+    run_as_root_noninteractive dnf install -y dnf-plugins-core
   fi
 
   if is_dry_run; then
@@ -173,8 +214,9 @@ enable_swayfx_copr_if_needed() {
 
   packages_info "swayfx not found in current repos, enabling COPR: ${SWAYFX_COPR}"
   ensure_copr_command
-  run_as_root dnf -y copr enable "${SWAYFX_COPR}"
+  run_as_root_noninteractive dnf -y copr enable "${SWAYFX_COPR}"
   record_service_action "copr: ${SWAYFX_COPR}"
+  invalidate_dnf_metadata
 }
 
 enable_swayosd_copr_if_needed() {
@@ -184,6 +226,7 @@ enable_swayosd_copr_if_needed() {
 
   packages_info "swayosd not found in current repos, enabling COPR: ${SWAYOSD_COPR}"
   ensure_copr_command
-  run_as_root dnf -y copr enable "${SWAYOSD_COPR}"
+  run_as_root_noninteractive dnf -y copr enable "${SWAYOSD_COPR}"
   record_service_action "copr: ${SWAYOSD_COPR}"
+  invalidate_dnf_metadata
 }

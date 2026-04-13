@@ -13,7 +13,7 @@ ensure_handy_installed() {
 
   packages_info "installing Handy from direct RPM: ${HANDY_RPM_URL}"
   record_direct_package_install "$HANDY_RPM_URL"
-  run_as_root dnf install -y "$HANDY_RPM_URL"
+  run_as_root_noninteractive dnf install -y "$HANDY_RPM_URL"
 }
 
 ensure_bluetuith_installed() {
@@ -68,7 +68,7 @@ ensure_pnpm_installed() {
 
   packages_info 'installing pnpm via npm'
   record_direct_package_install 'npm:pnpm'
-  run_as_root npm install -g pnpm
+  run_as_root_noninteractive npm install -g pnpm
 }
 
 install_oh_my_zsh_if_needed() {
@@ -158,7 +158,7 @@ ensure_default_shell_zsh() {
   fi
 
   packages_info "setting default shell to $zsh_path for user $USER"
-  run_as_root usermod -s "$zsh_path" "$USER"
+  run_as_root_noninteractive usermod -s "$zsh_path" "$USER"
   record_shell_action "$USER -> $zsh_path"
 }
 
@@ -176,7 +176,7 @@ check_video_group_membership() {
   if [[ "${AUTO_ADD_VIDEO_GROUP:-1}" == '1' ]]; then
     packages_info "adding $USER to group video"
     record_group_modification "$USER -> video"
-    run_as_root usermod -aG video "$USER"
+    run_as_root_noninteractive usermod -aG video "$USER"
   else
     packages_warn "user $USER is not in group video; set AUTO_ADD_VIDEO_GROUP=1 to add automatically"
   fi
@@ -195,7 +195,7 @@ check_docker_group_membership() {
 
   packages_info "adding $USER to group docker"
   record_group_modification "$USER -> docker"
-  run_as_root usermod -aG docker "$USER"
+  run_as_root_noninteractive usermod -aG docker "$USER"
 }
 
 install_other_package_manager_apps() {

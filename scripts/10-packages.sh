@@ -43,6 +43,7 @@ OH_MY_ZSH_THEME="${OH_MY_ZSH_THEME:-robbyrussell}"
 CURL_TIMEOUT_SEC="${CURL_TIMEOUT_SEC:-60}"
 GIT_TIMEOUT_SEC="${GIT_TIMEOUT_SEC:-120}"
 DNF_QUERY_TIMEOUT_SEC="${DNF_QUERY_TIMEOUT_SEC:-45}"
+DNF_METADATA_TIMEOUT_SEC="${DNF_METADATA_TIMEOUT_SEC:-180}"
 
 TEMP_DIR=''
 
@@ -268,6 +269,7 @@ main() {
   SHELL_ACTIONS=()
 
   init_temp_dir
+  ensure_sudo_session
   stop_blocking_package_managers
   resolve_package_variants
   queue_dnf_packages

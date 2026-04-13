@@ -1,27 +1,33 @@
 #!/usr/bin/env bash
 
+SUDO_KEEPALIVE_PID=''
+
+packages_timestamp() {
+  date '+%Y-%m-%dT%H:%M:%S%z'
+}
+
 is_dry_run() {
   [[ "${DRY_RUN:-0}" == '1' ]]
 }
 
 packages_info() {
-  printf '[packages] %s\n' "$*"
+  printf '%s [packages] %s\n' "$(packages_timestamp)" "$*"
 }
 
 packages_warn() {
-  printf '[packages] WARN: %s\n' "$*" >&2
+  printf '%s [packages] WARN: %s\n' "$(packages_timestamp)" "$*" >&2
 }
 
 packages_error() {
-  printf '[packages] ERROR: %s\n' "$*" >&2
+  printf '%s [packages] ERROR: %s\n' "$(packages_timestamp)" "$*" >&2
 }
 
 packages_step() {
-  printf '\n[packages] == %s ==\n' "$*"
+  printf '\n%s [packages] == %s ==\n' "$(packages_timestamp)" "$*"
 }
 
 packages_trace() {
-  printf '[packages] %s\n' "$*" >&2
+  printf '%s [packages] %s\n' "$(packages_timestamp)" "$*" >&2
 }
 
 print_command() {
@@ -49,6 +55,45 @@ run_as_root() {
   fi
 }
 
+run_cmd_noninteractive() {
+  print_command "$@"
+  if is_dry_run; then
+    return 0
+  fi
+  "$@" </dev/null
+}
+
+run_as_root_noninteractive() {
+  if [[ "${EUID}" -eq 0 ]]; then
+    run_cmd_noninteractive "$@"
+  else
+    run_cmd_noninteractive sudo "$@"
+  fi
+}
+
+ensure_sudo_session() {
+  if [[ "${EUID}" -eq 0 ]]; then
+    return 0
+  fi
+
+  if is_dry_run; then
+    packages_info 'DRY_RUN: would authenticate sudo session once before privileged operations'
+    return 0
+  fi
+
+  packages_step 'Authenticate Privileged Access'
+  packages_info 'requesting sudo once before package operations'
+  sudo -v
+
+  (
+    while true; do
+      sleep 30
+      sudo -n true >/dev/null 2>&1 || exit 0
+    done
+  ) &
+  SUDO_KEEPALIVE_PID=$!
+}
+
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || {
     packages_error "missing required command: $1"
@@ -69,6 +114,12 @@ init_temp_dir() {
 }
 
 cleanup_temp_dir() {
+  if [[ -n "${SUDO_KEEPALIVE_PID:-}" ]]; then
+    kill "$SUDO_KEEPALIVE_PID" >/dev/null 2>&1 || true
+    wait "$SUDO_KEEPALIVE_PID" 2>/dev/null || true
+    SUDO_KEEPALIVE_PID=''
+  fi
+
   if [[ -z "${TEMP_DIR:-}" ]]; then
     return 0
   fi
@@ -91,8 +142,8 @@ stop_blocking_package_managers() {
     return 0
   fi
 
-  run_as_root systemctl stop packagekit.service || true
-  run_as_root systemctl stop packagekit-offline-update.service || true
+  run_as_root_noninteractive systemctl stop packagekit.service || true
+  run_as_root_noninteractive systemctl stop packagekit-offline-update.service || true
 
   for proc in "${user_processes[@]}"; do
     if pkill -x "$proc" >/dev/null 2>&1; then
