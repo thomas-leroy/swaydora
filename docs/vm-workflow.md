@@ -1,5 +1,7 @@
 # VM Workflow
 
+Refactor in progress. This workflow documents the legacy full-setup path. The new CLI is not a complete installer yet; only safe bootstrap behavior is currently wired into `bin/swaydora install`.
+
 ## 1) Mount VirtioFS
 
 ```bash

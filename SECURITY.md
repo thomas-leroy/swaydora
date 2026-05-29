@@ -1,5 +1,7 @@
 # Security Policy
 
+Refactor in progress. Legacy setup scripts and the new modular CLI currently coexist. Only safe bootstrap behavior is wired into `bin/swaydora`; full setup behavior remains legacy-script-only during migration.
+
 ## Project Scope
 
 Swaydora is a personal side project for bootstrapping a fresh Fedora + SwayFX workstation. It is provided as-is and is primarily tested against my own Fedora setup.

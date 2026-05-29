@@ -1,5 +1,7 @@
 # Conventions
 
+Refactor in progress. These conventions describe the existing repository while legacy scripts and the new modular CLI coexist. Prefer the newer docs under `docs/architecture.md`, `docs/usage.md`, `docs/testing.md`, and `docs/code-conventions.md` for refactor work.
+
 ## Security
 
 - Never commit secrets, credentials, private keys, or tokens.

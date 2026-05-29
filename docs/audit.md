@@ -1,5 +1,7 @@
 # Audit
 
+Refactor in progress. This audit captures the legacy shell-script surface before and during migration to the modular CLI. Some findings describe legacy behavior that is not wired into `bin/swaydora`.
+
 Scope: all `*.sh` and `*.zsh` files in the repository, including hidden repository tooling and runtime helper scripts.
 
 ## Cross-script duplicated logic
@@ -1953,7 +1955,7 @@ Read-only with respect to packages; cache write is deterministic by TTL.
 Displays cached wallpapers with icons in `fuzzel`, applies the selected wallpaper through `swww` or `swaybg`, and stores the selected path.
 
 ### Inputs
-Environment: `WALLPAPERS_DIR`, `NOCTAX_WALLS_DIR`, `STATE_FILE`, `PICKER_MANIFEST`; interactive selection.
+Environment: `WALLPAPERS_DIR`, `STATE_FILE`, `PICKER_MANIFEST`; interactive selection.
 
 External commands used: `notify-send`, `command`, `swww`, `swww-daemon`, `pgrep`, `sleep`, `swaybg`, `pkill`, `fuzzel`, `printf`, `mkdir`, `dirname`.
 

@@ -1,5 +1,7 @@
 # Sway Keybindings
 
+Refactor in progress. This document describes runtime Sway/Waybar behavior from the dotfiles. The installer architecture is transitional, but these keybindings remain part of the legacy runtime configuration.
+
 `Meta` means the Sway `$mod` key (`Mod4`, usually the Super/Windows key).
 The main keyboard layout is French AZERTY, as configured in `dotfiles/sway/config`.
 

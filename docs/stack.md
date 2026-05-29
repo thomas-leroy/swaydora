@@ -1,5 +1,7 @@
 # Stack Overview
 
+Refactor in progress. This stack describes the target legacy desktop setup and runtime helpers. Package/service installation is still handled by legacy scripts unless explicitly migrated into modules.
+
 This document lists the main services/tools installed by this dotfiles setup, why they are used, how they are configured here, and where to find upstream documentation.
 
 ## Display / WM
@@ -45,7 +47,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### swaync (SwayNotificationCenter)
 
 - Purpose: notifications and notification center.
-- Local setup: autostarted in Sway config; themed via `dotfiles/swaync/style.css`; Waybar module uses `notification_center_status.sh` and `notification_center_toggle.sh`.
+- Local setup: Fedora package `SwayNotificationCenter` provides `swaync` and `swaync-client`. `swaync` is autostarted in Sway config; themed via `dotfiles/swaync/style.css`; Waybar module uses `notification_center_status.sh` and `notification_center_toggle.sh`.
 - Docs: https://github.com/ErikReider/SwayNotificationCenter
 
 ### swaylock / swayidle
@@ -113,16 +115,16 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 - Docs: https://github.com/storaged-project/udisks
 - Docs: https://github.com/coldfix/udiskie
 
-### Bluetuith
+### Blueman
 
-- Purpose: Bluetooth device management from the terminal.
-- Local setup: `scripts/10-packages.sh` installs Bluetooth support and ensures `bluetuith` is present from repos or upstream release archive; `dotfiles/scripts/bluetooth_tui.sh` opens it from Waybar/Sway helpers.
-- Docs: https://github.com/darkhz/bluetuith
+- Purpose: Bluetooth device management through Fedora's packaged graphical manager.
+- Local setup: modular package inventory tracks `blueman` as a required workstation dependency, and `dotfiles/scripts/bluetooth_tui.sh` opens `blueman-manager` from the Waybar Bluetooth button.
+- Docs: https://github.com/blueman-project/blueman
 
-### NetworkManager-tui (`nmtui`)
+### nm-connection-editor
 
-- Purpose: terminal UI for network management and quick connection fixes.
-- Local setup: installed by `scripts/10-packages.sh`; `dotfiles/scripts/network_tui.sh` launches it in Kitty and focuses the existing window when already open.
+- Purpose: NetworkManager GUI for persistent Wi-Fi and connection profile editing.
+- Local setup: tracked as a desired modular package. Use it for persistent Wi-Fi profiles. `nmtui` may still be useful for temporary or debug connections if installed, but it is not the recommended persistence workflow.
 - Docs: https://networkmanager.dev/
 
 ### v4l-utils
