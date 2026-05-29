@@ -1,0 +1,292 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# shellcheck source=../lib/log.sh
+source "$ROOT_DIR/lib/log.sh"
+# shellcheck source=../lib/path.sh
+source "$ROOT_DIR/lib/path.sh"
+# shellcheck source=../lib/command.sh
+source "$ROOT_DIR/lib/command.sh"
+# shellcheck source=../lib/os.sh
+source "$ROOT_DIR/lib/os.sh"
+# shellcheck source=../lib/doctor.sh
+source "$ROOT_DIR/lib/doctor.sh"
+# shellcheck source=../lib/backup.sh
+source "$ROOT_DIR/lib/backup.sh"
+
+print_help() {
+  cat <<'EOF'
+Swaydora
+
+Usage:
+  bin/swaydora help
+  bin/swaydora version
+  bin/swaydora doctor
+  bin/swaydora bootstrap-repos
+  bin/swaydora install [--profile NAME] [--dry-run]
+  bin/swaydora update
+  bin/swaydora rollback [--dry-run] [--yes]
+
+Commands:
+  help             Show this help message
+  version          Print the current version
+  doctor           Run read-only environment checks
+  bootstrap-repos  Refresh repo metadata and import GPG keys interactively
+  install          Run the selected safe profile
+  update           Not implemented yet
+  rollback         Restore the latest dotfiles backup batch
+EOF
+}
+
+print_version() {
+  if [[ -f "$ROOT_DIR/VERSION" ]]; then
+    sed -n '1p' "$ROOT_DIR/VERSION"
+  else
+    printf 'dev\n'
+  fi
+}
+
+not_implemented() {
+  local command_name="$1"
+  printf 'swaydora %s: not implemented yet\n' "$command_name" >&2
+  exit 2
+}
+
+confirm_rollback() {
+  local reply
+
+  printf 'Restore latest dotfiles backup? Type "yes" to continue: '
+  IFS= read -r reply
+  [[ "$reply" == 'yes' ]]
+}
+
+load_profile() {
+  local profile_name="$1"
+  local profile_file="$ROOT_DIR/profiles/$profile_name/profile.conf"
+
+  if [[ ! -f "$profile_file" ]]; then
+    log_error "Profile not found: $profile_name"
+    return 1
+  fi
+
+  PROFILE_MODULES=()
+  # Profile files are repository-owned Bash declarations for now.
+  # shellcheck source=/dev/null
+  source "$profile_file"
+
+  if [[ "${#PROFILE_MODULES[@]}" -eq 0 ]]; then
+    log_error "Profile has no modules: $profile_name"
+    return 1
+  fi
+}
+
+load_module() {
+  local module_name="$1"
+  local module_file="$ROOT_DIR/modules/$module_name/module.sh"
+  local phase
+
+  if [[ ! -f "$module_file" ]]; then
+    log_error "Unsupported module in profile: $module_name"
+    return 1
+  fi
+
+  # Module files expose the standard module contract.
+  # shellcheck source=/dev/null
+  source "$module_file"
+
+  for phase in check plan apply; do
+    if ! declare -F "${module_name}_${phase}" >/dev/null 2>&1; then
+      log_error "Module $module_name is missing ${module_name}_${phase}"
+      return 1
+    fi
+  done
+}
+
+preflight_apply_modules() {
+  local module_name support_fn preflight_fn
+
+  for module_name in "$@"; do
+    support_fn="${module_name}_apply_supported"
+    if declare -F "$support_fn" >/dev/null 2>&1 && ! "$support_fn"; then
+      log_error "Module $module_name cannot be applied yet; use --dry-run"
+      return 1
+    fi
+
+    preflight_fn="${module_name}_preflight"
+    if declare -F "$preflight_fn" >/dev/null 2>&1; then
+      "$preflight_fn" || return 1
+    fi
+  done
+}
+
+run_install() {
+  local profile_name='minimal'
+  local dry_run=0
+  local module_name phase_fn
+
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      --profile)
+        profile_name="${2:-}"
+        [[ -n "$profile_name" ]] || {
+          log_error '--profile requires a value'
+          return 2
+        }
+        shift 2
+        ;;
+      --dry-run)
+        dry_run=1
+        shift
+        ;;
+      *)
+        log_error "Unsupported install option: $1"
+        return 2
+        ;;
+    esac
+  done
+
+  load_profile "$profile_name" || return 1
+
+  log_info "Loading profile: $profile_name"
+  for module_name in "${PROFILE_MODULES[@]}"; do
+    load_module "$module_name" || return 1
+  done
+
+  if [[ "$dry_run" -eq 0 ]]; then
+    preflight_apply_modules "${PROFILE_MODULES[@]}" || return 2
+  fi
+
+  for module_name in "${PROFILE_MODULES[@]}"; do
+    if [[ "$dry_run" -eq 1 ]]; then
+      log_info "Running $module_name plan"
+      phase_fn="${module_name}_plan"
+    else
+      log_info "Running $module_name check"
+      phase_fn="${module_name}_check"
+      "$phase_fn"
+      log_info "Running $module_name apply"
+      phase_fn="${module_name}_apply"
+    fi
+    "$phase_fn"
+  done
+}
+
+run_bootstrap_repos() {
+  require_command dnf || return 1
+
+  if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
+    require_command sudo || return 1
+  fi
+
+  log_info 'Repository bootstrap: refreshing DNF metadata and importing GPG keys'
+  log_info 'DNF will prompt for confirmation before importing any new repository GPG key.'
+  log_info 'Review each prompt before accepting. Swaydora never imports keys silently.'
+  printf '\n'
+
+  log_info 'Configured repositories:'
+  dnf repolist 2>/dev/null | tail -n +2 | while IFS= read -r repo_line; do
+    log_info "  $repo_line"
+  done
+  printf '\n'
+
+  log_info 'Running: sudo dnf makecache'
+
+  if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
+    dnf makecache
+  else
+    sudo dnf makecache
+  fi
+
+  printf '\n'
+  log_ok 'Repository metadata refreshed.'
+  log_ok 'GPG keys for all configured repositories are now imported.'
+  log_info 'Package availability checks will now run non-interactively.'
+  log_info 'Rerun bootstrap-repos after adding or changing repository configuration.'
+}
+
+run_rollback() {
+  local dry_run=0
+  local assume_yes=0
+  local batch pre_batch
+
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      --dry-run)
+        dry_run=1
+        shift
+        ;;
+      --yes)
+        assume_yes=1
+        shift
+        ;;
+      *)
+        log_error "Unsupported rollback option: $1"
+        return 2
+        ;;
+    esac
+  done
+
+  batch="$(backup_latest_batch)" || {
+    log_error "No dotfiles backup batch found under $(backup_root)"
+    return 1
+  }
+
+  log_info "Latest backup batch: $batch"
+  backup_restore_batch_plan "$batch" || return 1
+
+  if [[ "$dry_run" -eq 1 ]]; then
+    log_info 'Dry-run only; no files restored'
+    return 0
+  fi
+
+  if [[ "$assume_yes" -ne 1 ]]; then
+    confirm_rollback || {
+      log_warn 'Rollback cancelled'
+      return 1
+    }
+  fi
+
+  pre_batch="$(backup_restore_batch_apply "$batch")" || return 1
+  log_ok "Rollback complete; pre-rollback backup: $pre_batch"
+}
+
+main() {
+  local command_name="${1:-help}"
+  if [[ "$#" -gt 0 ]]; then
+    shift
+  fi
+
+  case "$command_name" in
+    help|-h|--help)
+      print_help
+      ;;
+    version|--version)
+      print_version
+      ;;
+    doctor)
+      run_doctor "$ROOT_DIR"
+      ;;
+    bootstrap-repos)
+      run_bootstrap_repos "$@"
+      ;;
+    install)
+      run_install "$@"
+      ;;
+    rollback)
+      run_rollback "$@"
+      ;;
+    update)
+      not_implemented "$command_name"
+      ;;
+    *)
+      log_error "Unknown command: $command_name"
+      printf '\n' >&2
+      print_help >&2
+      exit 2
+      ;;
+  esac
+}
+
+main "$@"
