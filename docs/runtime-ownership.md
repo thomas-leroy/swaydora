@@ -28,8 +28,8 @@ Automatically started by Sway:
 
 Started by Waybar:
 
-- audio, brightness, layout, notification, camera, update, disk, Bluetooth, network, CPU, and memory/temperature widgets.
-- click and scroll actions for audio, brightness, network, notification center, updates, disks, Bluetooth, and power menu.
+- audio, layout, notification, camera, update, disk, Bluetooth, network, CPU, and memory/temperature widgets.
+- click and scroll actions for audio, network, notification center, updates, disks, Bluetooth, and power menu.
 
 Started by user keybindings:
 
@@ -64,8 +64,7 @@ Conditional or runtime-detected behavior:
 | App launchers | Sway keybindings | Handy, Obsidian, LocalSend, Thunderbird, AppImage paths, `gtk-launch`, `notify-send` | desired/manual/AppImage/DNF mix | no | degraded application access | transitional | Obsidian and LocalSend are inventory-only desired AppImages; no modular installer exists. |
 | File manager fallback | Sway keybinding | Nautilus, Dolphin, Thunar, Nemo, PCManFM, `notify-send` | implicit/legacy | no | degraded file browsing | legacy | Inline Sway command, not a shared helper. |
 | Lock/session power | Sway keybindings, wlogout layout, session menu | `swaylock`, `swaymsg`, `wlogout`, `systemctl` | `dnf` required/desired | yes for lock/logout; no for graphical menu | broken lock/logout if missing; degraded power menu | transitional | `wlogout` layout directly calls lock/logout/reboot/poweroff commands. |
-| Audio controls | Sway media keys, Waybar | `wpctl`, `wiremix`, PipeWire/WirePlumber, `awk`, `grep`, `menu_launcher.sh`, `notify-send`, Kitty popup helper | `dnf` required for PipeWire/WirePlumber and `wiremix` | yes | degraded or broken audio control | modular-ready | Left click on Waybar volume or microphone stays mapped to mute. Right click opens the floating `wiremix` popup. `Escape` closes only the focused Swaydora popup terminal, not normal Kitty windows. Status scripts degrade; direct Sway keybindings call `wpctl` without wrapper checks. |
-| Brightness controls | Sway media keys, Waybar | `brightnessctl` | `dnf` desired | no | degraded laptop brightness control | transitional | Waybar status degrades; direct Sway keybindings call `brightnessctl` without wrapper checks. |
+| Audio controls | Sway media keys, Waybar | `wpctl`, `wiremix`, PipeWire/WirePlumber, `awk`, `grep`, `menu_launcher.sh`, `notify-send`, Kitty popup helper | `dnf` required for PipeWire/WirePlumber and `wiremix` | yes | degraded or broken audio control | modular-ready | Left click on Waybar volume or microphone stays mapped to mute. Right click opens the floating `wiremix` popup. `Meta+Q` closes the focused popup. Status scripts degrade; direct Sway keybindings call `wpctl` without wrapper checks. |
 | Screenshot stack | Sway keybindings, capture menu | `grim`, optional `slurp`, `swaymsg`, `jq`, `xdg-user-dir`, `notify-send` | `dnf` desired | no | degraded screenshots | modular-ready | Full-screen screenshot can work without `slurp`; active-window capture requires `swaymsg` and `jq`. |
 | Color picker | Sway keybinding, capture menu | `hyprpicker`, optional `wl-paste`, `notify-send` | `dnf` desired | no | cosmetic/convenience loss | modular-ready | Checks `hyprpicker` explicitly. |
 | Wallpaper startup | Sway `exec_always` | `awww`, `awww-daemon`, fallback `swaybg`, state file, default wallpaper | manual desired for `awww`; `swaybg` implicit | no | cosmetic | transitional | No modular wallpaper sync; legacy script still owns wallpaper source sync. |
@@ -96,7 +95,6 @@ Conditional or runtime-detected behavior:
 | `hyprpicker` | color picker | yes | Color picker notifies and exits. |
 | `wl-paste` | color picker fallback read | optional | Picker can still succeed if `hyprpicker` copied a color. |
 | `wpctl` | audio keybindings and Waybar audio/microphone scripts | mixed | Waybar status warns; direct Sway keybindings assume it exists. |
-| `brightnessctl` | brightness keybindings and Waybar status | mixed | Waybar status warns; direct Sway keybindings assume it exists. |
 | `swaync-client` | notification center Waybar status/toggle | yes | Status shows warning JSON; toggle notifies and exits. |
 | `swaync` | Sway autostart and notification status | no before autostart | Sway tries to start it; status warns if not running or if Mako/Dunst appears to own notifications. |
 | `swayosd-server` | Sway autostart | yes | Missing binary is silently ignored. |
@@ -134,7 +132,7 @@ Critical:
 
 Degraded:
 
-- SwayNC, app/menu launchers, screenshot tools, brightness tools, keyring, disk/network/Bluetooth tooling, wallpaper backends, update reporting, window switcher, and app-specific launchers.
+- SwayNC, app/menu launchers, screenshot tools, keyring, disk/network/Bluetooth tooling, wallpaper backends, update reporting, window switcher, and app-specific launchers.
 
 Cosmetic:
 
@@ -152,7 +150,7 @@ Modular-ready:
 
 Transitional:
 
-- Components partly represented in package inventory but still tightly wired through Sway/Waybar runtime config: SwayFX, Waybar, SwayNC, app launchers, power menu, wallpaper startup, portal session fix, brightness controls, layout controls, network/disks helpers.
+- Components partly represented in package inventory but still tightly wired through Sway/Waybar runtime config: SwayFX, Waybar, SwayNC, app launchers, power menu, wallpaper startup, portal session fix, layout controls, network/disks helpers.
 
 Legacy:
 
@@ -189,7 +187,7 @@ Current SwayOSD ownership:
 
 What syshud would need to replace:
 
-- On-screen display behavior for volume, brightness, and related desktop feedback.
+- On-screen display behavior for volume and related desktop feedback.
 - Startup ownership currently held by the Sway config line for `swayosd-server`.
 - Package/source ownership currently undecided because no COPR, repository, or custom packaging path is implemented.
 

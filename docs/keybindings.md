@@ -1,7 +1,5 @@
 # Sway Keybindings
 
-Refactor in progress. This document describes runtime Sway/Waybar behavior from the dotfiles. The installer architecture is transitional, but these keybindings remain part of the legacy runtime configuration.
-
 `Meta` means the Sway `$mod` key (`Mod4`, usually the Super/Windows key).
 The main keyboard layout is French AZERTY, as configured in `dotfiles/sway/config`.
 
@@ -75,12 +73,10 @@ opens the command palette maintained in `dotfiles/sway/commands_palette.list`.
 | `Meta` + `v` / `Meta` + `h` | Set next split orientation to vertical / horizontal |
 | `Meta` + `Shift` + `v` / `Meta` + `Shift` + `h` | Change current container layout to vertical / horizontal split |
 
-## Audio And Brightness
+## Audio
 
 | Shortcut | Action |
 | --- | --- |
 | `XF86AudioRaiseVolume` | Increase output volume by 5% |
 | `XF86AudioLowerVolume` | Decrease output volume by 5% |
 | `XF86AudioMute` | Toggle output mute |
-| `Alt` + `XF86AudioRaiseVolume` | Increase screen brightness by 10% |
-| `Alt` + `XF86AudioLowerVolume` | Decrease screen brightness by 10% |

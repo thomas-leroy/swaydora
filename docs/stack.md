@@ -26,8 +26,8 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 
 ### Wofi
 
-- Purpose: fallback app launcher and dmenu-style selector with richer styling options.
-- Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; runtime scripts call `dotfiles/scripts/menu_launcher.sh`, and `dotfiles/scripts/app_launcher.sh` can fallback to Wofi.
+- Purpose: fallback app launcher and window switcher backend.
+- Local setup: `dotfiles/wofi/config` and `dotfiles/wofi/style.css`; `dotfiles/scripts/app_launcher.sh` falls back to Wofi when Fuzzel is unavailable; `dotfiles/scripts/window_switcher.sh` requires Wofi directly.
 - Docs: https://hg.sr.ht/~scoopta/wofi
 
 ### Kitty
@@ -62,7 +62,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### swww (fallback swaybg)
 
 - Purpose: wallpaper backend.
-- Local setup: `dotfiles/scripts/wallpaper_start.sh` starts `swww` if present, else `swaybg`; `dotfiles/scripts/wallpaper_picker.sh` uses Wofi fuzzy search to pick/apply wallpapers.
+- Local setup: `dotfiles/scripts/wallpaper_start.sh` starts `swww` if present, else `swaybg`; `dotfiles/scripts/wallpaper_picker.sh` uses Fuzzel in dmenu mode to pick/apply wallpapers.
 - Docs: https://github.com/LGFae/swww
 - Docs: https://github.com/swaywm/swaybg
 

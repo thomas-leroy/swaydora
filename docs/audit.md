@@ -1,6 +1,6 @@
 # Audit
 
-Refactor in progress. This audit captures the legacy shell-script surface before and during migration to the modular CLI. Some findings describe legacy behavior that is not wired into `bin/swaydora`.
+> **Historical document.** This audit captured the full shell-script surface at a point during the refactor. Several scripts it describes have since been removed or replaced (brightness scripts, `network_tui.sh` nmtui flow, `bluetooth_tui.sh` bluetuith flow, `menu_launcher.sh` wofi backend). Use `docs/scripts.md` and `docs/runtime-ownership.md` for the current runtime picture.
 
 Scope: all `*.sh` and `*.zsh` files in the repository, including hidden repository tooling and runtime helper scripts.
 
