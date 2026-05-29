@@ -114,7 +114,6 @@ tooltip * {
 #tray > widget,
 #custom-bluetooth,
 #custom-disks,
-#custom-brightness,
 #custom-updates,
 #custom-cam,
 #custom-mic,
@@ -223,9 +222,6 @@ tooltip * {
   color: @ember_orange;
 }
 
-#custom-brightness {
-  color: @ember_pistachio_intense;
-}
 
 #custom-mic,
 #custom-audio,
@@ -262,7 +258,6 @@ tooltip * {
 #tray > widget:hover,
 #custom-bluetooth:hover,
 #custom-disks:hover,
-#custom-brightness:hover,
 #custom-updates:hover,
 #custom-cam:hover,
 #custom-mic:hover,
@@ -279,12 +274,10 @@ tooltip * {
 }
 
 #custom-updates.warn,
-#custom-brightness.warn,
 #custom-mic.warn {
   color: @warn;
 }
 
-#custom-brightness.low,
 #custom-layout.us {
   color: #8AD9E9;
 }
@@ -298,7 +291,6 @@ tooltip * {
   color: @urgent;
 }
 
-#custom-brightness.high,
 #custom-layout.fr {
   color: @good;
 }

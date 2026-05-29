@@ -61,5 +61,3 @@ Meta+Shift+w|Open wallpaper fuzzy picker|~/.config/scripts/wallpaper_picker.sh
 XF86AudioRaiseVolume|Increase output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 XF86AudioLowerVolume|Decrease output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 XF86AudioMute|Toggle output mute|wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-Alt+XF86AudioRaiseVolume|Increase screen brightness by 10%|brightnessctl set +10%
-Alt+XF86AudioLowerVolume|Decrease screen brightness by 10%|brightnessctl set 10%-
