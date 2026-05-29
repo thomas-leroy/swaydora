@@ -54,6 +54,7 @@
       "WezTerm": "\uf489",
       "XTerm": "\uf489",
 
+      "Slack": "\uf198",
       "Spotify": "\uf1bc",
       "Thunderbird": "\uf370",
       "LocalSend": "\udb81\udf1b",
@@ -94,16 +95,9 @@
     "exec": "~/.config/scripts/audio_status.sh",
     "interval": 2,
     "on-click": "~/.config/scripts/audio_sink_mute.sh",
+    "on-click-right": "~/.config/scripts/audio_mixer_popup.sh",
     "on-scroll-up": "~/.config/scripts/audio_sink_volume_up.sh",
     "on-scroll-down": "~/.config/scripts/audio_sink_volume_down.sh",
-    "return-type": "json"
-  },
-
-  "custom/brightness": {
-    "exec": "~/.config/scripts/brightness_status.sh",
-    "interval": 2,
-    "on-scroll-up": "~/.config/scripts/brightness_up.sh",
-    "on-scroll-down": "~/.config/scripts/brightness_down.sh",
     "return-type": "json"
   },
 
@@ -119,7 +113,9 @@
 
   "cpu": {
     "interval": 5,
-    "format": "󰍛",
+    "format": "󰘚 {usage}%",
+    "tooltip": true,
+    "tooltip-format": "CPU: {usage}%\nAverage frequency: {avg_frequency} GHz",
     "states": {
       "warning": 80,
       "critical": 90
@@ -129,7 +125,8 @@
 
   "memory": {
     "interval": 5,
-    "format": "󰘚"
+    "format": "󰍛 {used:0.1f}G",
+    "tooltip-format": "Used: {used:0.1f} GiB\nAvailable: {avail:0.1f} GiB\nTotal: {total:0.1f} GiB"
   },
 
   "temperature": {
@@ -169,6 +166,7 @@
     "exec": "~/.config/scripts/indicator_mic.sh",
     "interval": 2,
     "on-click": "~/.config/scripts/audio_source_mute.sh",
+    "on-click-right": "~/.config/scripts/audio_mixer_popup.sh",
     "on-scroll-up": "~/.config/scripts/audio_source_volume_up.sh",
     "on-scroll-down": "~/.config/scripts/audio_source_volume_down.sh",
     "return-type": "json"
@@ -220,7 +218,6 @@
       "tray",
       "custom/bluetooth",
       "custom/disks",
-      "custom/brightness",
       "memory",
       "temperature",
       "cpu"

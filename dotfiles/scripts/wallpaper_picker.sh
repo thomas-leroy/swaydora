@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Fuzzy wallpaper picker (fuzzel-only, for performance testing).
-WALLPAPERS_DIR="${WALLPAPERS_DIR:-${NOCTAX_WALLS_DIR:-$HOME/.local/share/wallpapers/Wallpapers}}"
+WALLPAPERS_DIR="${WALLPAPERS_DIR:-$HOME/.local/share/wallpapers/Wallpapers}"
 STATE_FILE="${STATE_FILE:-$HOME/.config/sway/.current_wallpaper}"
 PICKER_MANIFEST="${PICKER_MANIFEST:-$HOME/.cache/wallpaper-picker/manifest.tsv}"
 
@@ -13,16 +13,16 @@ log_err() {
 apply_wallpaper() {
   local image="$1"
 
-  if command -v swww >/dev/null 2>&1 && command -v swww-daemon >/dev/null 2>&1; then
-    if ! pgrep -x swww-daemon >/dev/null 2>&1; then
-      swww-daemon >/dev/null 2>&1 &
+  if command -v awww >/dev/null 2>&1 && command -v awww-daemon >/dev/null 2>&1; then
+    if ! pgrep -x awww-daemon >/dev/null 2>&1; then
+      awww-daemon >/dev/null 2>&1 &
     fi
     for _ in 1 2 3 4 5 6 7 8 9 10; do
-      swww query >/dev/null 2>&1 && break
+      awww query >/dev/null 2>&1 && break
       sleep 0.1
     done
 
-    if swww img "$image" --transition-type wipe --transition-duration 0.4 >/dev/null 2>&1; then
+    if awww img "$image" --transition-type left >/dev/null 2>&1; then
       return 0
     fi
   fi
@@ -43,12 +43,12 @@ main() {
   }
 
   [[ -d "$WALLPAPERS_DIR" ]] || {
-    log_err "Wallpaper source not found: $WALLPAPERS_DIR"
+    log_err "Wallpaper source not found: $WALLPAPERS_DIR — run scripts/80-wallpapers-sync.sh"
     exit 1
   }
 
   [[ -f "$PICKER_MANIFEST" ]] || {
-    log_err "Wallpaper picker cache not found: $PICKER_MANIFEST"
+    log_err "Wallpaper picker cache not found: $PICKER_MANIFEST — run scripts/80-wallpapers-sync.sh"
     exit 1
   }
 
@@ -92,7 +92,7 @@ main() {
   [[ -f "$selected_path" ]] || exit 0
 
   if ! apply_wallpaper "$selected_path"; then
-    log_err 'No wallpaper backend available (swww/swaybg not found)'
+    log_err 'awww is not installed'
     exit 1
   fi
 

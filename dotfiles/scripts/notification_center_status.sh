@@ -11,14 +11,21 @@ if ! command -v swaync-client >/dev/null 2>&1; then
   exit 0
 fi
 
+conflicting_daemon=''
+if pgrep -x mako >/dev/null 2>&1; then
+  conflicting_daemon='mako'
+elif pgrep -x dunst >/dev/null 2>&1; then
+  conflicting_daemon='dunst'
+fi
+
 # Try to read Do-Not-Disturb state using non-mutating commands only.
 dnd_raw=""
-for cmd in \
-  "swaync-client --get-dnd" \
-  "swaync-client -D" \
-  "swaync-client --dnd-state"
+for args in \
+  "--get-dnd" \
+  "-D" \
+  "--dnd-state"
 do
-  candidate="$(eval "$cmd" 2>/dev/null || true)"
+  candidate="$(timeout 0.2s swaync-client "$args" 2>/dev/null || true)"
   if [[ -n "$candidate" ]]; then
     dnd_raw="$candidate"
     break
@@ -39,5 +46,9 @@ if pgrep -x swaync >/dev/null 2>&1; then
     printf '{"text":"%s","tooltip":"Notification Center (click to toggle)"}\n' "$ICON_NOTIF_ON"
   fi
 else
-  printf '{"text":"%s","class":"warn","tooltip":"swaync is not running"}\n' "$ICON_NOTIF_ON"
+  if [[ -n "$conflicting_daemon" ]]; then
+    printf '{"text":"%s","class":"warn","tooltip":"swaync is not running; %s may own notifications"}\n' "$ICON_NOTIF_ON" "$conflicting_daemon"
+  else
+    printf '{"text":"%s","class":"warn","tooltip":"swaync is not running"}\n' "$ICON_NOTIF_ON"
+  fi
 fi

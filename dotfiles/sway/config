@@ -61,6 +61,13 @@ for_window [window_role="pop-up"] floating enable, resize set width 62 ppt heigh
 for_window [title="System Updates"] floating enable, resize set width 72 ppt height 62 ppt, move position center
 # Tools menu TUI windows opened in Kitty.
 for_window [title="^Tools TUI:"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+# Swaydora popup Kitty windows opened from Waybar interactions.
+for_window [app_id="^swaydora-popup$"] floating enable, move position center
+for_window [title="^swaydora-cpu-popup$"] resize set width 76 ppt height 72 ppt
+for_window [title="^swaydora-audio-mixer$"] resize set 900 650
+# Blueman manager opened from the Waybar Bluetooth launcher.
+for_window [app_id="^blueman-manager$"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+for_window [class="^Blueman-manager$"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 # Discover package manager window from tools menu.
 for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 # Keep Obsidian as a regular tiled window by default.
@@ -160,10 +167,6 @@ bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 
-# Keybindings: brightness control.
-bindsym Alt+XF86AudioRaiseVolume exec brightnessctl set +10%
-bindsym Alt+XF86AudioLowerVolume exec brightnessctl set 10%-
-
 # Keybindings: reload config and restart Waybar reliably.
 bindsym $mod+Shift+r exec ~/.config/scripts/reload_env.sh
 
@@ -185,6 +188,7 @@ bindsym $mod+Shift+w exec ~/.config/scripts/wallpaper_picker.sh
 # Keybindings: close windows.
 bindsym $mod+q kill
 bindsym $mod+w kill
+bindsym --to-code Escape exec ~/.config/scripts/popup_close_focused.sh
 bindsym $mod+Escape exec ~/.config/scripts/close_all_windows.sh
 
 # Keybindings: toggle fullscreen (Sway default).
