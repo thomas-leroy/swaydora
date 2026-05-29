@@ -110,7 +110,7 @@ No documentation was archived or deleted in this milestone. The safer next step 
 - `docs/architecture.md`
 - `docs/usage.md`
 - `docs/testing.md`
-- `docs/refactor-plan.md`
+- `docs/archive/refactor-plan.md`
 - `docs/migration-matrix.md`
 - `docs/cleanup-audit.md`
 - `docs/audit.md`

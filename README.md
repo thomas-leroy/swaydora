@@ -231,6 +231,6 @@ Optional apps are outside the current automation boundary. Swaydora documents re
 - [docs/troubleshooting.md](docs/troubleshooting.md): runtime and application troubleshooting
 - [docs/runtime-ownership.md](docs/runtime-ownership.md): runtime lifecycle and dependency mapping
 - [docs/migration-matrix.md](docs/migration-matrix.md): migration status of legacy vs modular behavior
-- [docs/refactor-plan.md](docs/refactor-plan.md): milestone history and current migration direction
+- [docs/archive/refactor-plan.md](docs/archive/refactor-plan.md): milestone history and migration direction
 - [docs/testing.md](docs/testing.md): validation workflow
 - [docs/vm-workflow.md](docs/vm-workflow.md): VM setup and execution notes

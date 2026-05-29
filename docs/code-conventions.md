@@ -199,7 +199,7 @@ Required documentation updates:
 - Architecture changes update `docs/architecture.md`.
 - Testing workflow changes update `docs/testing.md`.
 - Profile or module behavior changes update the relevant architecture or usage documentation.
-- Milestone completion updates `docs/refactor-plan.md`.
+- Milestone completion updates `docs/archive/refactor-plan.md`.
 - Future release-visible behavior updates `CHANGELOG.md` once releases are active.
 
 "Docs later" is not allowed unless the task explicitly says to defer documentation.
