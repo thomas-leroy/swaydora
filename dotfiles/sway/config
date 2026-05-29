@@ -16,9 +16,10 @@ set $ember_gold #ECDA9C
 # Global UI font for Sway surfaces (title bars, bars, dialogs).
 font pango:JetBrainsMono Nerd Font 10
 
-# Keyboard layout: force French AZERTY.
+# Keyboard layout: force French AZERTY, enable numlock on startup.
 input type:keyboard {
     xkb_layout fr
+    xkb_numlock enabled
 }
 
 # Local machine overrides (untracked).
