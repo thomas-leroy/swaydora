@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:44
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install runner dependencies
+        run: dnf install -y bash findutils git grep sed gawk coreutils diffutils jq ripgrep which
+
+      - name: Debug workspace
+        run: |
+          pwd
+          echo "$GITHUB_WORKSPACE"
+          ls -la "$GITHUB_WORKSPACE"
+
+      - name: Syntax check
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          bash -n dotfiles/scripts/*.sh
+          bash -n bin/swaydora
+          bash -n lib/*.sh
+          bash -n modules/*/module.sh
+          bash -n tests/*/run.sh
+
+      - name: Run tests
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          tests/packages/run.sh
+          tests/backup/run.sh
+          tests/dotfiles/run.sh
+          tests/rollback/run.sh
+          tests/smoke/run.sh
+
+      - name: Content hygiene
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          if grep -RIn --exclude-dir=.git --exclude-dir=.codacy \
+            -E '^(<<<<<<<|=======|>>>>>>>)' .; then
+            printf 'Found merge conflict markers.\n' >&2
+            exit 1
+          fi
+          if grep -RIn --exclude-dir=.git --exclude-dir=.codacy \
+            --include='*.sh' \
+            --include='*.md' \
+            --include='*.conf' \
+            --include='*.json' \
+            --include='*.jsonc' \
+            --include='*.yml' \
+            --include='*.yaml' \
+            --include='*.toml' \
+            -E '[[:blank:]]+$' .; then
+            printf 'Found trailing whitespace.\n' >&2
+            exit 1
+          fi
+          if rg -n \
+            -e '/home/syorel' \
+            -e '/home/sway' \
+            -e '/home/thomas' \
+            -e '/Users/' \
+            -e 'dev/sandbox/dotfiles' \
+            -e 'dev/dotfiles' \
+            --glob '!.git/*' \
+            .; then
+            printf 'Found forbidden hardcoded personal paths.\n' >&2
+            exit 1
+          fi
