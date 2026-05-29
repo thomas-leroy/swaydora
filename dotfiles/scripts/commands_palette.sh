@@ -156,10 +156,9 @@ main() {
     exit 1
   }
 
-  local line shortcut description command item item_plain choice
+  local line shortcut description command item choice
   local -a meta_items=() other_items=() items=()
   declare -A action_by_item
-  declare -A action_by_plain
 
   while IFS= read -r line || [[ -n "$line" ]]; do
     line="$(trim "$line")"
@@ -171,14 +170,10 @@ main() {
     command="$(trim "${command:-}")"
     [[ -z "$shortcut" || -z "$description" ]] && continue
 
-    item_plain="$(printf '%-34s %s' "$(render_shortcut_plain "$shortcut")" "$description")"
-    item="$(printf "%s  <span foreground='#A7A9A1'>%s</span>" "$(render_shortcut_markup "$shortcut")" "$(pango_escape "$description")")"
+    item="$(printf '%-34s %s' "$(render_shortcut_plain "$shortcut")" "$description")"
 
     while [[ -v "action_by_item[$item]" ]]; do
       item+=" "
-    done
-    while [[ -v "action_by_plain[$item_plain]" ]]; do
-      item_plain+=" "
     done
 
     if [[ "$shortcut" == Meta* ]]; then
@@ -187,7 +182,6 @@ main() {
       other_items+=("$item")
     fi
     action_by_item["$item"]="$command"
-    action_by_plain["$item_plain"]="$command"
   done <"$PALETTE_FILE"
 
   items=("${meta_items[@]}" "${other_items[@]}")
@@ -199,18 +193,11 @@ main() {
 
   choice="$(
     printf '%s\n' "${items[@]}" | "$menu_launcher" \
-      --prompt 'Commands' \
-      --allow-markup \
-      --width '72%' \
-      --height '62%' \
-      --sort-order default
+      --prompt 'Commands'
   )"
   [[ -n "${choice:-}" ]] || exit 0
 
   command="${action_by_item[$choice]:-}"
-  if [[ -z "$command" ]]; then
-    command="${action_by_plain[$choice]:-}"
-  fi
   if [[ -z "$command" ]]; then
     notify-send "Command Palette" "Shortcut is documentation-only"
     exit 0

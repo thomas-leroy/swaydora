@@ -30,7 +30,7 @@ Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh
 - Indicators: `indicator_mic.sh`, `indicator_cam.sh`
 - Audio: `audio_status.sh`, `audio_sink_mute.sh`, `audio_sink_volume_up.sh`, `audio_sink_volume_down.sh`, `audio_source_mute.sh`, `audio_source_volume_up.sh`, `audio_source_volume_down.sh`, `audio_mixer_popup.sh`
 - Disks: `disks_menu.sh`
-- Menu wrapper: `menu_launcher.sh` (requires `wofi`; `dnf` required runtime dependency)
+- Menu wrapper: `menu_launcher.sh` (requires `fuzzel`; `dnf` required runtime dependency)
 - Layout switch: `layout_status.sh`, `layout_toggle.sh`
 - Power/session: `power_screen.sh`
 - Reload: `reload_env.sh`

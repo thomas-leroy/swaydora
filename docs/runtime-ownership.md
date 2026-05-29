@@ -55,7 +55,7 @@ Conditional or runtime-detected behavior:
 | SwayNC notification center | Sway `exec_always`, Waybar actions | `swaync`, `swaync-client`, SwayNC config/CSS | `dnf` required package `SwayNotificationCenter` | no | degraded notifications/control center | transitional | Fedora package name is `SwayNotificationCenter`; it provides the runtime binaries `swaync` and `swaync-client`. Sway starts `swaync` unconditionally and treats it as the primary notification daemon. |
 | Mako fallback notifications | user/session if started externally | `mako`, mako config | `dnf` desired fallback | no | degraded fallback notifications if SwayNC unavailable | legacy | Config exists, but Swaydora does not autostart Mako. Mako must not run at the same time as SwayNC because both can own the notification DBus name. |
 | Application launcher | Sway keybinding | `fuzzel` preferred, `wofi` fallback, `notify-send` | `dnf` required for both fuzzel and wofi | yes | degraded app launching | transitional | `app_launcher.sh` checks both launchers. |
-| Shared menu wrapper | helper scripts | `wofi`, `notify-send` | `dnf` required for wofi | no | degraded command/menu workflows | legacy | Many scripts depend on `menu_launcher.sh`; it currently only supports Wofi. |
+| Shared menu wrapper | helper scripts | `fuzzel`, `notify-send` | `dnf` required for fuzzel | no | degraded command/menu workflows | modular-ready | `menu_launcher.sh` uses `fuzzel --dmenu`; dependent scripts degrade gracefully when fuzzel is missing. |
 | Command palette | Sway keybinding | `commands_palette.list`, `menu_launcher.sh`, optional `swaymsg`, `jq`, `kitty` title detection | dotfiles plus DNF helpers | no | degraded convenience navigation | transitional | Runs selected commands detached through `sh -lc`. |
 | Tools menu | Sway keybinding | `tools_menu.list`, `menu_launcher.sh`, optional `swaymsg`, `jq`, `kitty` title detection | dotfiles plus optional DNF apps | no | degraded convenience tooling | transitional | Current entries cover Discover and btop. |
 | Window switcher | Sway Alt bindings | `swaymsg`, `jq`, `wofi`, `wtype`, cache under `$XDG_CACHE_HOME` | `dnf` desired for `wtype`; `dnf` required for wofi | no | degraded window switching | legacy | Fails with a notification if hard dependencies are missing. |
@@ -102,7 +102,7 @@ Conditional or runtime-detected behavior:
 | `swayosd-server` | Sway autostart | yes | Missing binary is silently ignored. |
 | `syshud` | future placeholder only | n/a | No runtime behavior today. |
 | `fuzzel` | app launcher and wallpaper picker | mixed | App launcher falls back to Wofi; wallpaper picker requires Fuzzel and notifies. |
-| `wofi` | shared menu wrapper, window switcher | yes (`dnf` required) | Menu wrapper notifies and exits; dependent scripts degrade. |
+| `wofi` | window switcher | yes (`dnf` required) | Window switcher fails with a notification if missing. |
 | `kitty` | terminal, TUI wrappers, updates window, fuzzel terminal | mixed | TUI wrappers notify or cannot open; direct terminal binding assumes it exists. |
 | `wlogout` | power menu and session fallback | yes | Power menu notifies and exits; session menu can fall back or no-op. |
 | `swaylock` | lock keybinding, wlogout, session menu | no | Lock action fails if missing. |
@@ -156,7 +156,7 @@ Transitional:
 
 Legacy:
 
-- SwayOSD runtime reference, wallpaper picker manifest/source management, Bluetooth archive flow, update apply click path, shared Wofi-only menu wrapper, theme/font lifecycle, and zsh rc ownership.
+- SwayOSD runtime reference, wallpaper picker manifest/source management, Bluetooth archive flow, update apply click path, theme/font lifecycle, and zsh rc ownership.
 
 Planned:
 

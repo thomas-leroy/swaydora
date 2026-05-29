@@ -2,23 +2,32 @@
 
 Refactor in progress. Some issues still belong to legacy scripts, while the new CLI currently wires only safe bootstrap behavior. Check `docs/usage.md` before assuming a command is implemented.
 
-## Menus or window switcher do nothing / "wofi not found" notification
+## Menus do nothing / "fuzzel not found" notification
 
-`menu_launcher.sh`, `window_switcher.sh`, and all scripts that call them (`commands_palette.sh`, `tools_menu.sh`, `disks_menu.sh`, etc.) require `wofi`. If `wofi` is missing, the menu wrapper sends a desktop notification and exits.
+`menu_launcher.sh` and all scripts that call it (`commands_palette.sh`, `tools_menu.sh`, `disks_menu.sh`, `capture_menu.sh`) require `fuzzel`. If `fuzzel` is missing, the wrapper sends a desktop notification and exits.
 
-Check whether wofi is installed:
+Check whether fuzzel is installed:
 
 ```sh
-command -v wofi
+command -v fuzzel
 ```
 
 Install it via the modular packages module or directly:
 
 ```sh
-sudo dnf install -y wofi
+sudo dnf install -y fuzzel
 ```
 
 Then retry the keybinding or Waybar action.
+
+## Window switcher does nothing / "wofi not found" notification
+
+`window_switcher.sh` requires `wofi` directly. If `wofi` is missing it sends a notification and exits.
+
+```sh
+command -v wofi
+sudo dnf install -y wofi
+```
 
 ## Wi-Fi does not persist after logout/login
 

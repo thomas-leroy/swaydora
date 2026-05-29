@@ -62,14 +62,21 @@ for_window [title="System Updates"] floating enable, resize set width 72 ppt hei
 # Tools menu TUI windows opened in Kitty.
 for_window [title="^Tools TUI:"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 # Swaydora popup Kitty windows opened from Waybar interactions.
+# The explicit focus rule is required: Sway's smart focus_on_window_activation
+# does not grant focus to windows spawned by a separate process (Waybar), so
+# $mod+q and Escape would silently target the previously-focused window instead.
 for_window [app_id="^swaydora-popup$"] floating enable, move position center
+for_window [app_id="^swaydora-popup$"] focus
 for_window [title="^swaydora-cpu-popup$"] resize set width 76 ppt height 72 ppt
 for_window [title="^swaydora-audio-mixer$"] resize set 900 650
 # Blueman manager opened from the Waybar Bluetooth launcher.
 for_window [app_id="^blueman-manager$"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+for_window [app_id="^blueman-manager$"] focus
 for_window [class="^Blueman-manager$"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+for_window [class="^Blueman-manager$"] focus
 # Discover package manager window from tools menu.
 for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+for_window [app_id="org.kde.discover"] focus
 # Keep Obsidian as a regular tiled window by default.
 for_window [app_id="obsidian"] floating disable
 # Keybindings: launch terminal.
@@ -186,9 +193,11 @@ bindsym $mod+Shift+Sys_Req exec ~/.config/scripts/color_picker.sh
 bindsym $mod+Shift+w exec ~/.config/scripts/wallpaper_picker.sh
 
 # Keybindings: close windows.
+# $mod+q/w kill any focused container including swaydora-popup windows.
+# No global Escape binding: a compositor-level Escape exec consumes the key
+# and prevents all apps (vim, terminals, wofi) from receiving it.
 bindsym $mod+q kill
 bindsym $mod+w kill
-bindsym --to-code Escape exec ~/.config/scripts/popup_close_focused.sh
 bindsym $mod+Escape exec ~/.config/scripts/close_all_windows.sh
 
 # Keybindings: toggle fullscreen (Sway default).

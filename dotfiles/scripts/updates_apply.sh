@@ -3,6 +3,7 @@ set -euo pipefail
 
 # Run full system upgrade in Kitty.
 # Sway rule in config matches this title and makes it floating/centered.
+APP_ID='swaydora-popup'
 TITLE='System Updates'
 
 window_exists() {
@@ -25,7 +26,7 @@ if window_exists; then
 fi
 
 if command -v kitty >/dev/null 2>&1; then
-  kitty --title "$TITLE" sh -lc \
+  kitty --class "$APP_ID" --title "$TITLE" sh -lc \
     'cat <<'"'"'EOF'"'"'
  ▗▄▄▖▗▖ ▗▖ ▗▄▖▗▖  ▗▖▗▄▄▄  ▗▄▖ ▗▄▄▖  ▗▄▖
 ▐▌   ▐▌ ▐▌▐▌ ▐▌▝▚▞▘ ▐▌  █▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌
