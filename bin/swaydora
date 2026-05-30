@@ -28,6 +28,7 @@ Usage:
   bin/swaydora install [--profile NAME] [--dry-run]
   bin/swaydora update
   bin/swaydora rollback [--dry-run] [--yes]
+  bin/swaydora wifi-repair
 
 Commands:
   help             Show this help message
@@ -37,6 +38,7 @@ Commands:
   install          Run the selected safe profile
   update           Not implemented yet
   rollback         Restore the latest dotfiles backup batch
+  wifi-repair      Interactively repair a Wi-Fi profile for offline autoconnect
 EOF
 }
 
@@ -252,6 +254,66 @@ run_rollback() {
   log_ok "Rollback complete; pre-rollback backup: $pre_batch"
 }
 
+run_wifi_repair() {
+  command -v nmcli >/dev/null 2>&1 || { log_error "nmcli is required (install NetworkManager)"; return 1; }
+
+  printf 'Wi-Fi connections:\n\n'
+  nmcli -f NAME,UUID,TYPE,AUTOCONNECT,DEVICE connection show | grep -i wireless || {
+    log_error "No Wi-Fi profiles found. Create one first with: nmcli --ask device wifi connect \"<SSID>\" ifname \"<IFACE>\""
+    return 1
+  }
+
+  printf '\nProfile name to repair: '
+  IFS= read -r profile
+  [[ -n "$profile" ]] || { log_error "Profile name is required"; return 1; }
+
+  # Resolve the profile to check it exists.
+  nmcli connection show "$profile" >/dev/null 2>&1 || {
+    log_error "Profile not found: $profile"
+    return 1
+  }
+
+  printf '\nCurrent state:\n'
+  nmcli connection show "$profile" | \
+    grep -E 'connection\.permissions|connection\.autoconnect|802-11-wireless-security\.psk-flags'
+
+  local psk_flags
+  psk_flags="$(nmcli -t -f '802-11-wireless-security.psk-flags' connection show "$profile" 2>/dev/null | cut -d: -f2 | tr -d ' ' || printf '?')"
+
+  # If psk-flags is not 0 the secret lives in the user keyring and will be
+  # unavailable before gnome-keyring starts. Re-entering the password stores
+  # it directly in the NM profile file.
+  if [[ "$psk_flags" != "0" ]]; then
+    printf '\n'
+    log_warn "psk-flags: %s — secret is in the user keyring; it must be re-entered." "$psk_flags"
+    log_info "Finding active Wi-Fi interface..."
+    local iface
+    iface="$(nmcli -t -f DEVICE,TYPE device status 2>/dev/null | grep ':wifi$' | cut -d: -f1 | head -1 || true)"
+    if [[ -z "$iface" ]]; then
+      log_error "No active Wi-Fi interface found. Connect to Wi-Fi first."
+      return 1
+    fi
+    log_info "Interface: $iface"
+    printf '\nRe-entering password to store it in the NM profile (not in keyring):\n'
+    nmcli --ask device wifi connect "$profile" ifname "$iface" || {
+      log_error "Connection failed. Fix the profile manually and retry."
+      return 1
+    }
+  fi
+
+  printf '\nApplying system-wide profile and autoconnect...\n'
+  sudo nmcli connection modify "$profile" connection.permissions ""
+  sudo nmcli connection modify "$profile" connection.autoconnect yes
+  sudo nmcli connection modify "$profile" '802-11-wireless-security.psk-flags' 0
+
+  printf '\nVerification:\n'
+  nmcli connection show "$profile" | \
+    grep -E 'connection\.permissions|connection\.autoconnect|802-11-wireless-security\.psk-flags'
+
+  log_ok "Profile \"$profile\" is now system-wide with autoconnect and stored PSK."
+  log_info "Wi-Fi will reconnect automatically at the next login without a keyring or agent."
+}
+
 main() {
   local command_name="${1:-help}"
   if [[ "$#" -gt 0 ]]; then
@@ -276,6 +338,9 @@ main() {
       ;;
     rollback)
       run_rollback "$@"
+      ;;
+    wifi-repair)
+      run_wifi_repair "$@"
       ;;
     update)
       not_implemented "$command_name"

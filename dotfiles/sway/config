@@ -75,6 +75,9 @@ for_window [app_id="^blueman-manager$"] floating enable, resize set width 76 ppt
 for_window [app_id="^blueman-manager$"] focus
 for_window [class="^Blueman-manager$"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 for_window [class="^Blueman-manager$"] focus
+# Network connection editor opened from the Waybar network widget.
+for_window [app_id="^nm-connection-editor$"] floating enable, resize set width 76 ppt height 72 ppt, move position center
+for_window [app_id="^nm-connection-editor$"] focus
 # Discover package manager window from tools menu.
 for_window [app_id="org.kde.discover"] floating enable, resize set width 76 ppt height 72 ppt, move position center
 for_window [app_id="org.kde.discover"] focus

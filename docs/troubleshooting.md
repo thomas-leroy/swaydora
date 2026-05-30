@@ -29,118 +29,91 @@ command -v wofi
 sudo dnf install -y wofi
 ```
 
-## Wi-Fi does not persist after logout/login
+## Wi-Fi asks for password on every login or does not reconnect
 
-NetworkManager is the system service that manages Wi-Fi connections. Use NetworkManager's own tools for persistent profiles instead of Sway runtime scripts.
+Both symptoms share the same root cause: the NetworkManager profile is either user-scoped, or the Wi-Fi secret is stored in the user keyring instead of in the NM profile file. In a Sway session, the keyring may not be available early enough for NM to auto-reconnect.
 
-Recommended GUI:
+A correctly configured profile has three properties:
 
-```bash
-nm-connection-editor
-```
+| Property | Required value | Meaning |
+| --- | --- | --- |
+| `connection.permissions` | empty | system-wide — any user/service can use it |
+| `connection.autoconnect` | `yes` | NM reconnects at boot and login |
+| `802-11-wireless-security.psk-flags` | `0` | secret stored in NM profile file, not in keyring |
 
-Create or edit the Wi-Fi profile there, save it as a system connection when prompted, and enable automatic connection. This keeps profile and secret ownership inside NetworkManager.
-
-`nmtui` can still be useful for temporary or debug connections if it is already installed, but it is not the recommended persistence workflow.
-
-CLI fallback:
-
-These commands are user-reviewed examples; Swaydora does not store Wi-Fi secrets, create Wi-Fi profiles, or modify NetworkManager automatically.
-
-List Wi-Fi networks:
+### Step 1 — Diagnose the existing profile
 
 ```bash
-nmcli device wifi list
+nmcli connection show "<SSID>" | \
+  grep -E 'connection\.permissions|connection\.autoconnect|802-11-wireless-security\.psk-flags'
 ```
 
-Create and connect a persistent Wi-Fi profile:
+If `psk-flags` is `1` or `2`, the secret is in the user keyring. NM cannot retrieve it before the keyring agent starts. This is the most common cause of the reconnection prompt on login.
+
+Check for duplicate profiles for the same SSID:
 
 ```bash
-sudo nmcli device wifi connect "<SSID>" password "<PASSWORD>" ifname "<WIFI_INTERFACE>"
+nmcli -f NAME,UUID,TYPE,AUTOCONNECT,DEVICE connection show | grep -i wireless
 ```
 
-Make the profile system-wide and enable autoconnect:
+If there are multiple profiles for the same SSID, identify which one NM is using (the one with a device in the DEVICE column). Disable or delete broken duplicates.
+
+### Step 2 — Automated repair (recommended)
+
+Use the Swaydora helper. It lists profiles, prompts for which one to repair, re-enters the password if needed, and applies the system-wide flags:
+
+```bash
+bin/swaydora wifi-repair
+```
+
+This does not require network access if the Wi-Fi radio is up and the SSID is in range.
+
+### Step 3 — Manual repair
+
+If the profile already has the right password (psk-flags is already `0`), only the system-wide flags need fixing:
 
 ```bash
 sudo nmcli connection modify "<SSID>" connection.permissions ""
 sudo nmcli connection modify "<SSID>" connection.autoconnect yes
-```
-
-Bring the profile up:
-
-```bash
+sudo nmcli connection modify "<SSID>" '802-11-wireless-security.psk-flags' 0
 sudo nmcli connection up "<SSID>"
 ```
 
-Verify the profile:
+If the profile is missing, or if `psk-flags` is `1` or `2`, re-enter the password first using the offline-safe path (does not require internet access, only radio up and SSID in range):
 
 ```bash
-nmcli connection show "<SSID>" | grep -E 'connection.permissions|connection.autoconnect|802-11-wireless-security.psk-flags'
+nmcli --ask device wifi connect "<SSID>" ifname "<WIFI_INTERFACE>"
+sudo nmcli connection modify "<SSID>" connection.permissions ""
+sudo nmcli connection modify "<SSID>" connection.autoconnect yes
+sudo nmcli connection modify "<SSID>" '802-11-wireless-security.psk-flags' 0
+sudo nmcli connection up "<SSID>"
+```
+
+### Step 4 — Verify
+
+```bash
+nmcli connection show "<SSID>" | \
+  grep -E 'connection\.permissions|connection\.autoconnect|802-11-wireless-security\.psk-flags'
 ```
 
 Expected:
 
-- `connection.permissions` is empty.
-- `connection.autoconnect` is `yes`.
+- `connection.permissions` — empty (no `user:` prefix).
+- `connection.autoconnect` — `yes`.
+- `802-11-wireless-security.psk-flags` — `0`.
 
-Check NetworkManager itself:
+After the next logout/login, NM reconnects automatically without prompting.
+
+### NetworkManager health
 
 ```bash
 systemctl status NetworkManager
 systemctl is-enabled NetworkManager
 ```
 
-NetworkManager stores system connection profiles under:
+NetworkManager stores system connection profiles under `/etc/NetworkManager/system-connections/`. Do not commit, paste, or expose those files — they contain stored secrets.
 
-```text
-/etc/NetworkManager/system-connections/
-```
-
-Do not commit, paste, or expose those files. They may contain Wi-Fi secrets or references to stored secrets.
-
-## Wi-Fi fails with: No agents were available
-
-If `nmcli`, `nmtui`, or a launcher-triggered NetworkManager action fails with messages such as:
-
-```text
-Failed to get secrets
-No agents were available
-```
-
-NetworkManager needs a Wi-Fi secret, but the current Sway session does not have an available secret agent for that prompt. Use `nmcli --ask` as the offline-safe recovery path. It prompts for the Wi-Fi password in the terminal and does not require internet access, a graphical editor, or a running desktop secret agent.
-
-Connect and create the profile:
-
-```bash
-nmcli --ask device wifi connect "<SSID>" ifname "<WIFI_INTERFACE>"
-```
-
-Make the profile system-wide and enable autoconnect:
-
-```bash
-sudo nmcli connection modify "<SSID>" connection.permissions ""
-sudo nmcli connection modify "<SSID>" connection.autoconnect yes
-```
-
-Bring the profile up:
-
-```bash
-sudo nmcli connection up "<SSID>"
-```
-
-Verify the saved profile:
-
-```bash
-nmcli connection show "<SSID>" | grep -E 'connection.permissions|connection.autoconnect|psk-flags'
-```
-
-Expected:
-
-- `connection.permissions` is empty.
-- `connection.autoconnect` is `yes`.
-- `802-11-wireless-security.psk-flags` is `0`.
-
-Swaydora does not store Wi-Fi passwords, hardcode SSIDs, create NetworkManager profiles automatically, or add a custom Wi-Fi prompt. When available, `nm-connection-editor` remains the preferred GUI for persistent Wi-Fi setup. `nmtui` is still useful for temporary or debug connections, but it should not be the recovery path when NetworkManager reports that no secret agents are available.
+Swaydora does not store Wi-Fi passwords, hardcode SSIDs, or modify NetworkManager automatically. The GUI path (`nm-connection-editor`) remains the preferred option when a graphical session is already running.
 
 ## VirtioFS mount missing
 
