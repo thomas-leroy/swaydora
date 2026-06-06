@@ -207,6 +207,17 @@ Completed:
 
 This milestone responds to Fedora 44 COPR availability: the previous `swayosd` COPR has no matching chroot, so it is no longer a modular apply blocker. No `syshud` packaging, custom repository, AppImage, Flatpak, service, shell, group, or runtime behavior was implemented.
 
+## Step 16 Status
+
+Completed:
+
+- Added a Fedora 44 Distrobox target under `tests/distrobox/fedora-44-sway/`.
+- Added a read-only host helper that prints the target setup by default and only creates the container with explicit `--create`.
+- Added an in-container Fedora 44 validation runner that verifies `/etc/os-release`, records command availability, runs shared Distrobox validation, and prints a workstation dry-run blocker summary.
+- Documented that this is a Fedora 44 container approximation for package and CLI blockers, not a live Fedora Sway Spin session.
+
+This milestone adds validation coverage only. It does not install packages, enable COPRs, repair the host, manage services, start a Sway session, validate Waybar or portal runtime behavior, or replace VM/session validation.
+
 ## Legacy Scripts
 
 The target legacy location is:

@@ -19,6 +19,7 @@ font pango:JetBrainsMono Nerd Font 10
 # Keyboard layout: force French AZERTY.
 input type:keyboard {
     xkb_layout fr
+    xkb_numlock enabled
 }
 
 # Local machine overrides (untracked).
