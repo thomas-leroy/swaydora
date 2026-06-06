@@ -98,9 +98,18 @@ dnf:hyprpicker:desktop:required:
 EOF
 }
 
+write_replacement_inventory() {
+  local path="$1"
+
+  cat > "$path" <<'EOF'
+dnf:swayfx:desktop:required:preferred sway compositor
+dnf:kitty:desktop:required:preferred terminal
+EOF
+}
+
 main() {
   local inventory blocked_inventory copr_inventory unknown_copr_inventory output blocked_output copr_output plugin_output failed_enable_output unknown_output status=0
-  local unavail_desired_inventory unavail_required_inventory avail_output unavail_desired_output unavail_required_output
+  local unavail_desired_inventory unavail_required_inventory replacement_inventory avail_output unavail_desired_output unavail_required_output replacement_output
 
   inventory="$TEST_HOME/managed.conf"
   blocked_inventory="$TEST_HOME/blocked.conf"
@@ -108,12 +117,14 @@ main() {
   unknown_copr_inventory="$TEST_HOME/unknown-copr.conf"
   unavail_desired_inventory="$TEST_HOME/unavail-desired.conf"
   unavail_required_inventory="$TEST_HOME/unavail-required.conf"
+  replacement_inventory="$TEST_HOME/replacement.conf"
   write_inventory "$inventory"
   write_blocked_inventory "$blocked_inventory"
   write_copr_inventory "$copr_inventory"
   write_unknown_copr_inventory "$unknown_copr_inventory"
   write_unavailable_desired_inventory "$unavail_desired_inventory"
   write_unavailable_required_inventory "$unavail_required_inventory"
+  write_replacement_inventory "$replacement_inventory"
 
   output="$(run_packages_plan "$inventory")"
   grep -Fq '[OK] Installed dnf package: git' <<<"$output" || fail_test 'Expected installed dnf package in plan.'
@@ -281,6 +292,17 @@ main() {
 
   # Unavailable desired package warning still shown even when required blocks.
   grep -Fq '[WARN] Desired dnf package unavailable, skipping: swww' <<<"$unavail_required_output" || fail_test 'Expected warning for unavailable desired package alongside required blocker.'
+
+  # Fedora Sway Spin ships sway, and swayfx replaces it. Keep --allowerasing
+  # scoped to the known replacement package instead of applying it globally.
+  replacement_output="$(run_packages_apply "$replacement_inventory" 2>&1)"
+  grep -Fq '[INFO] Installing dnf packages: kitty' <<<"$replacement_output" || fail_test 'Expected normal dnf install log for kitty.'
+  grep -Fq 'sudo dnf install -y kitty' <<<"$replacement_output" || fail_test 'Expected normal dnf command for kitty.'
+  grep -Fq '[INFO] Installing dnf replacement packages with --allowerasing: swayfx' <<<"$replacement_output" || fail_test 'Expected allowerasing install log for swayfx.'
+  grep -Fq 'sudo dnf install -y --allowerasing swayfx' <<<"$replacement_output" || fail_test 'Expected allowerasing command for swayfx.'
+  if grep -Fq 'sudo dnf install -y --allowerasing swayfx kitty' <<<"$replacement_output"; then
+    fail_test '--allowerasing must not be applied to the whole package batch.'
+  fi
 }
 
 main "$@"

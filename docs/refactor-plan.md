@@ -274,6 +274,7 @@ Completed:
 - Read-only `doctor`.
 - Safe `bootstrap` module.
 - DNF-only package install and known required COPR enablement module.
+- Scoped `swayfx` replacement handling for Fedora Sway Spin.
 - Minimal profile.
 - Managed dotfiles module.
 - Workstation profile dry-run planning.

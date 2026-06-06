@@ -36,7 +36,7 @@ Swaydora is a set of auditable scripts and dotfiles meant to save time, stay eas
 - Services, shell changes, group changes, wallpapers, themes, and fonts through the modular CLI
 - User account state or user-specific app choices
 
-Optional user applications such as Slack, Discord, Spotify, Teams, Obsidian, Insomnia, and LocalSend are currently documented install paths rather than automated setup. See [docs/post-install-manual-actions.md](docs/post-install-manual-actions.md) and [docs/troubleshooting.md](docs/troubleshooting.md) for current guidance.
+Optional user applications such as Slack, Discord, Spotify, Obsidian, Insomnia, and LocalSend are currently documented install paths rather than automated setup. See [docs/post-install-manual-actions.md](docs/post-install-manual-actions.md) and [docs/troubleshooting.md](docs/troubleshooting.md) for current guidance.
 
 ## Current Status
 
@@ -89,8 +89,6 @@ cd swaydora
 bin/swaydora bootstrap-repos
 bin/swaydora install --profile workstation --dry-run
 bin/swaydora install --profile workstation
-bin/swaydora install --profile workstation
-bin/swaydora rollback --dry-run
 ```
 
 What each step does:
@@ -101,10 +99,8 @@ What each step does:
   shows planned bootstrap, package, and dotfile actions without mutating system state.
 - first `install --profile workstation`:
   runs the current modular install path, including supported DNF packages, known COPRs, managed dotfile symlinks, and dotfile backups.
-- second `install --profile workstation`:
-  is the recommended idempotency check and should mostly report already-installed or already-linked state.
-- `rollback --dry-run`:
-  verifies that the latest dotfiles backup batch can be restored; it does not restore anything unless `--yes` is used.
+- `post-install-manual-actions.md`:
+  lists the remaining user-reviewed actions after the automated install.
 
 Current safe CLI surface:
 
@@ -148,7 +144,7 @@ It does not yet fully manage:
 - optional application catalog;
 - Flatpak app installation;
 - AppImage app installation;
-- Slack, Discord, Spotify, Teams, and similar optional apps.
+- Slack, Discord, Spotify, and similar optional apps.
 
 Rollback currently covers dotfiles backup batches only. It is not a full system rollback.
 
@@ -198,7 +194,7 @@ Base install does not automate several sensitive or user-specific actions yet. K
 - persistent Wi-Fi setup:
   use `nm-connection-editor`; use `nmcli` as the CLI fallback; treat `nmtui` as temporary or debug only.
 - optional applications:
-  Slack should use Flatpak via Flathub; Snap is not recommended under Sway and Wayland. Discord, Spotify, Teams, and similar apps remain optional user installs.
+  Slack should use Flatpak via Flathub; Snap is not recommended under Sway and Wayland. Discord, Spotify, and similar apps remain optional user installs.
 - wallpapers:
   run `scripts/80-wallpapers-sync.sh` when you want local wallpaper data for the picker.
 - shell:

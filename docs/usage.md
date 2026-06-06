@@ -21,10 +21,7 @@ Recommended operational path:
 1. `bin/swaydora bootstrap-repos`
 2. `bin/swaydora install --profile workstation --dry-run`
 3. `bin/swaydora install --profile workstation`
-4. `bin/swaydora install --profile workstation`
-5. `bin/swaydora rollback --dry-run`
-
-The second non-dry-run `install` is the recommended idempotency check. It should mostly report already-installed or already-linked state.
+4. Review [post-install-manual-actions.md](post-install-manual-actions.md)
 
 ## Commands
 
@@ -165,6 +162,14 @@ sudo dnf install -y <missing-dnf-packages>
 
 Only entries of type `dnf` are eligible for package installation. Only known required entries of type `copr` are eligible for COPR enablement. Other package categories are reported and skipped. If a required non-DNF entry blocks a coherent install, package apply fails before DNF install. Desired AppImages and other desired non-DNF entries are warnings only; they do not block base install and do not become installable.
 
+On Fedora Sway Spin, `swayfx` replaces the stock `sway` package. Swaydora handles this known replacement in a separate DNF transaction:
+
+```bash
+sudo dnf install -y --allowerasing swayfx
+```
+
+The `--allowerasing` flag is not applied to the full package batch.
+
 After package apply succeeds, workstation apply continues to managed dotfile symlinks. Existing dotfile targets are backed up before replacement.
 
 The current supported modular install path is `bin/swaydora install --profile workstation`. It manages bootstrap checks, supported DNF packages, known COPRs, managed dotfile symlinks, dotfile backups, and dotfiles-only rollback.
@@ -177,12 +182,13 @@ Network setup is also user-managed. Use `nm-connection-editor` for persistent Wi
 
 Advanced display management is also delegated. Use KDE Wayland tooling such as `systemsettings kcm_kscreen` for monitor layouts, scaling, docking, and hotplug behavior instead of expecting Swaydora to maintain a custom display-management layer.
 
-Optional user applications are also outside the current automation boundary. Swaydora does not yet manage a full optional app catalog, Flatpak permissions, or app-specific Electron workarounds. For now, treat apps such as Slack, Discord, Spotify, Teams, Obsidian, Insomnia, and LocalSend as documented install paths rather than automated base-install components.
+Optional user applications are also outside the current automation boundary. Swaydora does not yet manage a full optional app catalog, Flatpak permissions, or app-specific Electron workarounds. For now, treat apps such as Slack, Discord, Spotify, Obsidian, Insomnia, and LocalSend as documented install paths rather than automated base-install components.
 
 Recommended examples:
 
 - Slack: prefer Flatpak via Flathub; avoid Snap under Sway and Wayland when possible.
-- Discord, Spotify, Teams: prefer a user-reviewed Flatpak path when available.
+- Discord: install only if needed, outside the default recommendation.
+- Spotify: install only on media-oriented machines.
 - Obsidian, Insomnia, LocalSend: currently remain optional user applications with manual or legacy-documented install paths.
 
 Manual post-install checklist:

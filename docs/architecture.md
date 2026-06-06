@@ -64,13 +64,15 @@ Swaydora does not currently own the full application lifecycle for optional user
 - account or login state;
 - user-specific application choices.
 
-Optional user applications such as Slack, Discord, Spotify, Teams, Obsidian, Insomnia, and LocalSend are currently documented install paths rather than automated lifecycle management. This keeps the project manageable as an opinionated Fedora and Sway workstation setup instead of growing into a general-purpose app management layer.
+Optional user applications such as Slack, Discord, Spotify, Obsidian, Insomnia, and LocalSend are currently documented install paths rather than automated lifecycle management. This keeps the project manageable as an opinionated Fedora and Sway workstation setup instead of growing into a general-purpose app management layer.
 
 Future optional app installation work should stay explicit and conservative. Possible later directions include documented manual installs, an explicit apps profile, a Flatpak-only app layer, user-selected app bundles, or no automatic SaaS app installation by default. None of these strategies is implemented yet.
 
 Package inventory lines use `type:name:group:importance:notes`. Importance values are `required`, `desired`, `optional`, `manual`, and `unsupported`. Required unsupported prerequisites may block apply before mutation. Desired, optional, manual, and unsupported entries are reporting signals only.
 
 COPR handling is explicit and allowlisted. The module can detect existing COPR repo files and read-only COPR support package state, and it may run `dnf copr enable -y` only for known required COPRs from the managed inventory. The only current required COPR is `swayfx/swayfx`. It does not install plugins, enable unknown COPRs, add arbitrary repo files, or refresh DNF metadata directly.
+
+Fedora Sway Spin installs the stock `sway` package by default. The `swayfx` package conflicts with and replaces it, so package apply handles `swayfx` as a known DNF replacement in its own `dnf install -y --allowerasing swayfx` transaction. The `--allowerasing` flag is not applied to the rest of the package batch.
 
 `syshud` is modeled as a desired manual transitional component. It replaces the modular inventory references to `swayosd`, but no installation, packaging, repository, service, or runtime integration is implemented yet.
 

@@ -53,7 +53,7 @@ Required COPRs are modeled explicitly. The only current required COPR is `swayfx
 
 `syshud` is tracked as a desired manual transitional component. It replaces modular `swayosd` inventory references, but no installation or packaging is migrated.
 
-Optional user applications such as Slack, Discord, Spotify, Teams, Obsidian, Insomnia, and LocalSend are currently outside the automated lifecycle boundary. Recommended install paths may be documented, but app-store-like automation, Flatpak permission management, and per-app workarounds are intentionally deferred.
+Optional user applications such as Slack, Discord, Spotify, Obsidian, Insomnia, and LocalSend are currently outside the automated lifecycle boundary. Recommended install paths may be documented, but app-store-like automation, Flatpak permission management, and per-app workarounds are intentionally deferred.
 
 ## Why Legacy Scripts Still Exist
 
@@ -66,7 +66,7 @@ They are retained for reference and manual use while the modular install path ma
 | Legacy script | Replacement module | Status | Notes |
 | --- | --- | --- | --- |
 | `scripts/00-bootstrap.sh` | `bootstrap` | migrated | Safe Fedora, disk, RAM, command checks, and current-user directory creation are migrated. Legacy script is retained. |
-| `scripts/10-packages.sh` | `packages` | partially migrated | Inventory, importance-based reporting, category-based dry-run planning, read-only COPR detection, required `swayfx/swayfx` COPR enablement, COPR preflight blockers, and simple DNF apply are migrated. `swayosd` was replaced in modular inventory by desired/manual `syshud`. External repo setup, arbitrary COPRs, AppImages, direct downloads, Docker variants, and optional package behavior remain legacy-only. Shell setup, group changes, and managed shell rc blocks are documented as manual post-install actions. |
+| `scripts/10-packages.sh` | `packages` | partially migrated | Inventory, importance-based reporting, category-based dry-run planning, read-only COPR detection, required `swayfx/swayfx` COPR enablement, COPR preflight blockers, simple DNF apply, and scoped `swayfx` replacement with `--allowerasing` are migrated. `swayosd` was replaced in modular inventory by desired/manual `syshud`. External repo setup, arbitrary COPRs, AppImages, direct downloads, Docker variants, and optional package behavior remain legacy-only. Shell setup, group changes, and managed shell rc blocks are documented as manual post-install actions. |
 | `scripts/20-services.sh` | none | pending | Requires package migration first. Enables and starts system services and timers. |
 | `scripts/30-link-dotfiles.sh` | `dotfiles` | partially migrated | Managed `~/.config` symlinks with backup are migrated. Legacy script also creates local override placeholders and uses legacy backup paths. |
 | `scripts/40-themes.sh` | none | pending | Writes GTK and environment theme config. Not migrated. |

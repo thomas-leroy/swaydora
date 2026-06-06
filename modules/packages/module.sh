@@ -470,18 +470,36 @@ packages_collect_apply_one() {
   esac
 }
 
+packages_dnf_allowerasing_allowed() {
+  local package_name="$1"
+
+  case "$package_name" in
+    swayfx)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
 packages_check_dnf_availability() {
   local package_name
   local unavail_required=0
   PACKAGES_APPLY_DNF_UNAVAIL_REQUIRED=()
   PACKAGES_APPLY_DNF_UNAVAIL_DESIRED=()
   PACKAGES_APPLY_DNF=()
+  PACKAGES_APPLY_DNF_ALLOWERASING=()
 
   log_info 'Checking dnf package availability'
 
   for package_name in "${PACKAGES_APPLY_DNF_REQUIRED[@]}"; do
     if packages_dnf_available "$package_name"; then
-      PACKAGES_APPLY_DNF+=("$package_name")
+      if packages_dnf_allowerasing_allowed "$package_name"; then
+        PACKAGES_APPLY_DNF_ALLOWERASING+=("$package_name")
+      else
+        PACKAGES_APPLY_DNF+=("$package_name")
+      fi
     else
       PACKAGES_APPLY_DNF_UNAVAIL_REQUIRED+=("$package_name")
       unavail_required=$((unavail_required + 1))
@@ -490,7 +508,11 @@ packages_check_dnf_availability() {
 
   for package_name in "${PACKAGES_APPLY_DNF_DESIRED[@]}"; do
     if packages_dnf_available "$package_name"; then
-      PACKAGES_APPLY_DNF+=("$package_name")
+      if packages_dnf_allowerasing_allowed "$package_name"; then
+        PACKAGES_APPLY_DNF_ALLOWERASING+=("$package_name")
+      else
+        PACKAGES_APPLY_DNF+=("$package_name")
+      fi
     else
       PACKAGES_APPLY_DNF_UNAVAIL_DESIRED+=("$package_name")
       log_warn "Desired dnf package unavailable, skipping: $package_name"
@@ -499,7 +521,11 @@ packages_check_dnf_availability() {
 
   for package_name in "${PACKAGES_APPLY_DNF_OPTIONAL[@]}"; do
     if packages_dnf_available "$package_name"; then
-      PACKAGES_APPLY_DNF+=("$package_name")
+      if packages_dnf_allowerasing_allowed "$package_name"; then
+        PACKAGES_APPLY_DNF_ALLOWERASING+=("$package_name")
+      else
+        PACKAGES_APPLY_DNF+=("$package_name")
+      fi
     else
       log_info "Optional dnf package unavailable, skipping: $package_name"
     fi
@@ -582,6 +608,25 @@ packages_run_dnf_install() {
   "${command_args[@]}"
 }
 
+packages_run_dnf_install_allowerasing() {
+  local -a command_args
+
+  if [[ "${SWAYDORA_TEST_MODE:-0}" == '1' ]]; then
+    printf 'sudo dnf install -y --allowerasing'
+    printf ' %s' "$@"
+    printf '\n'
+    return 0
+  fi
+
+  if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
+    command_args=(dnf install -y --allowerasing "$@")
+  else
+    command_args=(sudo dnf install -y --allowerasing "$@")
+  fi
+
+  "${command_args[@]}"
+}
+
 packages_run_copr_enable() {
   local copr_name="$1"
   local -a command_args
@@ -637,11 +682,18 @@ packages_apply() {
 
   packages_check_dnf_availability || return 1
 
-  if [[ "${#PACKAGES_APPLY_DNF[@]}" -eq 0 ]]; then
+  if [[ "${#PACKAGES_APPLY_DNF[@]}" -eq 0 && "${#PACKAGES_APPLY_DNF_ALLOWERASING[@]}" -eq 0 ]]; then
     log_ok 'No missing dnf packages'
     return 0
   fi
 
-  log_info "Installing dnf packages: ${PACKAGES_APPLY_DNF[*]}"
-  packages_run_dnf_install "${PACKAGES_APPLY_DNF[@]}"
+  if [[ "${#PACKAGES_APPLY_DNF[@]}" -gt 0 ]]; then
+    log_info "Installing dnf packages: ${PACKAGES_APPLY_DNF[*]}"
+    packages_run_dnf_install "${PACKAGES_APPLY_DNF[@]}"
+  fi
+
+  if [[ "${#PACKAGES_APPLY_DNF_ALLOWERASING[@]}" -gt 0 ]]; then
+    log_info "Installing dnf replacement packages with --allowerasing: ${PACKAGES_APPLY_DNF_ALLOWERASING[*]}"
+    packages_run_dnf_install_allowerasing "${PACKAGES_APPLY_DNF_ALLOWERASING[@]}"
+  fi
 }
