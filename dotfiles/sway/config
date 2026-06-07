@@ -14,7 +14,7 @@ set $ember_mauve #A17AB5
 set $ember_rose #C84C53
 set $ember_gold #ECDA9C
 # Global UI font for Sway surfaces (title bars, bars, dialogs).
-font pango:JetBrainsMono Nerd Font 10
+font pango:JetBrainsMono Nerd Font 12
 
 # Keyboard layout: force French AZERTY.
 input type:keyboard {
@@ -222,3 +222,8 @@ exec_always --no-startup-id sh -c 'command -v swayosd-server >/dev/null 2>&1 && 
 exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
 exec_always --no-startup-id sh -c 'pkill -x waybar || true; waybar'
 exec_always --no-startup-id udiskie --tray
+
+# Dell U2719D (gauche) - Position 0,0
+output DP-3 resolution 2560x1440@60Hz position 2560,0
+# Dell U2724D (droite) - Position 2560,0
+output HDMI-A-1 resolution 2560x1440@60Hz position 0,0
