@@ -230,21 +230,8 @@ output DP-3 resolution 2560x1440@60Hz position 2560,0
 output HDMI-A-1 resolution 2560x1440@60Hz position 0,0
 
 
-# 1Password (Flatpak)
-assign [app_id="1password"] floating enable
-
-# LocalSend (Flatpak)
-assign [app_id="localsend"] floating enable
-
-# pCloud (AppImage)
-assign [class="^pcloud$"] floating enable
-assign [class="AppImageKit.*pcloud"] floating enable
-
-# Proton Bridge (GUI)
-assign [app_id="protonmail-bridge"] floating enable
-assign [class="^ProtonMail Bridge$"] floating enable
-
-# Décommentez seulement si vous voulez forcer le déplacement
-assign [app_id="1password"] workspace 9:Tools
-assign [app_id="localsend"] workspace 9:Tools
-assign [class="^pcloud$"] workspace 9:Tools
+# Workspace 9 utility apps.
+for_window [app_id="^localsend$"] move to workspace number 9, floating enable, resize set 400 547, move position 22 57
+for_window [app_id="^pcloud$"] move to workspace number 9, floating enable, resize set 969 650, move position 1564 54
+for_window [app_id="^handy$"] move to workspace number 9, floating enable, resize set 960 665, move position 1567 728
+for_window [app_id="^ch\.proton\.bridge-gui$"] move to workspace number 9, floating enable, resize set 1084 654, move position 453 57

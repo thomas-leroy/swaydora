@@ -45,6 +45,8 @@ opens the command palette maintained in `dotfiles/sway/commands_palette.list`.
 | `Meta` + `Tab` / `Meta` + `Shift` + `Tab` | Switch to next / previous workspace |
 | `Meta` + `Ctrl` + `Right` / `Meta` + `Ctrl` + `Left` | Switch to next / previous workspace |
 
+Workspace `9` is also used for utility app windows. LocalSend, Handy, pCloud, and Proton Bridge are forced there as floating windows by Sway `app_id` rules.
+
 ## Session And System
 
 | Shortcut | Action |
