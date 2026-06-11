@@ -61,6 +61,6 @@ Swaydora uses SwayNotificationCenter as the primary notification daemon. `notifi
 
 `cpu_popup.sh` and `audio_mixer_popup.sh` use the shared Kitty `app_id` `swaydora-popup` with popup-specific titles. `popup_close_focused.sh` is bound to plain `Escape` in Sway and closes only the focused Swaydora popup terminal; it does not affect normal Kitty windows.
 
-`audio_mixer_popup.sh` is the Waybar right-click action for both the output-volume and microphone widgets. It opens `wiremix` in a floating Kitty window; left click remains reserved for mute actions.
+`audio_mixer_popup.sh` is the Waybar right-click action for both the output-volume and microphone widgets, and is bound to `Meta+s` from Sway. It opens `wiremix` in a floating Kitty window; left click remains reserved for mute actions.
 
 `bluetooth_tui.sh` keeps its existing filename because Waybar already targets it, but it now launches the Fedora-packaged Blueman manager with `blueman-manager`. The helper focuses an existing Blueman window when possible and sends a notification if the package is missing.

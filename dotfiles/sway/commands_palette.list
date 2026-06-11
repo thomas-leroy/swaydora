@@ -58,6 +58,7 @@ Meta+Print|Take a screenshot of the active window|~/.config/scripts/screenshot_a
 Meta+Shift+Print|Open color picker|~/.config/scripts/color_picker.sh
 Meta+Shift+w|Open wallpaper fuzzy picker|~/.config/scripts/wallpaper_picker.sh
 
+Meta+s|Open audio mixer|~/.config/scripts/audio_mixer_popup.sh
 XF86AudioRaiseVolume|Increase output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 XF86AudioLowerVolume|Decrease output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 XF86AudioMute|Toggle output mute|wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
