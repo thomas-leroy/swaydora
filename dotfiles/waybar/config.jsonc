@@ -32,7 +32,7 @@
   "wlr/taskbar": {
     "format": "{name}",
     "on-click": "activate",
-    "tooltip-format": "TEST {app_id} | {name} | {title}",
+    "tooltip-format": "{app_id} | {name} | {title}",
     "rewrite": {
       "LibreWolf": "\uf269",
       "librewolf": "\uf269",
