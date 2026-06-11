@@ -2,18 +2,18 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
-INSTALL_HOME="${SWAYDORA_DISTROBOX_INSTALL_HOME:-/tmp/swaydora-fedora44-install-home}"
+INSTALL_HOME="${SWAYDORA_DISTROBOX_INSTALL_HOME:-/tmp/swaydora-fedora43-install-home}"
 ASSUME_YES=0
 
 print_help() {
   cat <<EOF
 Usage:
-  tests/distrobox/fedora-44-sway/install.sh --yes
+  tests/distrobox/fedora-43-sway/install.sh --yes
 
 Environment:
   SWAYDORA_DISTROBOX_INSTALL_HOME  Test HOME used for dotfile apply.
 
-This runs the real workstation install inside the Fedora 44 container.
+This runs the real workstation install inside the Fedora 43 container.
 It mutates container packages and repositories, but uses a test HOME by default.
 If DNF reports a container-only RPM scriptlet failure, the runner checks RPM
 health and retries once before printing the remaining manual/post-install actions.
@@ -28,7 +28,7 @@ inside_container() {
   return 1
 }
 
-require_fedora_44() {
+require_fedora_43() {
   local os_id version
 
   [[ -r /etc/os-release ]] || {
@@ -41,8 +41,8 @@ require_fedora_44() {
   os_id="${ID:-}"
   version="${VERSION_ID:-}"
 
-  if [[ "$os_id" != 'fedora' || "$version" != '44' ]]; then
-    printf 'Expected Fedora 44 container, got ID=%s VERSION_ID=%s\n' "$os_id" "$version" >&2
+  if [[ "$os_id" != 'fedora' || "$version" != '43' ]]; then
+    printf 'Expected Fedora 43 container, got ID=%s VERSION_ID=%s\n' "$os_id" "$version" >&2
     return 1
   fi
 }
@@ -126,7 +126,7 @@ main() {
   done
 
   if [[ "$ASSUME_YES" -ne 1 ]]; then
-    printf 'This runs a real install in the Fedora 44 container. Pass --yes to continue.\n' >&2
+    printf 'This runs a real install in the Fedora 43 container. Pass --yes to continue.\n' >&2
     return 2
   fi
 
@@ -134,12 +134,12 @@ main() {
     printf 'Run this script from inside Distrobox.\n' >&2
     return 1
   }
-  require_fedora_44
+  require_fedora_43
 
   mkdir -p "$INSTALL_HOME"
   cd "$ROOT_DIR"
 
-  printf 'Running real workstation install in Fedora 44 Distrobox.\n'
+  printf 'Running real workstation install in Fedora 43 Distrobox.\n'
   printf 'Container packages/repositories may change.\n'
   printf 'Test HOME: %s\n\n' "$INSTALL_HOME"
 

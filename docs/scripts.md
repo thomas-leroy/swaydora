@@ -18,7 +18,7 @@ Refactor in progress. This document describes the legacy scripts and runtime hel
 - `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
 
 `scripts/10-packages.sh` supports `DRY_RUN=1` to print planned package installs, downloads, repository changes, and group updates without applying them.
-`scripts/00-bootstrap.sh` reports Fedora 43+, disk/RAM thresholds, and critical command availability as informational warnings before the rest of the setup runs.
+`scripts/00-bootstrap.sh` reports Fedora version, disk/RAM thresholds, and critical command availability as informational warnings before the rest of the setup runs. The documented support target is Fedora 43; Fedora 44 is not currently supported because package and desktop component availability is not coherent enough for this setup.
 Oh My Zsh is installed with a direct Git checkout; set `OH_MY_ZSH_REF=<branch-tag-or-commit>` to pin the upstream ref.
 Setup scripts print a final summary of relevant actions, such as packages handled, files written, backups created, links installed, or services enabled.
 Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh`.

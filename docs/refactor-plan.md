@@ -2,6 +2,8 @@
 
 Status: refactor in progress. Legacy and modular systems currently coexist, and the new CLI is intentionally incomplete during migration.
 
+Current support target: Fedora 43. Fedora 44 remains unsupported until package and desktop component support is coherent enough for this setup.
+
 ## Step 1 Status
 
 Completed:
@@ -211,10 +213,10 @@ This milestone responds to Fedora 44 COPR availability: the previous `swayosd` C
 
 Completed:
 
-- Added a Fedora 44 Distrobox target under `tests/distrobox/fedora-44-sway/`.
+- Added a Fedora 43 Distrobox target under `tests/distrobox/fedora-43-sway/`.
 - Added a read-only host helper that prints the target setup by default and only creates the container with explicit `--create`.
-- Added an in-container Fedora 44 validation runner that verifies `/etc/os-release`, records command availability, runs shared Distrobox validation, and prints a workstation dry-run blocker summary.
-- Documented that this is a Fedora 44 container approximation for package and CLI blockers, not a live Fedora Sway Spin session.
+- Added an in-container Fedora 43 validation runner that verifies `/etc/os-release`, records command availability, runs shared Distrobox validation, and prints a workstation dry-run blocker summary.
+- Documented that this is a Fedora 43 container approximation for package and CLI blockers, not a live Fedora Sway Spin session.
 
 This milestone adds validation coverage only. It does not install packages, enable COPRs, repair the host, manage services, start a Sway session, validate Waybar or portal runtime behavior, or replace VM/session validation.
 

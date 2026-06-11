@@ -2,22 +2,22 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
-CONTAINER_NAME="${SWAYDORA_FEDORA44_CONTAINER:-swaydora-fedora-44-sway}"
-CONTAINER_IMAGE="${SWAYDORA_FEDORA44_IMAGE:-registry.fedoraproject.org/fedora-toolbox:44}"
+CONTAINER_NAME="${SWAYDORA_FEDORA43_CONTAINER:-swaydora-fedora-43-sway}"
+CONTAINER_IMAGE="${SWAYDORA_FEDORA43_IMAGE:-registry.fedoraproject.org/fedora-toolbox:43}"
 
 print_help() {
   cat <<EOF
 Usage:
-  tests/distrobox/fedora-44-sway/host.sh [--create] [--enter] [--install]
+  tests/distrobox/fedora-43-sway/host.sh [--create] [--enter] [--install]
 
 Options:
-  --create  Create the Fedora 44 Distrobox when it does not exist.
-  --enter   Enter the Fedora 44 Distrobox after creation/checks.
+  --create  Create the Fedora 43 Distrobox when it does not exist.
+  --enter   Enter the Fedora 43 Distrobox after creation/checks.
   --install Run the real workstation install inside the container.
 
 Environment:
-  SWAYDORA_FEDORA44_CONTAINER  Override container name.
-  SWAYDORA_FEDORA44_IMAGE      Override Fedora 44 image.
+  SWAYDORA_FEDORA43_CONTAINER  Override container name.
+  SWAYDORA_FEDORA43_IMAGE      Override Fedora 43 image.
 
 Default behavior is read-only: print the required Distrobox commands.
 EOF
@@ -28,15 +28,15 @@ container_exists() {
 }
 
 print_plan() {
-  printf 'Fedora 44 Distrobox test target\n\n'
+  printf 'Fedora 43 Distrobox test target\n\n'
   printf 'Container: %s\n' "$CONTAINER_NAME"
   printf 'Image:     %s\n\n' "$CONTAINER_IMAGE"
   printf 'Create explicitly with:\n'
   printf '  %s --create\n\n' "$0"
   printf 'Run validation with:\n'
-  printf '  distrobox enter %s -- ./tests/distrobox/fedora-44-sway/run.sh\n' "$CONTAINER_NAME"
+  printf '  distrobox enter %s -- ./tests/distrobox/fedora-43-sway/run.sh\n' "$CONTAINER_NAME"
   printf '\nRun real install in the container with:\n'
-  printf '  distrobox enter %s -- ./tests/distrobox/fedora-44-sway/install.sh --yes\n' "$CONTAINER_NAME"
+  printf '  distrobox enter %s -- ./tests/distrobox/fedora-43-sway/install.sh --yes\n' "$CONTAINER_NAME"
 }
 
 create_container() {
@@ -93,11 +93,11 @@ main() {
   fi
 
   if [[ "$enter" -eq 1 ]]; then
-    distrobox enter "$CONTAINER_NAME" -- ./tests/distrobox/fedora-44-sway/run.sh
+    distrobox enter "$CONTAINER_NAME" -- ./tests/distrobox/fedora-43-sway/run.sh
   fi
 
   if [[ "$install" -eq 1 ]]; then
-    distrobox enter "$CONTAINER_NAME" -- ./tests/distrobox/fedora-44-sway/install.sh --yes
+    distrobox enter "$CONTAINER_NAME" -- ./tests/distrobox/fedora-43-sway/install.sh --yes
   fi
 }
 

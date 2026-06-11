@@ -228,7 +228,7 @@ rpm -q blueman
 ~/.config/scripts/bluetooth_tui.sh
 ```
 
-If `blueman-manager` is missing, the workstation package baseline is incomplete. Older `bluetuith` and `bluetui` flows are no longer owned because Fedora 44 does not package either executable.
+If `blueman-manager` is missing on Fedora 43, the workstation package baseline is incomplete. Older `bluetuith` and `bluetui` flows are no longer owned. Fedora 44 remains unsupported for now because several package and desktop component assumptions drift from the Fedora 43 setup.
 
 ## No notifications
 

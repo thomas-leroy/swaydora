@@ -7,7 +7,7 @@
 ▗▄▄▞▘▐▙█▟▌▐▌ ▐▌ ▐▌  ▐▙▄▄▀▝▚▄▞▘▐▌ ▐▌▐▌ ▐▌
 ```
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/979ba9f5962d4c4687dbcb3a7169a7c5)](https://app.codacy.com/gh/thomas-leroy/swaydora/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) ![CI](https://img.shields.io/github/actions/workflow/status/thomas-leroy/swaydora/ci.yml?label=CI&style=flat-square) ![Fedora](https://img.shields.io/badge/Fedora-44%2B-294172?logo=fedora&logoColor=white&style=flat-square) ![Wayland](https://img.shields.io/badge/Wayland-SwayFX-1793D1?style=flat-square) ![Status](https://img.shields.io/badge/status-active-success?style=flat-square) ![Refactor](https://img.shields.io/badge/refactor-in%20progress-orange?style=flat-square) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/979ba9f5962d4c4687dbcb3a7169a7c5)](https://app.codacy.com/gh/thomas-leroy/swaydora/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) ![CI](https://img.shields.io/github/actions/workflow/status/thomas-leroy/swaydora/ci.yml?label=CI&style=flat-square) ![Fedora](https://img.shields.io/badge/Fedora-43-294172?logo=fedora&logoColor=white&style=flat-square) ![Wayland](https://img.shields.io/badge/Wayland-SwayFX-1793D1?style=flat-square) ![Status](https://img.shields.io/badge/status-active-success?style=flat-square) ![Refactor](https://img.shields.io/badge/refactor-in%20progress-orange?style=flat-square) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)
 
 Swaydora is a Fedora + SwayFX desktop setup for bootstrapping a fresh developer workstation with opinionated Wayland defaults, useful tooling, and a polished daily workflow.
 
@@ -17,6 +17,7 @@ Swaydora is a set of auditable scripts and dotfiles meant to save time, stay eas
 
 > Status: **ALPHA** - **UNSTABLE**. Breaking changes and regressions are expected.
 > Use this on a fresh Fedora machine or a staging VM first. I do not recommend migrating a machine that is already used daily.
+> Supported target: **Fedora 43**. Fedora 44 is not currently supported because package and desktop component availability is not coherent enough for this setup.
 
 ## What Swaydora Manages
 

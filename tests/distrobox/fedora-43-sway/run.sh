@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
-EXPECTED_FEDORA_VERSION="${SWAYDORA_EXPECTED_FEDORA_VERSION:-44}"
+EXPECTED_FEDORA_VERSION="${SWAYDORA_EXPECTED_FEDORA_VERSION:-43}"
 
 cd "$ROOT_DIR"
 
@@ -40,7 +40,7 @@ os_value() {
   esac
 }
 
-require_fedora_44() {
+require_fedora_43() {
   local os_id version pretty
 
   os_id="$(os_value ID)"
@@ -68,7 +68,7 @@ print_command_inventory() {
     if command -v "$command_name" >/dev/null 2>&1; then
       printf '[OK] command available: %s\n' "$command_name"
     else
-      printf '[BLOCKER] command missing in Fedora 44 container: %s\n' "$command_name"
+      printf '[BLOCKER] command missing in Fedora 43 container: %s\n' "$command_name"
     fi
   done
 }
@@ -87,18 +87,18 @@ run_workstation_dry_run() {
   plan_output="$(bin/swaydora install --profile workstation --dry-run)"
   printf '%s\n' "$plan_output"
 
-  log_step 'Fedora 44 Install Blocker Summary'
+  log_step 'Fedora 43 Install Blocker Summary'
   print_install_blockers "$plan_output"
 }
 
 main() {
-  log_step 'Fedora 44 Target'
+  log_step 'Fedora 43 Target'
   if inside_container; then
     printf 'Container environment detected.\n'
   else
     printf 'Warning: container environment not detected; continuing target checks.\n'
   fi
-  require_fedora_44
+  require_fedora_43
 
   log_step 'Command Inventory'
   print_command_inventory

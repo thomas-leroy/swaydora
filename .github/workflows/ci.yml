@@ -8,7 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: fedora:44
+      image: fedora:43
     defaults:
       run:
         shell: bash

@@ -90,9 +90,13 @@ The Distrobox test checks Bash syntax, CLI basics, `doctor`, and the host-safe s
 
 Expected missing Sway or Wayland commands may produce warnings or accepted `doctor` failures. Exit codes `0`, `1`, and `2` from `doctor` are accepted by the validation script; unexpected syntax or CLI failures are not.
 
-### Fedora 44 Distrobox Target
+### Fedora 43 CI Target
 
-Use `tests/distrobox/fedora-44-sway/` to check Fedora 44 package and CLI blockers before VM or machine testing. See `tests/distrobox/fedora-44-sway/README.md` for the commands and limits.
+GitHub Actions runs the repository checks inside a Fedora 43 container. Fedora 43 is the supported target for the current refactor state.
+
+### Fedora 43 Distrobox Target
+
+Use `tests/distrobox/fedora-43-sway/` to check Fedora 43 package and CLI blockers before VM or machine testing. See `tests/distrobox/fedora-43-sway/README.md` for the commands and limits.
 
 ## 4. Session Validation
 
