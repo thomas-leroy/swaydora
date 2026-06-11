@@ -59,7 +59,7 @@ Swaydora uses SwayNotificationCenter as the primary notification daemon. `notifi
 - Network: `network_tui.sh` is a retained Waybar click target that launches `nm-connection-editor`.
 - Popup and manager helpers: `bluetooth_tui.sh`, `cpu_popup.sh`, `audio_mixer_popup.sh`
 
-`cpu_popup.sh` and `audio_mixer_popup.sh` use the shared Kitty `app_id` `swaydora-popup` with popup-specific titles. `popup_close_focused.sh` is bound to plain `Escape` in Sway and closes only the focused Swaydora popup terminal; it does not affect normal Kitty windows.
+`cpu_popup.sh` and `audio_mixer_popup.sh` use the shared Kitty `app_id` `swaydora-popup` with popup-specific titles. `audio_mixer_popup.sh` maps `Escape` inside its Kitty window so the audio mixer can close without a global Sway `Escape` binding.
 
 `audio_mixer_popup.sh` is the Waybar right-click action for both the output-volume and microphone widgets, and is bound to `Meta+s` from Sway. It opens `wiremix` in a floating Kitty window; left click remains reserved for mute actions.
 

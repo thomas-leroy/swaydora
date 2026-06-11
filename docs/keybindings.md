@@ -79,7 +79,7 @@ opens the command palette maintained in `dotfiles/sway/commands_palette.list`.
 
 | Shortcut | Action |
 | --- | --- |
-| `Meta` + `s` | Open audio mixer |
+| `Meta` + `s` | Open audio mixer (`Escape` closes it) |
 | `XF86AudioRaiseVolume` | Increase output volume by 5% |
 | `XF86AudioLowerVolume` | Decrease output volume by 5% |
 | `XF86AudioMute` | Toggle output mute |
