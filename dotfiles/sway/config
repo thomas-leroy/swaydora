@@ -89,7 +89,7 @@ bindsym $mod+space exec $menu
 bindsym $mod+Shift+space exec ~/.config/scripts/handy_launch.sh
 bindsym $mod+Shift+o exec ~/.config/scripts/obsidian_launch.sh
 bindsym $mod+Ctrl+s exec ~/.config/scripts/localsend_launch.sh
-bindsym $mod+e exec sh -lc 'if command -v nautilus >/dev/null 2>&1; then exec nautilus; fi; if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
+bindsym $mod+e exec sh -lc 'if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
 
 # Keybindings: command palette (maintained in ~/.config/sway/commands_palette.list).
 bindsym $mod+k exec ~/.config/scripts/commands_palette.sh
@@ -227,3 +227,23 @@ exec_always --no-startup-id udiskie --tray
 output DP-3 resolution 2560x1440@60Hz position 2560,0
 # Dell U2724D (droite) - Position 2560,0
 output HDMI-A-1 resolution 2560x1440@60Hz position 0,0
+
+
+# 1Password (Flatpak)
+assign [app_id="1password"] floating enable
+
+# LocalSend (Flatpak)
+assign [app_id="localsend"] floating enable
+
+# pCloud (AppImage)
+assign [class="^pcloud$"] floating enable
+assign [class="AppImageKit.*pcloud"] floating enable
+
+# Proton Bridge (GUI)
+assign [app_id="protonmail-bridge"] floating enable
+assign [class="^ProtonMail Bridge$"] floating enable
+
+# Décommentez seulement si vous voulez forcer le déplacement
+assign [app_id="1password"] workspace 9:Tools
+assign [app_id="localsend"] workspace 9:Tools
+assign [class="^pcloud$"] workspace 9:Tools

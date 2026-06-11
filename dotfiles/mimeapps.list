@@ -1,6 +1,7 @@
 [Added Associations]
-x-scheme-handler/http=io.gitlab.librewolf-community.desktop;librewolf.desktop;
-x-scheme-handler/https=io.gitlab.librewolf-community.desktop;librewolf.desktop;
+x-scheme-handler/http=org.mozilla.firefox.desktop;io.gitlab.librewolf-community.desktop;librewolf.desktop;
+x-scheme-handler/https=org.mozilla.firefox.desktop;io.gitlab.librewolf-community.desktop;librewolf.desktop;
+x-scheme-handler/chrome=org.mozilla.firefox.desktop;
 
 [Default Applications]
 application/ogg=io.github.celluloid_player.Celluloid.desktop;
@@ -33,7 +34,16 @@ video/x-matroska=io.github.celluloid_player.Celluloid.desktop;
 video/x-ms-asf=io.github.celluloid_player.Celluloid.desktop;
 video/x-msvideo=io.github.celluloid_player.Celluloid.desktop;
 video/x-ogm+ogg=io.github.celluloid_player.Celluloid.desktop;
-x-scheme-handler/http=io.gitlab.librewolf-community.desktop;
-x-scheme-handler/https=io.gitlab.librewolf-community.desktop;
+x-scheme-handler/http=org.mozilla.firefox.desktop
+x-scheme-handler/https=org.mozilla.firefox.desktop
 x-scheme-handler/insomnia=insomnia.desktop
 x-scheme-handler/slack=slack_slack.desktop
+x-scheme-handler/chrome=org.mozilla.firefox.desktop
+text/html=org.mozilla.firefox.desktop
+application/x-extension-htm=org.mozilla.firefox.desktop
+application/x-extension-html=org.mozilla.firefox.desktop
+application/x-extension-shtml=org.mozilla.firefox.desktop
+application/xhtml+xml=org.mozilla.firefox.desktop
+application/x-extension-xhtml=org.mozilla.firefox.desktop
+application/x-extension-xht=org.mozilla.firefox.desktop
+inode/directory=org.kde.dolphin.desktop
