@@ -47,3 +47,4 @@ application/xhtml+xml=org.mozilla.firefox.desktop
 application/x-extension-xhtml=org.mozilla.firefox.desktop
 application/x-extension-xht=org.mozilla.firefox.desktop
 inode/directory=org.kde.dolphin.desktop
+application/pdf=org.gnome.Evince.desktop

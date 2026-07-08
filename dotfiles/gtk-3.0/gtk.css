@@ -1,0 +1,20 @@
+@define-color ember_fg #F8EDDC;
+@define-color ember_bg #242835;
+@define-color ember_bg_deep #151722;
+
+menu,
+menuitem,
+.popup,
+.popover,
+.window.menu,
+.window.popup {
+  background-color: @ember_bg;
+  color: @ember_fg;
+}
+
+menuitem:hover,
+.menuitem:hover,
+.popup:hover,
+.popover:hover {
+  background-color: @ember_bg_deep;
+}
