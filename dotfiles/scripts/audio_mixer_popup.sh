@@ -33,4 +33,4 @@ if ! command -v wiremix >/dev/null 2>&1; then
   exit 127
 fi
 
-exec kitty --title "$TITLE" --class "$APP_ID" --override 'map=escape close_window' wiremix
+exec kitty --title "$TITLE" --class "$APP_ID" --override 'map=escape close_window' wiremix --tab output
