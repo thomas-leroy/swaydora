@@ -3,11 +3,6 @@ set -euo pipefail
 
 command -v gnome-keyring-daemon >/dev/null 2>&1 || exit 0
 
-# Avoid spawning duplicate daemons on config reload.
-if pgrep -u "$USER" -x gnome-keyring-daemon >/dev/null 2>&1; then
-  exit 0
-fi
-
 daemon_env="$(gnome-keyring-daemon --start --components=secrets,ssh 2>/dev/null || true)"
 [[ -n "$daemon_env" ]] || exit 0
 
