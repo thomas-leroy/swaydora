@@ -230,17 +230,6 @@ output DP-3 resolution 2560x1440@60Hz position 2560,0
 # Dell U2724D (droite) - Position 2560,0
 output HDMI-A-1 resolution 2560x1440@60Hz position 0,0
 
-# Map workspaces 1-10: even -> left (DP-3), odd -> right (HDMI-A-1)
-workspace number 1 output DP-3
-workspace number 2 output HDMI-A-1
-workspace number 3 output DP-3
-workspace number 4 output HDMI-A-1
-workspace number 5 output DP-3
-workspace number 6 output HDMI-A-1
-workspace number 7 output DP-3
-workspace number 8 output HDMI-A-1
-workspace number 9 output DP-3
-workspace number 10 output HDMI-A-1
 
 
 # Workspace 9 utility apps.
