@@ -22,6 +22,15 @@ input type:keyboard {
     xkb_numlock enabled
 }
 
+# Trackpad: scroll natural, tap-to-click, and acceleration.
+input type:touchpad {
+    natural_scroll enabled      # Inverser le scroll
+    tap enabled                 # Activer le tap-to-click
+    pointer_accel 0.5           # Vitesse du pointeur (0-1)
+    accel_profile flat          # ou "adaptive"
+    click_method clickpad       # ou "button_areas"
+}
+
 # Local machine overrides (untracked).
 include ~/.config/sway/local.conf&
 
