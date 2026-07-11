@@ -8,7 +8,7 @@ Refactor in progress. This document describes the legacy scripts and runtime hel
 - `10-packages.sh`: install packages with Fedora-aware fallbacks and developer bootstrap.
 - `20-services.sh`: enable/start required systemd services/timers.
 - `30-link-dotfiles.sh`: create a timestamped backup in `~/.backup_configs/`, then link dotfiles to `~/.config`.
-- `40-themes.sh`: apply minimal GTK/icon/cursor defaults.
+- `40-themes.sh`: apply minimal GTK/icon/cursor defaults, including GTK `settings.ini` and menu/popover `gtk.css` overrides.
 - `50-fonts.sh`: install JetBrains Mono Nerd Font.
 - `60-waybar-reload.sh`: install helper symlink for config reload.
 - `65-vscode-extensions.sh`: install VS Code extensions from `dotfiles/vscode/extensions.list`.
@@ -35,6 +35,7 @@ Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh
 - Power/session: `power_screen.sh`
 - Reload: `reload_env.sh`
 - Session/keyring: `portal_session_fix.sh`, `keyring_start.sh`
+- Network session: `nm_applet_start.sh`
 - Wallpaper: `wallpaper_start.sh`, `wallpaper_picker.sh`
 
 `wallpaper_picker.sh` and `wallpaper_start.sh` resolve all paths from `$HOME` and accept environment overrides:
@@ -56,7 +57,7 @@ Swaydora uses SwayNotificationCenter as the primary notification daemon. `notifi
 - Window management: `window_switcher.sh`, `close_all_windows.sh`
 - Popup close helper: `popup_close_focused.sh`
 - Screenshots: `screenshot_capture.sh`, `screenshot_active_window.sh`, `color_picker.sh`
-- Network: `network_tui.sh` is a retained Waybar click target that launches `nm-connection-editor`.
+- Network: `nm_applet_start.sh` starts `nm-applet --indicator` once per Sway session for tray-based Wi-Fi/VPN selection. `network_tui.sh` is a retained Waybar click target that launches `nm-connection-editor`.
 - Popup and manager helpers: `bluetooth_tui.sh`, `cpu_popup.sh`, `audio_mixer_popup.sh`
 
 `cpu_popup.sh` and `audio_mixer_popup.sh` use the shared Kitty `app_id` `swaydora-popup` with popup-specific titles. `audio_mixer_popup.sh` maps `Escape` inside its Kitty window so the audio mixer can close without a global Sway `Escape` binding.

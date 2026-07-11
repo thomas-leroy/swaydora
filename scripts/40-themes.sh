@@ -21,10 +21,141 @@ EOT
   WRITTEN_FILES+=("$target")
 }
 
+write_gtk_css() {
+  local target="$1"
+  mkdir -p "$(dirname "$target")"
+  cat > "$target" <<'EOT'
+@define-color ember_fg #F8EDDC;
+@define-color ember_bg #242835;
+@define-color ember_bg_deep #151722;
+@define-color ember_border #57345A;
+@define-color ember_shadow rgba(10, 10, 14, 0.42);
+@define-color ember_accent #A17AB5;
+@define-color ember_accent_strong #8AD9E9;
+
+menu,
+.context-menu,
+.background.menu,
+.window.menu,
+.window.popup,
+popover.background {
+  background-color: transparent;
+  color: @ember_fg;
+}
+
+menu,
+.context-menu,
+.background.menu,
+.window.menu,
+.window.popup {
+  background-image: none;
+  background-color: @ember_bg;
+  border: 1px solid alpha(@ember_border, 0.88);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px 0 @ember_shadow;
+  padding: 4px;
+}
+
+popover.background > contents,
+.popover.background > contents,
+.popover > contents {
+  background-image: none;
+  background-color: @ember_bg;
+  border: 1px solid alpha(@ember_border, 0.88);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px 0 @ember_shadow;
+  padding: 4px;
+}
+
+menuitem,
+modelbutton {
+  background-image: none;
+  background-color: transparent;
+  color: @ember_fg;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+menuitem label,
+modelbutton label,
+menuitem accelerator,
+modelbutton accelerator,
+modelbutton image,
+menuitem image {
+  color: @ember_fg;
+}
+
+menuitem:disabled,
+modelbutton:disabled,
+menuitem:disabled label,
+modelbutton:disabled label,
+menuitem:disabled accelerator,
+modelbutton:disabled accelerator,
+label.title,
+label.heading,
+label.dim-label,
+.title,
+.title label,
+.heading,
+.heading label,
+.dim-label,
+.dim-label label {
+  color: alpha(@ember_fg, 0.92);
+  font-weight: 700;
+}
+
+menuitem:hover,
+menuitem:focus,
+modelbutton:hover,
+modelbutton:focus {
+  background-image: none;
+  background-color: @ember_bg_deep;
+  color: @ember_fg;
+}
+
+separator,
+separator.horizontal {
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  margin: 0 8px;
+  background-color: alpha(@ember_border, 0.65);
+}
+
+check,
+radio {
+  color: @ember_fg;
+  background-image: none;
+  box-shadow: none;
+}
+
+check:checked,
+check:hover:checked,
+check:focus:checked,
+radio:checked,
+radio:hover:checked,
+radio:focus:checked {
+  color: @ember_accent_strong;
+  background-image: none;
+}
+
+check:hover,
+check:focus,
+radio:hover,
+radio:focus {
+  color: @ember_accent;
+}
+EOT
+  WRITTEN_FILES+=("$target")
+}
+
 main() {
   # Apply same GTK settings for both GTK3 and GTK4 apps.
   write_gtk_settings "$HOME/.config/gtk-3.0/settings.ini"
   write_gtk_settings "$HOME/.config/gtk-4.0/settings.ini"
+  write_gtk_css "$HOME/.config/gtk-3.0/gtk.css"
+  write_gtk_css "$HOME/.config/gtk-4.0/gtk.css"
 
   # Export minimal theme environment variables for session apps.
   mkdir -p "$HOME/.config/environment.d"

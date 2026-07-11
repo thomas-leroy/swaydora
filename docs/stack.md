@@ -124,7 +124,13 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### nm-connection-editor
 
 - Purpose: NetworkManager GUI for persistent Wi-Fi and connection profile editing.
-- Local setup: tracked as a desired modular package. Use it for persistent Wi-Fi profiles. `nmtui` may still be useful for temporary or debug connections if installed, but it is not the recommended persistence workflow.
+- Local setup: tracked as a desired modular package. Use it for persistent Wi-Fi profiles and advanced connection settings. The everyday tray workflow is provided separately by `network-manager-applet` when installed.
+- Docs: https://networkmanager.dev/
+
+### network-manager-applet
+
+- Purpose: NetworkManager tray applet for Wi-Fi scanning, SSID selection, password prompts, radio toggles, and VPN quick actions.
+- Local setup: tracked as a desired runtime package and started from Sway with `dotfiles/scripts/nm_applet_start.sh`, which runs `nm-applet --indicator` once per session and relies on the Waybar tray.
 - Docs: https://networkmanager.dev/
 
 ### v4l-utils

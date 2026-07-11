@@ -232,6 +232,7 @@ exec_always --no-startup-id swaync
 exec_always --no-startup-id sh -c 'command -v swayosd-server >/dev/null 2>&1 && { pkill -x swayosd-server >/dev/null 2>&1 || true; swayosd-server; }'
 exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
 exec_always --no-startup-id sh -c 'pkill -x waybar || true; waybar'
+exec_always --no-startup-id ~/.config/scripts/nm_applet_start.sh
 exec_always --no-startup-id udiskie --tray
 
 # Dell U2719D (gauche) - Position 0,0
