@@ -28,7 +28,7 @@ input type:touchpad {
     tap enabled                 # Activer le tap-to-click
     pointer_accel 0.5           # Vitesse du pointeur (0-1)
     accel_profile flat          # ou "adaptive"
-    click_method clickpad       # ou "button_areas"
+    click_method button_areas       # ou "button_areas"
 }
 
 # Local machine overrides (untracked).
