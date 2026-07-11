@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-if [[ -x /usr/share/code/code ]]; then
-  exec /usr/share/code/code --password-store=gnome-libsecret "$@"
-fi
+set -euo pipefail
 
 if [[ -x /usr/bin/code ]]; then
   exec /usr/bin/code --password-store=gnome-libsecret "$@"
+fi
+
+if [[ -x /usr/share/code/code ]]; then
+  exec /usr/share/code/code --password-store=gnome-libsecret "$@"
 fi
 
 printf '[vscode] Visual Studio Code binary not found\n' >&2
