@@ -63,4 +63,9 @@ Swaydora uses SwayNotificationCenter as the primary notification daemon. `notifi
 
 `audio_mixer_popup.sh` is the Waybar right-click action for both the output-volume and microphone widgets, and is bound to `Meta+s` from Sway. It opens `wiremix` in a floating Kitty window; left click remains reserved for mute actions.
 
+`audio_status.sh` displays the default output after the volume. Focusrite sink
+properties containing `Line 1-2` or `Line 3-4` use dedicated Nerd Font icons
+and keep the full output name in the tooltip; other devices use the generic
+`Output` label.
+
 `bluetooth_tui.sh` keeps its existing filename because Waybar already targets it, but it now launches the Fedora-packaged Blueman manager with `blueman-manager`. The helper focuses an existing Blueman window when possible and sends a notification if the package is missing.
