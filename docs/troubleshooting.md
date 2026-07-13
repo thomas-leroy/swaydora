@@ -18,6 +18,21 @@ Install it via the modular packages module or directly:
 sudo dnf install -y fuzzel
 ```
 
+## Fuzzel crashes when opening the app launcher
+
+If the application launcher crashes immediately after opening, and the coredump
+stack points into icon rendering helpers such as `render_svg`,
+`libnanosvgrast`, or `png_load`, the crash is likely happening while `fuzzel`
+renders desktop-entry icons.
+
+Swaydora works around this in `app_launcher.sh` with a temporary XDG data
+overlay. The launcher keeps icons enabled, but masks a small set of hidden
+`.desktop` entries whose direct SVG icon paths are known crash candidates.
+
+If the crash comes back after installing another application, the next step is
+to identify the new `.desktop` entry or icon file that `fuzzel` is trying to
+render and add a narrower override.
+
 Then retry the keybinding or Waybar action.
 
 ## Window switcher does nothing / "wofi not found" notification
