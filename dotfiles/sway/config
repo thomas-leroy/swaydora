@@ -172,6 +172,9 @@ bindsym $mod+Tab workspace next
 bindsym $mod+Shift+Tab workspace prev
 bindsym $mod+Ctrl+Right workspace next
 bindsym $mod+Ctrl+Left workspace prev
+# Touchpad gestures: four-finger swipes cycle workspaces.
+bindgesture swipe:4:right workspace prev
+bindgesture swipe:4:left workspace next
 
 # Keybindings: lock session.
 # If swaylock-effects is installed, adjust lock visuals in local.conf.

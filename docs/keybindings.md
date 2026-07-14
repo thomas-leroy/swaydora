@@ -44,6 +44,7 @@ opens the command palette maintained in `dotfiles/sway/commands_palette.list`.
 | `Meta` + `Shift` + `KP_1..KP_9` | Move focused window to numpad workspace `1..9` and follow it |
 | `Meta` + `Tab` / `Meta` + `Shift` + `Tab` | Switch to next / previous workspace |
 | `Meta` + `Ctrl` + `Right` / `Meta` + `Ctrl` + `Left` | Switch to next / previous workspace |
+| Swipe `4` fingers left / right on the touchpad | Switch to next / previous workspace |
 
 Workspace `9` is also used for utility app windows. LocalSend, Handy, pCloud, and Proton Bridge are forced there as floating windows by Sway `app_id` rules.
 
