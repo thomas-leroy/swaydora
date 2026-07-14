@@ -74,6 +74,12 @@ pretty_key_name() {
     XF86AudioMute)
       printf 'Mute'
       ;;
+    XF86MonBrightnessUp)
+      printf 'Bri+'
+      ;;
+    XF86MonBrightnessDown)
+      printf 'Bri-'
+      ;;
     *)
       printf '%s' "$1"
       ;;

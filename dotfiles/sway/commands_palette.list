@@ -62,3 +62,5 @@ Meta+s|Open audio mixer|~/.config/scripts/audio_mixer_popup.sh
 XF86AudioRaiseVolume|Increase output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 XF86AudioLowerVolume|Decrease output volume by 5%|wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 XF86AudioMute|Toggle output mute|wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+XF86MonBrightnessUp|Increase screen brightness by 10%|~/.config/scripts/brightness_up.sh
+XF86MonBrightnessDown|Decrease screen brightness by 10%|~/.config/scripts/brightness_down.sh

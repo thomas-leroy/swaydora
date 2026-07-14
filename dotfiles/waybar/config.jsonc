@@ -10,6 +10,7 @@
     "group/expand",
     "custom/updates",
     "custom/cam",
+    "custom/brightness",
     "custom/mic",
     "custom/audio",
     "network",
@@ -104,6 +105,14 @@
     "on-click-right": "~/.config/scripts/audio_mixer_popup.sh",
     "on-scroll-up": "~/.config/scripts/audio_sink_volume_up.sh",
     "on-scroll-down": "~/.config/scripts/audio_sink_volume_down.sh",
+    "return-type": "json"
+  },
+
+  "custom/brightness": {
+    "exec": "~/.config/scripts/brightness_status.sh",
+    "interval": 2,
+    "on-scroll-up": "~/.config/scripts/brightness_up.sh",
+    "on-scroll-down": "~/.config/scripts/brightness_down.sh",
     "return-type": "json"
   },
 

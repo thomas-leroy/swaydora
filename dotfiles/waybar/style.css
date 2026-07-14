@@ -116,6 +116,7 @@ tooltip * {
 #custom-disks,
 #custom-updates,
 #custom-cam,
+#custom-brightness,
 #custom-mic,
 #custom-audio,
 #network,
@@ -260,6 +261,7 @@ tooltip * {
 #custom-disks:hover,
 #custom-updates:hover,
 #custom-cam:hover,
+#custom-brightness:hover,
 #custom-mic:hover,
 #custom-audio:hover,
 #network:hover,
@@ -274,8 +276,16 @@ tooltip * {
 }
 
 #custom-updates.warn,
+#custom-brightness.warn,
 #custom-mic.warn {
   color: @warn;
+}
+
+#custom-brightness,
+#custom-brightness.low,
+#custom-brightness.medium,
+#custom-brightness.high {
+  color: @ember_gold;
 }
 
 #custom-layout.us {

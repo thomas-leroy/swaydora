@@ -85,5 +85,5 @@ Workspace `9` is also used for utility app windows. LocalSend, Handy, pCloud, an
 | `XF86AudioRaiseVolume` | Increase output volume by 5% |
 | `XF86AudioLowerVolume` | Decrease output volume by 5% |
 | `XF86AudioMute` | Toggle output mute |
-| `Alt` + `XF86AudioRaiseVolume` | Increase screen brightness by 10% |
-| `Alt` + `XF86AudioLowerVolume` | Decrease screen brightness by 10% |
+| `XF86MonBrightnessUp` | Increase screen brightness by 10% |
+| `XF86MonBrightnessDown` | Decrease screen brightness by 10% |
