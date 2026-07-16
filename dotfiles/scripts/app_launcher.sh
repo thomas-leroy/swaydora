@@ -8,23 +8,29 @@ set -euo pipefail
 backend="${APP_LAUNCHER_BACKEND:-auto}"
 
 create_fuzzel_data_overlay() {
-  local base_data_home overlay_dir applications_dir local_applications_dir tmp_root
+  local base_data_home overlay_dir applications_dir tmp_root
+  local source_dir application_path
   local desktop_id
 
   base_data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
   tmp_root="${TMPDIR:-/tmp}"
   overlay_dir="$(mktemp -d "$tmp_root/fuzzel-data-home.XXXXXX")"
   applications_dir="$overlay_dir/applications"
-  local_applications_dir="$base_data_home/applications"
 
   mkdir -p "$applications_dir"
 
-  if [[ -d "$local_applications_dir" ]]; then
-    local application_path
+  # Preserve user desktop entries and user-scoped Flatpak exports while hiding
+  # only the known crashy entries below. Overriding XDG_DATA_HOME without
+  # copying Flatpak exports makes user Flatpak apps disappear from drun.
+  for source_dir in \
+    "$base_data_home/applications" \
+    "$base_data_home/flatpak/exports/share/applications"
+  do
+    [[ -d "$source_dir" ]] || continue
     while IFS= read -r application_path; do
-      ln -s "$application_path" "$applications_dir/$(basename "$application_path")"
-    done < <(find "$local_applications_dir" -maxdepth 1 -type f -name '*.desktop' | sort)
-  fi
+      ln -sfn "$application_path" "$applications_dir/$(basename "$application_path")"
+    done < <(find "$source_dir" -maxdepth 1 -type f -name '*.desktop' | sort)
+  done
 
   # Mask a few hidden desktop entries that reference out-of-theme SVG icons and
   # have been seen to crash fuzzel's icon rasterizer during drun indexing.
@@ -43,15 +49,38 @@ EOF
   printf '%s\n' "$overlay_dir"
 }
 
+create_fuzzel_launch_wrapper() {
+  local overlay_dir="$1"
+  local base_data_home="$2"
+  local original_xdg_data_dirs="$3"
+  local wrapper_path="$overlay_dir/launch-clean-env.sh"
+
+  cat > "$wrapper_path" <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+
+export XDG_DATA_HOME="$base_data_home"
+export XDG_DATA_DIRS="$original_xdg_data_dirs"
+exec "\$@"
+EOF
+
+  chmod +x "$wrapper_path"
+  printf '%s\n' "$wrapper_path"
+}
+
 run_fuzzel() {
-  local overlay_dir
+  local overlay_dir base_data_home original_xdg_data_dirs launch_wrapper
 
   command -v fuzzel >/dev/null 2>&1 || return 1
   pgrep -x fuzzel >/dev/null 2>&1 && exit 0
 
+  base_data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+  original_xdg_data_dirs="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
   overlay_dir="$(create_fuzzel_data_overlay)"
+  launch_wrapper="$(create_fuzzel_launch_wrapper "$overlay_dir" "$base_data_home" "$original_xdg_data_dirs")"
   export XDG_DATA_HOME="$overlay_dir"
-  exec fuzzel
+  export XDG_DATA_DIRS="${base_data_home}/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+  exec fuzzel --launch-prefix="$launch_wrapper"
 }
 
 run_wofi() {

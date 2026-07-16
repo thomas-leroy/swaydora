@@ -2,6 +2,7 @@
 x-scheme-handler/http=org.mozilla.firefox.desktop;io.gitlab.librewolf-community.desktop;librewolf.desktop;
 x-scheme-handler/https=org.mozilla.firefox.desktop;io.gitlab.librewolf-community.desktop;librewolf.desktop;
 x-scheme-handler/chrome=org.mozilla.firefox.desktop;
+x-scheme-handler/slack=com.slack.Slack.desktop;
 
 [Default Applications]
 application/ogg=io.github.celluloid_player.Celluloid.desktop;
@@ -37,7 +38,7 @@ video/x-ogm+ogg=io.github.celluloid_player.Celluloid.desktop;
 x-scheme-handler/http=org.mozilla.firefox.desktop
 x-scheme-handler/https=org.mozilla.firefox.desktop
 x-scheme-handler/insomnia=insomnia.desktop
-x-scheme-handler/slack=slack_slack.desktop
+x-scheme-handler/slack=com.slack.Slack.desktop
 x-scheme-handler/chrome=org.mozilla.firefox.desktop
 text/html=org.mozilla.firefox.desktop
 application/x-extension-htm=org.mozilla.firefox.desktop
