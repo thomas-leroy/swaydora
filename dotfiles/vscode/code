@@ -3,11 +3,11 @@
 set -euo pipefail
 
 if [[ -x /usr/bin/code ]]; then
-  exec /usr/bin/code --password-store=gnome-libsecret "$@"
+  exec /usr/bin/code --password-store=basic "$@"
 fi
 
 if [[ -x /usr/share/code/code ]]; then
-  exec /usr/share/code/code --password-store=gnome-libsecret "$@"
+  exec /usr/share/code/code --password-store=basic "$@"
 fi
 
 printf '[vscode] Visual Studio Code binary not found\n' >&2
