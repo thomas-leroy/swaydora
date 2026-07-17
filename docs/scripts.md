@@ -70,4 +70,8 @@ properties containing `Line 1-2` or `Line 3-4` use dedicated Nerd Font icons
 and keep the full output name in the tooltip; other devices use the generic
 `Output` label.
 
+Brightness helpers only use real `brightnessctl` backlight devices. If no
+backlight device exists, the Waybar brightness module hides itself and the
+adjustment helpers exit quietly.
+
 `bluetooth_tui.sh` keeps its existing filename because Waybar already targets it, but it now launches the Fedora-packaged Blueman manager with `blueman-manager`. The helper focuses an existing Blueman window when possible and sends a notification if the package is missing.

@@ -183,6 +183,23 @@ If `systemsettings` or `kscreen` is missing, install or apply the desired workst
 
 This is not a Plasma desktop migration. Swaydora does not add `plasma-shell`, `kwin`, or a separate session manager for display handling.
 
+## Brightness widget changes LEDs or shows no desktop brightness
+
+On desktops, `brightnessctl` may expose LED devices even when no display
+backlight exists. Swaydora ignores those devices, so the Waybar widget hides
+itself instead of changing keyboard or NIC LEDs.
+
+Check what `brightnessctl` really sees:
+
+```bash
+brightnessctl -l
+brightnessctl --class=backlight -m
+```
+
+If `brightnessctl --class=backlight -m` returns nothing, the current Swaydora
+runtime treats the system as not brightness-compatible and hides the Waybar
+module.
+
 ## XDG portal fails with a graphical-session dependency
 
 Symptoms:

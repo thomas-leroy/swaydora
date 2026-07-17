@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Return warning JSON when brightnessctl is unavailable.
+# Hide the Waybar module when no real backlight device exists.
 if ! command -v brightnessctl >/dev/null 2>&1; then
-  printf '{"text":"󰃞 ?","class":"warn","tooltip":"brightnessctl not found"}\n'
+  printf '{"text":"","class":"hidden","tooltip":""}\n'
   exit 0
 fi
 
-line="$(brightnessctl -m 2>/dev/null | head -n 1 || true)"
+line="$(brightnessctl --class=backlight -m 2>/dev/null | head -n 1 || true)"
 if [[ -z "$line" ]]; then
-  printf '{"text":"󰃞 ?","class":"warn","tooltip":"No backlight device"}\n'
+  printf '{"text":"","class":"hidden","tooltip":""}\n'
   exit 0
 fi
 
@@ -17,7 +17,7 @@ percent_field="$(awk -F',' 'NR==1 {print $4}' <<<"$line")"
 percent="${percent_field%\%}"
 
 if [[ ! "$percent" =~ ^[0-9]+$ ]]; then
-  printf '{"text":"󰃞 ?","class":"warn","tooltip":"Brightness unavailable"}\n'
+  printf '{"text":"","class":"hidden","tooltip":""}\n'
   exit 0
 fi
 
