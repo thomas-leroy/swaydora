@@ -5,7 +5,7 @@ Swaydora is mid-refactor. The architecture is transitional and intentionally inc
 Legacy setup scripts and the new modular CLI currently coexist:
 
 - Legacy setup scripts in `scripts/`, which still own the complete installer behavior.
-- The new CLI in `bin/swaydora`, which currently wires safe bootstrap behavior, package inventory planning, and dotfile linking with backups.
+- The new CLI in `bin/swaydora`, which currently wires safe bootstrap behavior, package inventory planning and DNF-only apply, managed dotfile linking with backups, and dotfiles-only rollback.
 - Runtime dotfile helpers in `dotfiles/scripts/`, used by Sway, Waybar, launchers, screenshots, audio controls, and desktop utilities.
 
 The new architecture is being introduced without changing legacy runtime behavior:
@@ -25,8 +25,8 @@ lib/
 
 modules/
   bootstrap/            # Safe environment checks and user directory creation
-  packages/             # Read-only package inventory and planning
-  dotfiles/
+  packages/             # Package inventory, COPR preflight, and DNF-only apply
+  dotfiles/             # Managed dotfile symlinks, backups, and rollback
 
 profiles/
   minimal/
@@ -37,6 +37,7 @@ scripts/
 ```
 
 Planned module domains such as services, themes, fonts, shell, and wallpapers do not exist yet in the modular CLI.
+Future module directories are not kept as empty placeholders; add them when the module has real files and behavior.
 
 The `bootstrap` module is the first migrated module. It owns only safe behavior from `scripts/00-bootstrap.sh`: read-only environment checks and creation of three user-owned directories.
 
@@ -136,7 +137,7 @@ The workstation profile enables `bootstrap`, `packages`, and `dotfiles`. Its dry
 
 `update` still returns exit code `2` with a clear "not implemented yet" message.
 
-The remaining placeholders exist so the command surface can stabilize before package, service, shell, group, and wallpaper behavior is migrated.
+The remaining command placeholders exist so the command surface can stabilize before package, service, shell, group, and wallpaper behavior is migrated.
 
 ## Safety
 

@@ -253,13 +253,26 @@ Completed:
 
 This was a runtime configuration boundary cleanup. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, package installation, services, shell behavior, or legacy setup scripts.
 
+## Step 20 Status
+
+Completed:
+
+- Removed empty `.gitkeep` placeholders for future module directories that have no implemented behavior yet.
+- Removed redundant `.gitkeep` files from populated module and profile directories.
+- Removed empty path placeholders for `scripts/legacy/` and `dotfiles/sway/wallpapers/`.
+- Updated architecture and cleanup documentation to clarify that future directories should be added when they contain real files.
+
+This was a repository noise cleanup. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, runtime helpers, package installation, services, shell behavior, or legacy setup scripts.
+
 ## Legacy Scripts
 
-The target legacy location is:
+The target legacy location remains:
 
 ```text
 scripts/legacy/
 ```
+
+This path is not tracked as an empty directory. Add it when compatibility wrappers or migrated legacy files are ready.
 
 No existing setup scripts were moved in this step. Moving them now would change behavior because most top-level setup scripts rely on paths derived from their current location:
 
@@ -325,6 +338,7 @@ Completed:
 - Documentation synchronization for the current modular CLI boundary.
 - Archival of the historical legacy script-surface audit.
 - Separation of primary-workstation Sway overrides from the shared base config.
+- Removal of empty placeholder directories and redundant `.gitkeep` files.
 
 In progress:
 

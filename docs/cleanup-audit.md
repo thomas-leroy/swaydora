@@ -64,6 +64,12 @@ Seven `dotfiles/scripts/` helpers were confirmed unreferenced in `dotfiles/sway/
 
 - `docs/archive/audit.md`: historical legacy script-surface audit. It was moved out of current documentation because it overlaps with this cleanup audit, the migration matrix, and runtime ownership docs, and some entries describe stale legacy state.
 
+### Removed in placeholder cleanup
+
+- Empty future module placeholders under `modules/desktop`, `modules/fonts`, `modules/services`, `modules/shell`, and `modules/wallpapers` were removed. Future module directories should be added only with real module files.
+- Redundant `.gitkeep` files were removed from already-populated module and profile directories.
+- Empty target placeholders such as `scripts/legacy/.gitkeep` and `dotfiles/sway/wallpapers/.gitkeep` were removed. Planned paths can stay documented without being tracked as empty directories.
+
 ## Transitional Files
 
 - `profiles/*/profile.conf`: Bash declarations are acceptable during migration. Keep simple until more modules exist.
