@@ -66,7 +66,7 @@
 
 * {
   font-family: "JetBrainsMono Nerd Font", "JetBrainsMono Nerd Font Mono", "Symbols Nerd Font", monospace;
-  font-size: 11px;
+  font-size: 12px;
   font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
   min-height: 24px;
   padding: 0px 5px 0px 5px;
@@ -97,7 +97,7 @@ tooltip * {
 #custom-logo {
   background-color: @bg_alt;
   font-family: "JetBrainsMono Nerd Font Propo";
-  font-size: 12px;
+  font-size: 13px;
   color: @ember_ocean;
   padding: 0px 8px;
 }

@@ -61,6 +61,7 @@
       "LocalSend": "\udb81\udf1b",
       "pCloud Drive": "\uf0c2",
       "pcloud": "\uf0c2",
+      "Obsidian": "\uf044",
       "Proton Mail Bridge": "\udb81\ude18",
       "ch\\.proton\\.bridge-gui": "\udb81\ude18",
       "Handy": "\udb82\ude4f",
@@ -218,7 +219,7 @@
     "format": "{icon}",
     "tooltip": true,
     "icon-size": 12,
-    "spacing": 0
+    "spacing": 8
   },
 
   "group/expand": {
