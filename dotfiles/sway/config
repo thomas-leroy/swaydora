@@ -95,10 +95,10 @@ bindsym $mod+Shift+Return exec ~/.config/scripts/browser_launch.sh
 
 # Keybindings: launcher.
 bindsym $mod+space exec $menu
-bindsym $mod+Shift+space exec ~/.config/scripts/handy_launch.sh
+bindsym $mod+Shift+space exec ~/.config/scripts/launch_on_workspace.sh "$ws9" '^handy$' handy
 bindsym Mod4+semicolon exec pkill -USR2 -x handy
 bindsym $mod+Shift+o exec ~/.config/scripts/obsidian_launch.sh
-bindsym $mod+Ctrl+s exec ~/.config/scripts/localsend_launch.sh
+bindsym $mod+Ctrl+s exec ~/.config/scripts/launch_on_workspace.sh "$ws9" '^localsend$' gtk-launch org.localsend.localsend_app
 bindsym $mod+e exec sh -lc 'if command -v dolphin >/dev/null 2>&1; then exec dolphin; fi; if command -v thunar >/dev/null 2>&1; then exec thunar; fi; if command -v nemo >/dev/null 2>&1; then exec nemo; fi; if command -v pcmanfm >/dev/null 2>&1; then exec pcmanfm; fi; notify-send "File Manager" "No supported file manager found (nautilus/dolphin/thunar/nemo/pcmanfm)"'
 
 # Keybindings: command palette (maintained in ~/.config/sway/commands_palette.list).
@@ -123,6 +123,9 @@ bindsym $mod+Shift+Right move right
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Down move down
 
+# Named utility workspace.
+set $ws9 9:
+
 # Keybindings: workspace switch with AZERTY number row.
 bindsym $mod+ampersand workspace number 1
 bindsym $mod+eacute workspace number 2
@@ -132,7 +135,7 @@ bindsym $mod+parenleft workspace number 5
 bindsym $mod+minus workspace number 6
 bindsym $mod+egrave workspace number 7
 bindsym $mod+underscore workspace number 8
-bindsym $mod+ccedilla workspace number 9
+bindsym $mod+ccedilla workspace $ws9
 
 # Keybindings: move focused window to AZERTY number row workspace.
 bindsym $mod+Shift+ampersand move container to workspace number 1; workspace number 1
@@ -143,7 +146,7 @@ bindsym $mod+Shift+parenleft move container to workspace number 5; workspace num
 bindsym $mod+Shift+minus move container to workspace number 6; workspace number 6
 bindsym $mod+Shift+egrave move container to workspace number 7; workspace number 7
 bindsym $mod+Shift+underscore move container to workspace number 8; workspace number 8
-bindsym $mod+Shift+ccedilla move container to workspace number 9; workspace number 9
+bindsym $mod+Shift+ccedilla move container to workspace $ws9; workspace $ws9
 
 # Keybindings: workspace switch with numeric keypad.
 bindsym $mod+KP_1 workspace number 1
@@ -154,7 +157,7 @@ bindsym $mod+KP_5 workspace number 5
 bindsym $mod+KP_6 workspace number 6
 bindsym $mod+KP_7 workspace number 7
 bindsym $mod+KP_8 workspace number 8
-bindsym $mod+KP_9 workspace number 9
+bindsym $mod+KP_9 workspace $ws9
 
 # Keybindings: move focused window to keypad workspace.
 bindsym $mod+Shift+KP_1 move container to workspace number 1; workspace number 1
@@ -165,7 +168,7 @@ bindsym $mod+Shift+KP_5 move container to workspace number 5; workspace number 5
 bindsym $mod+Shift+KP_6 move container to workspace number 6; workspace number 6
 bindsym $mod+Shift+KP_7 move container to workspace number 7; workspace number 7
 bindsym $mod+Shift+KP_8 move container to workspace number 8; workspace number 8
-bindsym $mod+Shift+KP_9 move container to workspace number 9; workspace number 9
+bindsym $mod+Shift+KP_9 move container to workspace $ws9; workspace $ws9
 
 # Keybindings: cycle workspaces.
 bindsym $mod+Tab workspace next
@@ -239,6 +242,10 @@ exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
 exec_always --no-startup-id sh -c 'pkill -x waybar || true; waybar'
 exec_always --no-startup-id ~/.config/scripts/nm_applet_start.sh
 exec_always --no-startup-id udiskie --tray
+exec --no-startup-id ~/.config/scripts/launch_on_workspace.sh "$ws9" '^handy$' handy
+exec --no-startup-id ~/.config/scripts/launch_on_workspace.sh "$ws9" '^ch\.proton\.bridge-gui$' gtk-launch ch.protonmail.protonmail-bridge
+exec --no-startup-id ~/.config/scripts/launch_on_workspace.sh "$ws9" '^pcloud$' gtk-launch appimagekit-pcloud
+exec --no-startup-id ~/.config/scripts/launch_on_workspace.sh "$ws9" '^localsend$' gtk-launch org.localsend.localsend_app
 
 # Dell U2719D (gauche) - Position 0,0
 output DP-3 resolution 2560x1440@60Hz position 2560,0
@@ -248,7 +255,11 @@ output HDMI-A-1 resolution 2560x1440@60Hz position 0,0
 
 
 # Workspace 9 utility apps.
-for_window [app_id="^localsend$"] move to workspace number 9, floating enable, resize set 400 547, move position 22 57
-for_window [app_id="^pcloud$"] move to workspace number 9, floating enable, resize set 969 650, move position 1564 54
-for_window [app_id="^handy$"] move to workspace number 9, floating enable, resize set 960 665, move position 1567 728
-for_window [app_id="^ch\.proton\.bridge-gui$"] move to workspace number 9, floating enable, resize set 1084 654, move position 453 57
+assign [app_id="^handy$"] 9:
+assign [app_id="^ch\.proton\.bridge-gui$"] 9:
+assign [app_id="^localsend$"] 9:
+assign [app_id="^pcloud$"] 9:
+for_window [app_id="^handy$"] move container to workspace 9:, floating enable, resize set 960 665, move position 23 730
+for_window [app_id="^ch\.proton\.bridge-gui$"] move container to workspace 9:, floating enable, resize set 1084 663, move position 449 54
+for_window [app_id="^localsend$"] move container to workspace 9:, floating enable, resize set 408 658, move position 20 56
+for_window [app_id="^pcloud$"] move container to workspace 9:, floating enable, resize set 804 664, move position 998 729
