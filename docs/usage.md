@@ -303,7 +303,9 @@ It prints "not implemented yet" and exits with code `2`.
 
 ## Legacy Setup
 
-The full setup path still uses scripts in `scripts/`. Review those scripts and use a VM or staging environment before running them. The new CLI is not a complete installer yet.
+The recommended staging path is the modular workstation install. Legacy scripts in `scripts/` remain available only for setup domains that are not migrated yet, such as services, themes, fonts, wallpapers, AppImages, direct RPM URLs, npm global installs, groups, shell startup mutation, and broader optional package behavior.
+
+Review any legacy script before running it, and use a VM or staging environment when testing behavior beyond the modular CLI.
 
 See [migration-matrix.md](migration-matrix.md) for legacy script migration status.
 See [future-install-modes.md](future-install-modes.md) for the current symlink constraint and possible future install models.

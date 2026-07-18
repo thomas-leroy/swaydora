@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Refactor in progress. Some issues still belong to legacy scripts, while the new CLI currently wires only safe bootstrap behavior. Check `docs/usage.md` before assuming a command is implemented.
+Refactor in progress. Some issues still belong to legacy scripts, while the modular CLI currently wires bootstrap checks, known required COPR enablement, DNF-only package apply, managed dotfile symlinks with backups, and dotfiles-only rollback. Check `docs/usage.md` before assuming a command is implemented.
 
 ## Menus do nothing / "fuzzel not found" notification
 

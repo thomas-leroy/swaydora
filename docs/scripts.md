@@ -1,6 +1,6 @@
 # Scripts Reference
 
-Refactor in progress. This document describes the legacy scripts and runtime helpers. The new CLI in `bin/swaydora` exists alongside these scripts, but it currently wires only safe bootstrap behavior. Full setup behavior remains legacy-script-only during migration.
+Refactor in progress. This document describes the legacy scripts and runtime helpers. The new CLI in `bin/swaydora` exists alongside these scripts and currently wires safe bootstrap checks, known required COPR enablement, DNF-only package apply, managed dotfile symlinks with backups, and dotfiles-only rollback. Broader service, theme, font, shell, group, wallpaper, Flatpak, AppImage, archive, RPM URL, and npm behavior remains legacy-only or manual during migration.
 
 ## Setup scripts (`scripts/`)
 
@@ -15,7 +15,6 @@ Refactor in progress. This document describes the legacy scripts and runtime hel
 - `66-vscode-preferences.sh`: install VS Code launcher/wrapper preferences from `dotfiles/vscode/`.
 - `70-oh-my-zsh.sh`: standalone oh-my-zsh setup helper using a direct Git clone
 - `80-wallpapers-sync.sh`: sync wallpapers from `dharmx/walls` into `~/.local/share/wallpapers/Wallpapers` (exported without `.git`; sparse `abstract` by default).
-- `99-diagnose-ohmyzsh.sh`: diagnostics for shell/oh-my-zsh state.
 
 `scripts/10-packages.sh` supports `DRY_RUN=1` to print planned package installs, downloads, repository changes, and group updates without applying them.
 `scripts/00-bootstrap.sh` reports Fedora version, disk/RAM thresholds, and critical command availability as informational warnings before the rest of the setup runs. The documented support target is Fedora 43; Fedora 44 is not currently supported because package and desktop component availability is not coherent enough for this setup.

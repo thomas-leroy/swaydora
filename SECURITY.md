@@ -1,6 +1,6 @@
 # Security Policy
 
-Refactor in progress. Legacy setup scripts and the new modular CLI currently coexist. Only safe bootstrap behavior is wired into `bin/swaydora`; full setup behavior remains legacy-script-only during migration.
+Refactor in progress. Legacy setup scripts and the new modular CLI currently coexist. The modular CLI currently wires safe bootstrap checks, known required COPR enablement, DNF-only package apply, managed dotfile symlinks with backups, and dotfiles-only rollback. Full legacy setup behavior remains available only through reviewed legacy scripts during migration.
 
 ## Project Scope
 
@@ -12,15 +12,15 @@ I do not recommend running the full setup on a machine you already use daily. If
 
 ## Supported Environment
 
-The full setup is intended for:
+The current modular setup is intended for:
 
-- Fedora 43 or newer
+- Fedora 43
 - A fresh machine or staging VM
 - More than 8 GiB of available disk space
 - More than 4 GiB of available RAM
 - Standard Fedora tooling such as `dnf`, `curl`, `tar`, and `gzip`
 
-Other distributions, older Fedora versions, and heavily customized machines are not considered supported unless explicitly documented.
+Fedora 44 is not currently supported because package and desktop component availability is not coherent enough for this setup. Other distributions, older Fedora versions, newer Fedora versions, and heavily customized machines are not considered supported unless explicitly documented.
 
 ## Before Running Setup Scripts
 
@@ -28,13 +28,13 @@ Please review scripts before execution, especially those that install packages, 
 
 Recommended safety steps:
 
-- Run `DRY_RUN=1 scripts/10-packages.sh` before package installation.
+- Run `bin/swaydora install --profile workstation --dry-run` before modular installation.
 - Test the full setup in a VM first.
-- Snapshot the VM before running setup scripts.
+- Snapshot the VM before running setup commands.
 - Keep backups of any existing local configuration.
 - Prefer a fresh Fedora install over migrating a daily-use machine.
 
-`scripts/30-link-dotfiles.sh` creates timestamped backups under `~/.backup_configs/` before linking managed dotfiles.
+The modular dotfiles apply path creates timestamped backup batches under `~/.local/share/swaydora/backups/` before replacing managed dotfile targets. The legacy `scripts/30-link-dotfiles.sh` helper has its own older backup location under `~/.backup_configs/`.
 
 ## External Downloads
 

@@ -1,6 +1,6 @@
 # Testing
 
-Swaydora is mid-refactor. Tests must account for the transitional architecture: legacy scripts and the new CLI coexist, and only safe bootstrap, backed-up dotfile apply, and dotfiles-only rollback are wired into `bin/swaydora`.
+Swaydora is mid-refactor. Tests must account for the transitional architecture: legacy scripts and the new CLI coexist. The modular CLI currently wires safe bootstrap apply behavior, known required COPR enablement, DNF-only package apply, backed-up dotfile apply, and dotfiles-only rollback.
 
 Swaydora uses a strict validation sequence before accepting a milestone:
 

@@ -220,6 +220,17 @@ Completed:
 
 This milestone adds validation coverage only. It does not install packages, enable COPRs, repair the host, manage services, start a Sway session, validate Waybar or portal runtime behavior, or replace VM/session validation.
 
+## Step 17 Status
+
+Completed:
+
+- Synchronized stale documentation that still described the modular CLI as bootstrap-only.
+- Updated security, scripts, usage, testing, troubleshooting, and VM workflow documentation to match the current modular CLI boundary.
+- Removed a reference to absent script `scripts/99-diagnose-ohmyzsh.sh` from the scripts reference.
+- Reframed the VM workflow around the modular workstation path first, with reviewed legacy helpers only for behavior not yet migrated.
+
+This was a documentation-only cleanup milestone. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, legacy scripts, runtime helpers, tests, or install behavior.
+
 ## Legacy Scripts
 
 The target legacy location is:
@@ -289,6 +300,7 @@ Completed:
 - Smoke and Distrobox validation workflows.
 - Migration matrix and cleanup audit documentation.
 - Symlink constraint and future install mode documentation.
+- Documentation synchronization for the current modular CLI boundary.
 
 In progress:
 

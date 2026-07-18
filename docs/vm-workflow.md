@@ -1,6 +1,6 @@
 # VM Workflow
 
-Refactor in progress. This workflow documents the legacy full-setup path. The new CLI is not a complete installer yet; only safe bootstrap behavior is currently wired into `bin/swaydora install`.
+Refactor in progress. This workflow documents VM-oriented validation while the modular CLI and legacy setup scripts coexist. The modular CLI is the recommended staging path for bootstrap checks, known required COPR enablement, DNF-only package apply, managed dotfile symlinks with backups, and dotfiles-only rollback. Legacy scripts remain available for broader behavior that is not migrated yet.
 
 ## 1) Mount VirtioFS
 
@@ -15,39 +15,45 @@ Persist in fstab:
 dotfiles /mnt/dotfiles virtiofs defaults,nofail,x-systemd.automount 0 0
 ```
 
-## 2) Run Setup Scripts
+## 2) Run Modular Setup
 
-Install packages, repository, download, and group changes first:
+Start with the current modular path:
 
 ```bash
-scripts/00-bootstrap.sh
-scripts/10-packages.sh
-scripts/10-packages.sh
+bin/swaydora bootstrap-repos
+bin/swaydora install --profile workstation --dry-run
+bin/swaydora install --profile workstation
+```
+
+The modular workstation profile may enable only the known required COPR `swayfx/swayfx` and install missing simple DNF entries. It does not run arbitrary repository setup, Flatpak, AppImage, archive, RPM URL, npm global, service, shell, group, theme, font, or wallpaper mutations.
+
+## 3) Optional Legacy Helpers
+
+Run individual legacy helpers only after reviewing them and only when you need behavior not yet migrated to the modular CLI:
+
+```bash
 scripts/20-services.sh
-scripts/30-link-dotfiles.sh
 scripts/40-themes.sh
 scripts/50-fonts.sh
 scripts/60-waybar-reload.sh
 scripts/80-wallpapers-sync.sh   # optional: sync wallpapers from dharmx/walls snapshot
 ```
 
-SwayFX is mandatory for this profile. When unavailable in enabled repos, setup automatically enables COPR `swayfx/swayfx`.
-Set `SWAYFX_COPR=<owner/project>` to override the default COPR source.
-When `swayosd` is unavailable in enabled repos, setup enables COPR `erikreider/swayosd`.
-Set `SWAYOSD_COPR=<owner/project>` to override the default SwayOSD COPR source.
+Do not run the full legacy setup after modular install unless you intentionally accept the broader legacy mutation surface.
 
-## 3) Start Session
+## 4) Start Session
 
 - Login into SwayFX.
 - Run `~/.config/scripts/reload_env.sh`.
 
-## 4) Snapshot Strategy
+## 5) Snapshot Strategy
 
 - Snapshot before package stack updates.
 - Snapshot before Sway/Waybar config rewrites.
 
-## 5) Rollback
+## 6) Rollback
 
 - Restore VM snapshot.
-- Or restore `~/.backup_configs/config_backup_YYYYMMDD_HHMMSS/` created by `scripts/30-link-dotfiles.sh`.
+- Or run `bin/swaydora rollback --dry-run`, then `bin/swaydora rollback --yes` for the latest modular dotfiles backup batch.
+- Or restore `~/.backup_configs/config_backup_YYYYMMDD_HHMMSS/` created by legacy `scripts/30-link-dotfiles.sh`.
 - Per-config `*.bak*` files may also exist for configs replaced during linking.
