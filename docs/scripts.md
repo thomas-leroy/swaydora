@@ -36,6 +36,7 @@ Setup scripts share colored ISO8601 logging helpers from `scripts/lib/logging.sh
 - Reload: `reload_env.sh`
 - Session/keyring: `portal_session_fix.sh`, `keyring_start.sh`
 - Network session: `nm_applet_start.sh`
+- Removable disk tray: `udiskie_tray_start.sh`
 - Wallpaper: `wallpaper_start.sh`, `wallpaper_picker.sh`
 
 `wallpaper_picker.sh` and `wallpaper_start.sh` resolve all paths from `$HOME` and accept environment overrides:
@@ -58,6 +59,7 @@ Swaydora uses SwayNotificationCenter as the primary notification daemon. `notifi
 - Popup close helper: `popup_close_focused.sh`
 - Screenshots: `screenshot_capture.sh`, `screenshot_active_window.sh`, `color_picker.sh`
 - Network: `nm_applet_start.sh` starts `nm-applet --indicator` once per Sway session for tray-based Wi-Fi/VPN selection. `network_tui.sh` is a retained Waybar click target that launches `nm-connection-editor`.
+- Removable disks: `udiskie_tray_start.sh` starts `udiskie --tray` and removes duplicate user-owned `udiskie` instances created by repeated Sway reloads.
 - Popup and manager helpers: `bluetooth_tui.sh`, `cpu_popup.sh`, `audio_mixer_popup.sh`
 
 `cpu_popup.sh` and `audio_mixer_popup.sh` use the shared Kitty `app_id` `swaydora-popup` with popup-specific titles. `audio_mixer_popup.sh` maps `Escape` inside its Kitty window so the audio mixer can close without a global Sway `Escape` binding.

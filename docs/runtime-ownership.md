@@ -25,7 +25,7 @@ Automatically started by Sway:
 - `wallpaper_start.sh`
 - `waybar`
 - `nm_applet_start.sh`
-- `udiskie --tray`
+- `udiskie_tray_start.sh`
 
 Started by Waybar:
 
@@ -75,7 +75,7 @@ Conditional or runtime-detected behavior:
 | XDG portal config | portal service | `xdg-desktop-portal`, `xdg-desktop-portal-gtk`, `xdg-desktop-portal-wlr`, `portals.conf` | `dnf` required | yes for portal features | degraded portals | modular-ready | GTK handles the default and file chooser portals; WLR handles screenshot and screencast portals. |
 | Keyring | Sway `exec_always` | `gnome-keyring-daemon`, optional DBus/systemd import | `dnf` required | no | degraded secrets/SSH agent | modular-ready | Exits quietly when missing or already running. |
 | NetworkManager applet | Sway `exec_always` | `nm-applet`, DBus session, Waybar tray/status notifier host | `dnf` desired package `network-manager-applet` | no | degraded everyday Wi-Fi/VPN selection UI | modular-ready | Started from Sway instead of user systemd so it inherits the live Wayland/DBus session. The wrapper avoids duplicate `nm-applet` instances across Sway reloads or overlapping autostarts. |
-| Removable disks | Waybar click | `lsblk`, `udisksctl`, `menu_launcher.sh`, `notify-send` | `dnf` desired for `udisks2` | no | degraded disk menu | transitional | User-triggered mount/unmount behavior. |
+| Removable disks | Sway `exec_always`, Waybar click | `udiskie`, `lsblk`, `udisksctl`, `menu_launcher.sh`, `notify-send` | `dnf` desired for `udisks2` and `udiskie` | no | degraded tray and disk menu | transitional | `udiskie_tray_start.sh` keeps a single tray instance across Sway reloads. Disk menu mount/unmount behavior remains user-triggered. |
 | Bluetooth manager | Waybar click | `blueman-manager`, `swaymsg`, `jq`, Sway floating rule | `dnf` required package `blueman` | no | degraded Bluetooth UI | modular-ready | Swaydora now owns Blueman as the supported Fedora Bluetooth UI. The launcher focuses an existing Blueman window or opens the manager directly. |
 | Network connection editor | Waybar click or user | `nm-connection-editor`, NetworkManager | `dnf` desired | no | degraded persistent Wi-Fi editing | modular-ready | Recommended advanced/persistent NetworkManager workflow. `network_tui.sh` is retained only as the existing Waybar click target and launches the editor directly, while `nm-applet` covers everyday Wi-Fi/VPN selection from the tray. |
 | Updates status | Waybar interval/click, notification helper | `dnf check-update`, `timeout`, optional `flock`, cache dir, `kitty`, `sudo dnf upgrade --refresh` | `dnf` core | no | degraded update visibility; user-triggered system mutation on click | legacy | Existing Waybar click can run a real upgrade in Kitty after user action. |

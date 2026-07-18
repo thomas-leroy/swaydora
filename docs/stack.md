@@ -111,7 +111,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### UDisks2 + udiskie
 
 - Purpose: removable disk mount/unmount with tray support.
-- Local setup: `udiskie --tray` autostart, disk menu script `dotfiles/scripts/disks_menu.sh`.
+- Local setup: `dotfiles/scripts/udiskie_tray_start.sh` starts one `udiskie --tray` instance across Sway reloads; disk menu script `dotfiles/scripts/disks_menu.sh`.
 - Docs: https://github.com/storaged-project/udisks
 - Docs: https://github.com/coldfix/udiskie
 

@@ -264,6 +264,16 @@ Completed:
 
 This was a repository noise cleanup. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, runtime helpers, package installation, services, shell behavior, or legacy setup scripts.
 
+## Step 21 Status
+
+Completed:
+
+- Added `dotfiles/scripts/udiskie_tray_start.sh` to keep a single `udiskie --tray` instance across Sway reloads.
+- Replaced direct `exec_always udiskie --tray` with the wrapper.
+- Updated runtime and stack documentation for the removable disk tray lifecycle.
+
+This was a runtime helper cleanup. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, package installation, services, shell behavior, or legacy setup scripts.
+
 ## Legacy Scripts
 
 The target legacy location remains:
@@ -339,6 +349,7 @@ Completed:
 - Archival of the historical legacy script-surface audit.
 - Separation of primary-workstation Sway overrides from the shared base config.
 - Removal of empty placeholder directories and redundant `.gitkeep` files.
+- Duplicate-safe removable disk tray startup.
 
 In progress:
 

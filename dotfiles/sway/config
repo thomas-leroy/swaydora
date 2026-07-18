@@ -235,7 +235,7 @@ exec_always --no-startup-id sh -c 'command -v swayosd-server >/dev/null 2>&1 && 
 exec_always --no-startup-id ~/.config/scripts/wallpaper_start.sh
 exec_always --no-startup-id sh -c 'pkill -x waybar || true; waybar'
 exec_always --no-startup-id ~/.config/scripts/nm_applet_start.sh
-exec_always --no-startup-id udiskie --tray
+exec_always --no-startup-id ~/.config/scripts/udiskie_tray_start.sh
 
 # Local machine overrides (untracked).
 include ~/.config/sway/local.conf
