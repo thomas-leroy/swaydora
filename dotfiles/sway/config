@@ -238,4 +238,4 @@ exec_always --no-startup-id ~/.config/scripts/nm_applet_start.sh
 exec_always --no-startup-id udiskie --tray
 
 # Local machine overrides (untracked).
-include ~/.config/sway/local.conf&
+include ~/.config/sway/local.conf
