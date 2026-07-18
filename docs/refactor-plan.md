@@ -231,6 +231,16 @@ Completed:
 
 This was a documentation-only cleanup milestone. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, legacy scripts, runtime helpers, tests, or install behavior.
 
+## Step 18 Status
+
+Completed:
+
+- Moved the large historical legacy script-surface audit from `docs/audit.md` to `docs/archive/audit.md`.
+- Added an archive note that points readers to current migration, runtime ownership, and cleanup documentation.
+- Updated cleanup and syshud transition references so current docs no longer treat the old audit as active guidance.
+
+This was a documentation-only cleanup milestone. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, legacy scripts, runtime helpers, tests, or install behavior.
+
 ## Legacy Scripts
 
 The target legacy location is:
@@ -301,6 +311,7 @@ Completed:
 - Migration matrix and cleanup audit documentation.
 - Symlink constraint and future install mode documentation.
 - Documentation synchronization for the current modular CLI boundary.
+- Archival of the historical legacy script-surface audit.
 
 In progress:
 
@@ -349,7 +360,7 @@ Docs should stay concise, explicit, and honest about implemented, planned, legac
 ## Next Steps
 
 1. Add compatibility wrappers in `scripts/legacy/` or update legacy scripts to use a stable repository-root resolver.
-2. Decide whether `docs/audit.md` should stay current or move deeper into archived documentation.
+2. Decide whether `docs/archive/audit.md` can eventually be deleted after current docs cover all useful information.
 3. Extract read-only inventory helpers from package/service scripts before moving mutating logic.
 4. Introduce module entrypoints one domain at a time: packages, services, desktop, fonts, shell, wallpapers.
 5. Add dry-run support to each mutating module before wiring it into `install`.

@@ -57,9 +57,12 @@ Seven `dotfiles/scripts/` helpers were confirmed unreferenced in `dotfiles/sway/
 
 ### Still pending before removal or archival
 
-- `docs/audit.md`: useful historical legacy audit, but overlaps with this cleanup audit and the migration matrix.
 - `docs/archive/CONVENTIONS.md`: archived context only; keep until a dedicated docs cleanup confirms it is no longer needed.
 - `scripts/debug.sh`: legacy debug helper. It depends on current script paths and should remain until package migration is planned.
+
+### Archived in documentation cleanup
+
+- `docs/archive/audit.md`: historical legacy script-surface audit. It was moved out of current documentation because it overlaps with this cleanup audit, the migration matrix, and runtime ownership docs, and some entries describe stale legacy state.
 
 ## Transitional Files
 
@@ -104,7 +107,7 @@ Smoke tests remain lightweight and continue to call isolated backup, dotfiles, a
 
 ## Obsolete Docs
 
-No documentation was archived or deleted in this milestone. The safer next step is a dedicated docs-only review that compares:
+`docs/audit.md` has been moved to `docs/archive/audit.md`. The remaining docs-only cleanup surface is:
 
 - `README.md`
 - `docs/architecture.md`
@@ -113,11 +116,10 @@ No documentation was archived or deleted in this milestone. The safer next step 
 - `docs/refactor-plan.md`
 - `docs/migration-matrix.md`
 - `docs/cleanup-audit.md`
-- `docs/audit.md`
 - `docs/scripts.md`
 
 ## Safe Follow-Up Cleanup
 
-- Decide whether `docs/audit.md` should remain current, move deeper into `docs/archive/`, or be split into legacy inventory plus current cleanup notes.
+- Decide whether `docs/archive/audit.md` can eventually be deleted after the migration matrix and runtime ownership docs cover all still-useful current information.
 - Add a repository-root helper for legacy scripts before moving any file under `scripts/`.
 - Keep package and service migration blocked until dry-run design, inventory, and tests are ready.

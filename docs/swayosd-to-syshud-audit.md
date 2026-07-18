@@ -32,7 +32,7 @@ The modular package inventory now tracks `syshud` as a desired manual transition
 | `docs/testing.md` | documentation | Documents that `syshud` is inventory-only as a desired manual transitional component. | Remain temporarily. Current validation boundary. |
 | `docs/vm-workflow.md` | documentation | Still tells users legacy setup enables `erikreider/swayosd` and supports `SWAYOSD_COPR`. | Stale/obsolete for current modular direction. Replace or annotate when VM workflow docs are refreshed; do not edit as part of this audit. |
 | `docs/stack.md` | documentation | Describes SwayOSD as stack component installed by legacy package flow and autostarted by Sway config. | Stale/obsolete for modular direction but accurate for legacy/runtime state. Requires manual decision during stack docs refresh. |
-| `docs/audit.md` | documentation | Describes legacy DNF helper as enabling SwayOSD COPR. | Stale/obsolete historical audit note. Archive or update during docs cleanup. |
+| `docs/archive/audit.md` | archived documentation | Describes legacy DNF helper as enabling SwayOSD COPR. | Historical only; do not treat as current migration guidance. |
 
 ## Recommended Next Steps
 

@@ -1,6 +1,12 @@
-# Audit
+# Archived Audit
 
-Refactor in progress. This audit captures the legacy shell-script surface before and during migration to the modular CLI. Some findings describe legacy behavior that is not wired into `bin/swaydora`.
+Archived documentation. This audit captures the legacy shell-script surface before and during migration to the modular CLI. Some findings describe legacy behavior that is not wired into `bin/swaydora`, and some entries may reference files that were later removed or changed.
+
+For current migration state, use:
+
+- `../migration-matrix.md`
+- `../runtime-ownership.md`
+- `../cleanup-audit.md`
 
 Scope: all `*.sh` and `*.zsh` files in the repository, including hidden repository tooling and runtime helper scripts.
 
