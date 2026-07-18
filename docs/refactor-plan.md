@@ -241,6 +241,18 @@ Completed:
 
 This was a documentation-only cleanup milestone. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, legacy scripts, runtime helpers, tests, or install behavior.
 
+## Step 19 Status
+
+Completed:
+
+- Moved primary-workstation Sway rules out of the base shared Sway config.
+- Added `dotfiles/sway/local-primary.conf` as a tracked opt-in preset for the primary workstation.
+- Kept the active machine include in untracked `~/.config/sway/local.conf`, so the primary workstation can keep using the preset without making it default for everyone.
+- Moved the optional local include to the end of `dotfiles/sway/config`, after shared variables such as `$ws9` are defined.
+- Updated runtime/keybinding/convention docs to describe the new local override boundary.
+
+This was a runtime configuration boundary cleanup. It did not change CLI behavior, package inventory, dotfile linking, backup, rollback, package installation, services, shell behavior, or legacy setup scripts.
+
 ## Legacy Scripts
 
 The target legacy location is:
@@ -312,6 +324,7 @@ Completed:
 - Symlink constraint and future install mode documentation.
 - Documentation synchronization for the current modular CLI boundary.
 - Archival of the historical legacy script-surface audit.
+- Separation of primary-workstation Sway overrides from the shared base config.
 
 In progress:
 

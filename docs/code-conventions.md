@@ -39,6 +39,8 @@ Local machine-specific overrides should remain untracked. Current expected overr
 - `~/.config/mako/local.conf`
 - `~/.config/swaync/local.css`
 
+Tracked opt-in presets may exist when a primary workstation needs versioned local behavior. They must not be included by the base config directly; enable them from an untracked local override file.
+
 Do not replace local overrides without an explicit backup and a clear apply phase.
 
 ## Path Hygiene

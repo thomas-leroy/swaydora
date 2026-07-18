@@ -17,9 +17,7 @@ opens the command palette maintained in `dotfiles/sway/commands_palette.list`.
 | `Meta` + `Space` | Open app launcher (`fuzzel`/`wofi`) |
 | `Meta` + `k` | Open command palette |
 | `Meta` + `Shift` + `p` | Open custom tools fuzzy menu |
-| `Meta` + `Shift` + `Space` | Launch Handy |
 | `Meta` + `Shift` + `o` | Launch Obsidian |
-| `Meta` + `Ctrl` + `s` | Launch LocalSend |
 | `Meta` + `Shift` + `e` | Launch email client (Thunderbird) |
 | `Meta` + `e` | Open file manager (`nautilus`, `dolphin`, `thunar`, `nemo`, or `pcmanfm`) |
 
@@ -46,7 +44,9 @@ opens the command palette maintained in `dotfiles/sway/commands_palette.list`.
 | `Meta` + `Ctrl` + `Right` / `Meta` + `Ctrl` + `Left` | Switch to next / previous workspace |
 | Swipe `4` fingers left / right on the touchpad | Switch to next / previous workspace |
 
-Workspace `9` is also used for utility app windows. LocalSend, Handy, pCloud, and Proton Bridge are forced there as floating windows by Sway `app_id` rules.
+Workspace `9` is reserved as the utility workspace. Machine-specific utility app placement, monitor layout, and personal app shortcuts belong in `~/.config/sway/local.conf`.
+
+The tracked opt-in preset `dotfiles/sway/local-primary.conf` adds the primary workstation shortcuts for Handy and LocalSend, autostarts Handy, Proton Bridge, pCloud, and LocalSend, and places those utility apps on workspace `9`.
 
 ## Session And System
 
