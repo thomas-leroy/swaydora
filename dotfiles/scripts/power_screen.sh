@@ -24,12 +24,25 @@ if pgrep -x wlogout >/dev/null 2>&1; then
   exit 0
 fi
 
+declare -a WLOGOUT_LAYOUT_ARGS=(--buttons-per-row 4)
+if command -v swaymsg >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+  output_height="$(
+    swaymsg -t get_outputs 2>/dev/null \
+      | jq -r 'map(select(.focused))[0].rect.height // map(select(.active))[0].rect.height // empty' 2>/dev/null \
+      || true
+  )"
+  if [[ "$output_height" =~ ^[0-9]+$ && "$output_height" -gt 0 ]]; then
+    vertical_margin=$((output_height * 3 / 8))
+    WLOGOUT_LAYOUT_ARGS+=(--margin-top "$vertical_margin" --margin-bottom "$vertical_margin")
+  fi
+fi
+
 # Try explicit config paths and use the first one that works.
 err_file="$(mktemp)"
 for entry in "${CANDIDATES[@]}"; do
   layout_file="${entry%%|*}"
   css_file="${entry#*|}"
-  if wlogout --buttons-per-row 2 --layout "$layout_file" --css "$css_file" 2>"$err_file"; then
+  if wlogout "${WLOGOUT_LAYOUT_ARGS[@]}" --layout "$layout_file" --css "$css_file" 2>"$err_file"; then
     rm -f "$err_file"
     exit 0
   fi

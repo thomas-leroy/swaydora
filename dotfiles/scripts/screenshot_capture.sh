@@ -47,4 +47,12 @@ else
   grim "$outfile"
 fi
 
-notify-send "Capture" "Screenshot saved to $outfile"
+if command -v wl-copy >/dev/null 2>&1; then
+  if wl-copy --type image/png <"$outfile"; then
+    notify-send "Capture" "Screenshot saved to $outfile and copied to clipboard"
+  else
+    notify-send "Capture" "Screenshot saved to $outfile; clipboard copy failed"
+  fi
+else
+  notify-send "Capture" "Screenshot saved to $outfile; wl-copy is not installed"
+fi

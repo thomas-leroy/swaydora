@@ -2,56 +2,79 @@
   background-image: none;
   box-shadow: none;
   font-family: "JetBrainsMono Nerd Font", "JetBrainsMono Nerd Font Mono", "Symbols Nerd Font";
-  font-size: 20px;
+  font-size: 22px;
   transition: 150ms ease;
 }
 
 window {
-  background-color: rgba(21, 23, 34, 0.84);
+  background-color: rgba(10, 10, 14, 0.86);
 }
 
 button {
   color: #f8eddc;
   background-color: rgba(36, 40, 53, 0.92);
-  border: 2px solid transparent;
-  border-radius: 12px;
-  margin: 15px;
-  min-width: 180px;
+  border: 2px solid rgba(167, 169, 161, 0.24);
+  border-radius: 8px;
+  margin: 10px;
+  min-width: 168px;
   min-height: 120px;
   background-repeat: no-repeat;
-  background-position: 50% 15px;
-  background-size: 72px 72px;
+  background-position: 50% 28%;
+  background-size: 104px 104px;
   font-weight: 600;
+  padding-top: 0;
 }
 
-button:hover {
-  background-color: rgba(0, 132, 154, 0.30);
-}
-
-#lock {
-  background-image: url("icons/lock.svg");
-}
-#lock:hover{
-  border-color: rgba(0, 132, 154, 0.80);
-}
-
-#logout {
-  background-image: url("icons/logout.svg");
-}
-#logout:hover {
-  border-color: rgba(216, 131, 73, 0.80);
-}
-
-#reboot {
-  background-image: url("icons/reboot.svg");
-}
-#reboot:hover {
-  border-color: rgba(202, 165, 62, 0.90);
+button:hover,
+button:focus,
+button:active {
+  color: #ffffff;
+  background-color: rgba(0, 132, 154, 0.24);
+  border-color: #8ad9e9;
+  box-shadow: 0 0 0 4px rgba(0, 132, 154, 0.34);
+  outline-style: none;
 }
 
 #shutdown {
   background-image: url("icons/shutdown.svg");
 }
-#shutdown:hover {
-  border-color: rgba(200, 76, 83, 0.80);
+#shutdown:hover,
+#shutdown:focus,
+#shutdown:active {
+  background-color: rgba(200, 76, 83, 0.28);
+  border-color: #edb7bf;
+  box-shadow: 0 0 0 4px rgba(200, 76, 83, 0.35);
+}
+
+#logout {
+  background-image: url("icons/logout.svg");
+}
+#logout:hover,
+#logout:focus,
+#logout:active {
+  background-color: rgba(216, 131, 73, 0.26);
+  border-color: #ecc6ae;
+  box-shadow: 0 0 0 4px rgba(216, 131, 73, 0.34);
+}
+
+#lock {
+  background-image: url("icons/lock.svg");
+}
+#lock:hover,
+#lock:focus,
+#lock:active {
+  background-color: rgba(0, 132, 154, 0.24);
+  border-color: #8ad9e9;
+  box-shadow: 0 0 0 4px rgba(0, 132, 154, 0.34);
+}
+
+#reboot {
+  background-image: url("icons/reboot.svg");
+}
+#reboot:hover,
+#reboot:focus,
+#reboot:active {
+  background-color: rgba(202, 165, 62, 0.24);
+  border-color: #ecda9c;
+  box-shadow: 0 0 0 4px rgba(202, 165, 62, 0.34);
 }

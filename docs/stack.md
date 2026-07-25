@@ -41,7 +41,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### wlogout
 
 - Purpose: graphical power screen (lock/logout/reboot/shutdown).
-- Local setup: theme and actions in `dotfiles/wlogout/layout` and `dotfiles/wlogout/style.css`; opened by `dotfiles/scripts/power_screen.sh`.
+- Local setup: theme and actions in `dotfiles/wlogout/layout` and `dotfiles/wlogout/style.css`; opened by `dotfiles/scripts/power_screen.sh` as a four-button row sized from the active output height when Sway IPC is available. The layout puts shutdown first so the initial keyboard focus lands on the poweroff action, and the CSS provides visible focus states for keyboard navigation.
 - Docs: https://github.com/ArtsyMacaw/wlogout
 
 ### swaync (SwayNotificationCenter)
@@ -77,7 +77,7 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 ### grim + slurp
 
 - Purpose: region screenshots.
-- Local setup: `Print` bind saves screenshot to `~/Pictures`.
+- Local setup: `Print` bind saves screenshot to `~/Pictures/Screenshots` and copies the PNG to the clipboard when `wl-copy` is available.
 - Docs: https://github.com/emersion/grim
 - Docs: https://github.com/emersion/slurp
 

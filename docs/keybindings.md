@@ -53,7 +53,7 @@ The tracked opt-in preset `dotfiles/sway/local-primary.conf` adds the primary wo
 | Shortcut | Action |
 | --- | --- |
 | `Meta` + `l` | Lock current session with `swaylock` |
-| `Ctrl` + `Alt` + `Delete` | Open power screen (`wlogout`) |
+| `Ctrl` + `Alt` + `Delete` | Open power screen (`wlogout`), focused on Shutdown by default |
 | `Meta` + `Shift` + `r` | Reload Sway and restart Waybar via `reload_env.sh` |
 | `Meta` + `Shift` + `x` | Exit Sway session |
 
@@ -62,7 +62,7 @@ The tracked opt-in preset `dotfiles/sway/local-primary.conf` adds the primary wo
 | Shortcut | Action |
 | --- | --- |
 | `Meta` + `Ctrl` + `c` | Open capture menu |
-| `Print` | Take a screenshot |
+| `Print` | Take a screenshot and copy it to the clipboard when `wl-copy` is available |
 | `Meta` + `Print` / `Meta` + `Sys_Req` | Take a screenshot of the active window |
 | `Meta` + `Shift` + `Print` / `Meta` + `Shift` + `Sys_Req` | Open color picker |
 | `Meta` + `Shift` + `w` | Open wallpaper fuzzy picker |
