@@ -14,8 +14,8 @@ This document lists the main services/tools installed by this dotfiles setup, wh
 
 ### Waybar
 
-- Purpose: top bar with workspaces, active window, updates, audio, VPN, layout switch, notifications, and power button.
-- Local setup: config in `dotfiles/waybar/config.jsonc`, styles in `dotfiles/waybar/style.css`, custom modules in `dotfiles/scripts/`.
+- Purpose: top bar with workspaces, active window, updates, audio, network, battery, layout switch, notifications, and power button.
+- Local setup: config in `dotfiles/waybar/config.jsonc`, styles in `dotfiles/waybar/style.css`, custom modules in `dotfiles/scripts/`. The battery indicator uses `battery_status.sh`, which falls back to an AC-power indicator when no battery is detected but the machine is online on mains power.
 - Docs: https://github.com/Alexays/Waybar
 
 ### Fuzzel

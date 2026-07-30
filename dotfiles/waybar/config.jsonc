@@ -14,6 +14,7 @@
     "custom/mic",
     "custom/audio",
     "network",
+    "custom/battery",
     "custom/layout",
     "custom/notification_center"
   ],
@@ -125,6 +126,12 @@
     "format-disconnected": "󰤭",
     "tooltip-format": "{ifname}: {ipaddr}",
     "on-click": "~/.config/scripts/network_tui.sh"
+  },
+
+  "custom/battery": {
+    "exec": "~/.config/scripts/battery_status.sh",
+    "interval": 15,
+    "return-type": "json"
   },
 
   "cpu": {

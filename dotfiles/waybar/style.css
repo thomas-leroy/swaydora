@@ -120,6 +120,7 @@ tooltip * {
 #custom-mic,
 #custom-audio,
 #network,
+#custom-battery,
 #custom-layout,
 #custom-notification_center,
 #memory,
@@ -191,6 +192,7 @@ tooltip * {
 #memory,
 #temperature,
 #network,
+#custom-battery,
 #custom-notification_center {
   padding: 0px 12px 0px 8px;
   margin: 0px;
@@ -201,18 +203,39 @@ tooltip * {
 #memory,
 #temperature,
 #network,
+#custom-battery,
 #custom-notification_center {
   padding-left: 10px;
 }
 
 #custom-disks,
 #memory,
-#network {
+#network,
+#custom-battery {
   color: @ember_mauve_faded;
 }
 
 #network {
   padding-right: 12px;
+}
+
+#custom-battery.low,
+#custom-battery.medium,
+#custom-battery.high,
+#custom-battery.full,
+#custom-battery.charging,
+#custom-battery.plugged,
+#custom-battery.no-battery {
+  color: @ember_pistachio_faded;
+}
+
+#custom-battery.low {
+  color: @ember_gold_faded;
+}
+
+#custom-battery.critical,
+#custom-battery.warn {
+  color: @ember_rose_faded;
 }
 
 #memory {
@@ -265,6 +288,7 @@ tooltip * {
 #custom-mic:hover,
 #custom-audio:hover,
 #network:hover,
+#custom-battery:hover,
 #custom-layout:hover,
 #custom-notification_center:hover,
 #memory:hover,

@@ -29,7 +29,7 @@ Automatically started by Sway:
 
 Started by Waybar:
 
-- audio, brightness, layout, notification, camera, update, disk, Bluetooth, network, CPU, and memory/temperature widgets.
+- audio, brightness, battery, layout, notification, camera, update, disk, Bluetooth, network, CPU, and memory/temperature widgets.
 - click and scroll actions for audio, brightness, network, notification center, updates, disks, Bluetooth, and power menu.
 
 Started by user keybindings:
@@ -67,6 +67,7 @@ Conditional or runtime-detected behavior:
 | Lock/session power | Sway keybindings, wlogout layout, session menu | `swaylock`, `swaymsg`, `wlogout`, `systemctl` | `dnf` required/desired | yes for lock/logout; no for graphical menu | broken lock/logout if missing; degraded power menu | transitional | `wlogout` layout directly calls lock/logout/reboot/poweroff commands in a four-button row sized from the active output height when Sway IPC is available; shutdown is first for initial focus and the theme exposes visible keyboard focus. |
 | Audio controls | Sway media keys, Waybar | `wpctl`, `wiremix`, PipeWire/WirePlumber, `awk`, `grep`, `menu_launcher.sh`, `notify-send`, Kitty popup helper | `dnf` required for PipeWire/WirePlumber and `wiremix` | yes | degraded or broken audio control | modular-ready | The volume widget identifies Focusrite `Line 1-2` and `Line 3-4` default outputs, with a generic fallback for other sinks. Left click on Waybar volume or microphone stays mapped to mute. Right click opens the floating `wiremix` popup. `Escape` closes the audio mixer through a local Kitty mapping, not a global Sway binding. Status scripts degrade; direct Sway keybindings call `wpctl` without wrapper checks. |
 | Brightness controls | Sway media keys, Waybar | `brightnessctl`, `notify-send` | `dnf` desired | no | degraded brightness control on systems without a real backlight device | transitional | Sway media key bindings call wrapper scripts that only use real `brightnessctl` backlight devices. Brightness decreases are clamped to a 7% minimum to avoid a black screen. The Waybar widget reads brightness through `brightness_status.sh`, ignores non-display LED devices, and hides itself when no compatible backlight exists. |
+| Battery indicator | Waybar interval | `/sys/class/power_supply/*`, battery and AC adapter status files | kernel sysfs | no | degraded power-state visibility | modular-ready | `battery_status.sh` reports battery percentage/status when a battery exists, shows an AC-power indicator when the machine has no battery but is online on mains power, and returns warning JSON when power-supply state cannot be read coherently. |
 | Screenshot stack | Sway keybindings, capture menu | `grim`, optional `slurp`, optional `wl-copy`, `swaymsg`, `jq`, `xdg-user-dir`, `notify-send` | `dnf` desired | no | degraded screenshots | modular-ready | Full-screen screenshot can work without `slurp`; selected screenshots are copied to the clipboard when `wl-copy` is available; active-window capture requires `swaymsg` and `jq`. |
 | Color picker | Sway keybinding, capture menu | `hyprpicker`, optional `wl-paste`, `notify-send` | `dnf` desired | no | cosmetic/convenience loss | modular-ready | Checks `hyprpicker` explicitly. |
 | Wallpaper startup | Sway `exec_always` | `awww`, `awww-daemon`, fallback `swaybg`, state file, default wallpaper | manual desired for `awww`; `swaybg` implicit | no | cosmetic | transitional | No modular wallpaper sync; legacy script still owns wallpaper source sync. |
@@ -98,7 +99,8 @@ Conditional or runtime-detected behavior:
 | `hyprpicker` | color picker | yes | Color picker notifies and exits. |
 | `wl-paste` | color picker fallback read | optional | Picker can still succeed if `hyprpicker` copied a color. |
 | `wpctl` | audio keybindings and Waybar audio/microphone scripts | mixed | Waybar status warns; direct Sway keybindings assume it exists. |
-| `brightnessctl` | brightness keybindings and Waybar status | mixed | Waybar hides the brightness module when no real backlight is available; adjustment helper scripts exit quietly. |
+| `brightnessctl` | brightness keybindings and Waybar status | mixed | Waybar hides the brightness module when no real backlight is available; adjustment helper scripts notify when the binary is missing and otherwise exit quietly when no compatible backlight exists. |
+| `/sys/class/power_supply` | Waybar battery status | yes | Battery widget shows an AC-only or warning state instead of failing hard. |
 | `swaync-client` | notification center Waybar status/toggle | yes | Status shows warning JSON; toggle notifies and exits. |
 | `swaync` | Sway autostart and notification status | no before autostart | Sway tries to start it; status warns if not running or if Mako/Dunst appears to own notifications. |
 | `swayosd-server` | Sway autostart | yes | Missing binary is silently ignored. |
