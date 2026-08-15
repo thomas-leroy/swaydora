@@ -13,7 +13,7 @@ fi
 pkill -x waybar || true
 WAYBAR_LOG="${XDG_CACHE_HOME:-$HOME/.cache}/waybar.log"
 mkdir -p "$(dirname "$WAYBAR_LOG")"
-nohup waybar >"$WAYBAR_LOG" 2>&1 &
+nohup "$HOME/.config/scripts/waybar_start.sh" >"$WAYBAR_LOG" 2>&1 &
 
 # Confirm reload to user.
 sleep 0.2
